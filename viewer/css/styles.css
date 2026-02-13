@@ -1,0 +1,179 @@
+/* ── Reset & base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #1a1a2e;
+  --bg-card:   #16213e;
+  --bg-sidebar:#0f3460;
+  --accent:    #e94560;
+  --text:      #eee;
+  --text-dim:  #aaa;
+  --radius:    6px;
+}
+
+html { font-size: 15px; }
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Toolbar ───────────────────────────────────────────────── */
+#toolbar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--accent);
+}
+#toolbar h1 { font-size: 1.1rem; white-space: nowrap; }
+#toolbar .spacer { flex: 1; }
+
+.btn {
+  padding: 5px 14px;
+  border: 1px solid var(--text-dim);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: .85rem;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover, .btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+#searchBox {
+  padding: 5px 10px;
+  border: 1px solid var(--text-dim);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  width: 160px;
+  font-size: .85rem;
+}
+
+/* ── Gallery ───────────────────────────────────────────────── */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  padding: 20px;
+}
+
+.thumb-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.thumb-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.4);
+}
+.thumb-card img {
+  width: 100%; aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  background: #111;
+}
+.thumb-card .caption {
+  padding: 6px 10px;
+  font-size: .8rem;
+  color: var(--text-dim);
+  display: flex; justify-content: space-between;
+}
+.thumb-card .caption .split-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: .7rem;
+  text-transform: uppercase;
+}
+
+/* ── Detail view ───────────────────────────────────────────── */
+#detail {
+  display: none;            /* toggled by JS */
+  position: fixed; inset: 0;
+  z-index: 200;
+  background: var(--bg);
+}
+
+#detail-top {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--accent);
+}
+#detail-top .title { flex: 1; font-weight: 600; }
+
+#detail-body {
+  display: flex;
+  height: calc(100vh - 50px);
+}
+
+#canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+#canvas-wrap canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#tooltip {
+  position: absolute;
+  padding: 4px 8px;
+  background: rgba(0,0,0,.85);
+  color: #fff;
+  font-size: .78rem;
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+  z-index: 10;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+#sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  overflow-y: auto;
+  padding: 14px;
+  font-size: .82rem;
+}
+#sidebar h3 { margin-bottom: 10px; font-size: .95rem; }
+
+.class-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 0;
+}
+.class-swatch {
+  width: 14px; height: 14px;
+  border-radius: 3px; flex-shrink: 0;
+}
+.class-name  { flex: 1; }
+.class-count { color: var(--text-dim); }
+
+/* ── Loading / empty states ────────────────────────────────── */
+#loading, #empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  #gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; padding: 12px; }
+  #sidebar { display: none; }
+}

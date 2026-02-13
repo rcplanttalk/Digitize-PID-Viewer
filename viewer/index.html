@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digitize-PID Viewer</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ─── Toolbar ──────────────────────────────────────────── -->
+  <div id="toolbar">
+    <h1>Digitize-PID Viewer</h1>
+    <span id="count-info" style="color:var(--text-dim);font-size:.82rem"></span>
+    <div class="spacer"></div>
+    <button class="btn active" data-filter="all">All</button>
+    <button class="btn" data-filter="train">Train</button>
+    <button class="btn" data-filter="val">Val</button>
+    <button class="btn" data-filter="generated">Generated</button>
+    <input id="searchBox" type="text" placeholder="Search by ID…">
+  </div>
+
+  <!-- ─── Gallery ──────────────────────────────────────────── -->
+  <div id="loading">Loading manifest…</div>
+  <div id="gallery"></div>
+
+  <!-- ─── Detail overlay ───────────────────────────────────── -->
+  <div id="detail">
+    <div id="detail-top">
+      <button id="btn-back" class="btn">← Back</button>
+      <span id="detail-title" class="title"></span>
+      <button id="btn-boxes" class="btn active">Boxes</button>
+      <button id="btn-labels" class="btn active">Labels</button>
+    </div>
+    <div id="detail-body">
+      <div id="canvas-wrap">
+        <canvas id="pid-canvas"></canvas>
+        <div id="tooltip"></div>
+      </div>
+      <div id="sidebar"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

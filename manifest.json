@@ -1,0 +1,3308 @@
+{
+  "total": 550,
+  "train_count": 400,
+  "val_count": 100,
+  "generated_count": 50,
+  "items": [
+    {
+      "id": "0",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/0.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/0.txt"
+    },
+    {
+      "id": "1",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/1.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/1.txt"
+    },
+    {
+      "id": "10",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/10.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/10.txt"
+    },
+    {
+      "id": "101",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/101.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/101.txt"
+    },
+    {
+      "id": "102",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/102.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/102.txt"
+    },
+    {
+      "id": "103",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/103.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/103.txt"
+    },
+    {
+      "id": "104",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/104.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/104.txt"
+    },
+    {
+      "id": "105",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/105.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/105.txt"
+    },
+    {
+      "id": "106",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/106.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/106.txt"
+    },
+    {
+      "id": "107",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/107.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/107.txt"
+    },
+    {
+      "id": "108",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/108.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/108.txt"
+    },
+    {
+      "id": "110",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/110.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/110.txt"
+    },
+    {
+      "id": "113",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/113.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/113.txt"
+    },
+    {
+      "id": "114",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/114.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/114.txt"
+    },
+    {
+      "id": "115",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/115.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/115.txt"
+    },
+    {
+      "id": "116",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/116.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/116.txt"
+    },
+    {
+      "id": "117",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/117.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/117.txt"
+    },
+    {
+      "id": "12",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/12.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/12.txt"
+    },
+    {
+      "id": "120",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/120.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/120.txt"
+    },
+    {
+      "id": "121",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/121.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/121.txt"
+    },
+    {
+      "id": "122",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/122.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/122.txt"
+    },
+    {
+      "id": "123",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/123.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/123.txt"
+    },
+    {
+      "id": "124",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/124.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/124.txt"
+    },
+    {
+      "id": "125",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/125.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/125.txt"
+    },
+    {
+      "id": "126",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/126.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/126.txt"
+    },
+    {
+      "id": "127",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/127.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/127.txt"
+    },
+    {
+      "id": "128",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/128.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/128.txt"
+    },
+    {
+      "id": "129",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/129.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/129.txt"
+    },
+    {
+      "id": "131",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/131.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/131.txt"
+    },
+    {
+      "id": "132",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/132.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/132.txt"
+    },
+    {
+      "id": "133",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/133.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/133.txt"
+    },
+    {
+      "id": "135",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/135.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/135.txt"
+    },
+    {
+      "id": "136",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/136.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/136.txt"
+    },
+    {
+      "id": "137",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/137.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/137.txt"
+    },
+    {
+      "id": "139",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/139.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/139.txt"
+    },
+    {
+      "id": "14",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/14.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/14.txt"
+    },
+    {
+      "id": "141",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/141.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/141.txt"
+    },
+    {
+      "id": "143",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/143.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/143.txt"
+    },
+    {
+      "id": "146",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/146.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/146.txt"
+    },
+    {
+      "id": "147",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/147.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/147.txt"
+    },
+    {
+      "id": "148",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/148.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/148.txt"
+    },
+    {
+      "id": "149",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/149.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/149.txt"
+    },
+    {
+      "id": "150",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/150.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/150.txt"
+    },
+    {
+      "id": "151",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/151.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/151.txt"
+    },
+    {
+      "id": "152",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/152.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/152.txt"
+    },
+    {
+      "id": "153",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/153.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/153.txt"
+    },
+    {
+      "id": "154",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/154.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/154.txt"
+    },
+    {
+      "id": "156",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/156.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/156.txt"
+    },
+    {
+      "id": "157",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/157.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/157.txt"
+    },
+    {
+      "id": "158",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/158.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/158.txt"
+    },
+    {
+      "id": "159",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/159.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/159.txt"
+    },
+    {
+      "id": "16",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/16.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/16.txt"
+    },
+    {
+      "id": "160",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/160.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/160.txt"
+    },
+    {
+      "id": "161",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/161.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/161.txt"
+    },
+    {
+      "id": "163",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/163.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/163.txt"
+    },
+    {
+      "id": "164",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/164.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/164.txt"
+    },
+    {
+      "id": "165",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/165.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/165.txt"
+    },
+    {
+      "id": "166",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/166.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/166.txt"
+    },
+    {
+      "id": "167",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/167.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/167.txt"
+    },
+    {
+      "id": "168",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/168.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/168.txt"
+    },
+    {
+      "id": "169",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/169.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/169.txt"
+    },
+    {
+      "id": "170",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/170.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/170.txt"
+    },
+    {
+      "id": "172",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/172.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/172.txt"
+    },
+    {
+      "id": "174",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/174.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/174.txt"
+    },
+    {
+      "id": "175",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/175.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/175.txt"
+    },
+    {
+      "id": "176",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/176.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/176.txt"
+    },
+    {
+      "id": "177",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/177.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/177.txt"
+    },
+    {
+      "id": "178",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/178.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/178.txt"
+    },
+    {
+      "id": "179",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/179.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/179.txt"
+    },
+    {
+      "id": "18",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/18.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/18.txt"
+    },
+    {
+      "id": "180",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/180.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/180.txt"
+    },
+    {
+      "id": "181",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/181.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/181.txt"
+    },
+    {
+      "id": "182",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/182.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/182.txt"
+    },
+    {
+      "id": "183",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/183.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/183.txt"
+    },
+    {
+      "id": "184",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/184.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/184.txt"
+    },
+    {
+      "id": "185",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/185.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/185.txt"
+    },
+    {
+      "id": "186",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/186.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/186.txt"
+    },
+    {
+      "id": "188",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/188.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/188.txt"
+    },
+    {
+      "id": "189",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/189.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/189.txt"
+    },
+    {
+      "id": "190",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/190.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/190.txt"
+    },
+    {
+      "id": "191",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/191.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/191.txt"
+    },
+    {
+      "id": "192",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/192.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/192.txt"
+    },
+    {
+      "id": "193",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/193.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/193.txt"
+    },
+    {
+      "id": "194",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/194.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/194.txt"
+    },
+    {
+      "id": "196",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/196.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/196.txt"
+    },
+    {
+      "id": "197",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/197.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/197.txt"
+    },
+    {
+      "id": "20",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/20.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/20.txt"
+    },
+    {
+      "id": "201",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/201.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/201.txt"
+    },
+    {
+      "id": "203",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/203.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/203.txt"
+    },
+    {
+      "id": "204",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/204.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/204.txt"
+    },
+    {
+      "id": "206",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/206.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/206.txt"
+    },
+    {
+      "id": "207",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/207.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/207.txt"
+    },
+    {
+      "id": "208",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/208.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/208.txt"
+    },
+    {
+      "id": "209",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/209.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/209.txt"
+    },
+    {
+      "id": "21",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/21.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/21.txt"
+    },
+    {
+      "id": "211",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/211.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/211.txt"
+    },
+    {
+      "id": "212",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/212.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/212.txt"
+    },
+    {
+      "id": "213",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/213.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/213.txt"
+    },
+    {
+      "id": "214",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/214.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/214.txt"
+    },
+    {
+      "id": "215",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/215.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/215.txt"
+    },
+    {
+      "id": "216",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/216.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/216.txt"
+    },
+    {
+      "id": "217",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/217.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/217.txt"
+    },
+    {
+      "id": "218",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/218.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/218.txt"
+    },
+    {
+      "id": "219",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/219.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/219.txt"
+    },
+    {
+      "id": "221",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/221.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/221.txt"
+    },
+    {
+      "id": "222",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/222.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/222.txt"
+    },
+    {
+      "id": "223",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/223.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/223.txt"
+    },
+    {
+      "id": "225",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/225.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/225.txt"
+    },
+    {
+      "id": "227",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/227.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/227.txt"
+    },
+    {
+      "id": "228",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/228.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/228.txt"
+    },
+    {
+      "id": "229",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/229.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/229.txt"
+    },
+    {
+      "id": "23",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/23.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/23.txt"
+    },
+    {
+      "id": "230",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/230.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/230.txt"
+    },
+    {
+      "id": "232",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/232.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/232.txt"
+    },
+    {
+      "id": "234",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/234.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/234.txt"
+    },
+    {
+      "id": "235",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/235.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/235.txt"
+    },
+    {
+      "id": "236",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/236.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/236.txt"
+    },
+    {
+      "id": "237",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/237.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/237.txt"
+    },
+    {
+      "id": "238",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/238.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/238.txt"
+    },
+    {
+      "id": "239",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/239.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/239.txt"
+    },
+    {
+      "id": "24",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/24.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/24.txt"
+    },
+    {
+      "id": "240",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/240.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/240.txt"
+    },
+    {
+      "id": "241",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/241.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/241.txt"
+    },
+    {
+      "id": "242",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/242.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/242.txt"
+    },
+    {
+      "id": "243",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/243.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/243.txt"
+    },
+    {
+      "id": "244",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/244.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/244.txt"
+    },
+    {
+      "id": "245",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/245.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/245.txt"
+    },
+    {
+      "id": "246",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/246.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/246.txt"
+    },
+    {
+      "id": "247",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/247.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/247.txt"
+    },
+    {
+      "id": "248",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/248.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/248.txt"
+    },
+    {
+      "id": "249",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/249.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/249.txt"
+    },
+    {
+      "id": "25",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/25.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/25.txt"
+    },
+    {
+      "id": "250",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/250.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/250.txt"
+    },
+    {
+      "id": "251",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/251.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/251.txt"
+    },
+    {
+      "id": "252",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/252.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/252.txt"
+    },
+    {
+      "id": "254",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/254.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/254.txt"
+    },
+    {
+      "id": "256",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/256.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/256.txt"
+    },
+    {
+      "id": "258",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/258.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/258.txt"
+    },
+    {
+      "id": "259",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/259.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/259.txt"
+    },
+    {
+      "id": "26",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/26.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/26.txt"
+    },
+    {
+      "id": "260",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/260.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/260.txt"
+    },
+    {
+      "id": "262",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/262.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/262.txt"
+    },
+    {
+      "id": "264",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/264.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/264.txt"
+    },
+    {
+      "id": "267",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/267.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/267.txt"
+    },
+    {
+      "id": "268",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/268.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/268.txt"
+    },
+    {
+      "id": "27",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/27.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/27.txt"
+    },
+    {
+      "id": "270",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/270.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/270.txt"
+    },
+    {
+      "id": "271",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/271.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/271.txt"
+    },
+    {
+      "id": "274",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/274.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/274.txt"
+    },
+    {
+      "id": "275",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/275.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/275.txt"
+    },
+    {
+      "id": "276",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/276.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/276.txt"
+    },
+    {
+      "id": "277",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/277.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/277.txt"
+    },
+    {
+      "id": "278",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/278.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/278.txt"
+    },
+    {
+      "id": "279",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/279.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/279.txt"
+    },
+    {
+      "id": "28",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/28.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/28.txt"
+    },
+    {
+      "id": "280",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/280.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/280.txt"
+    },
+    {
+      "id": "281",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/281.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/281.txt"
+    },
+    {
+      "id": "282",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/282.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/282.txt"
+    },
+    {
+      "id": "283",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/283.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/283.txt"
+    },
+    {
+      "id": "284",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/284.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/284.txt"
+    },
+    {
+      "id": "285",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/285.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/285.txt"
+    },
+    {
+      "id": "286",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/286.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/286.txt"
+    },
+    {
+      "id": "287",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/287.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/287.txt"
+    },
+    {
+      "id": "288",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/288.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/288.txt"
+    },
+    {
+      "id": "289",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/289.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/289.txt"
+    },
+    {
+      "id": "29",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/29.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/29.txt"
+    },
+    {
+      "id": "290",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/290.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/290.txt"
+    },
+    {
+      "id": "292",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/292.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/292.txt"
+    },
+    {
+      "id": "294",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/294.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/294.txt"
+    },
+    {
+      "id": "295",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/295.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/295.txt"
+    },
+    {
+      "id": "296",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/296.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/296.txt"
+    },
+    {
+      "id": "297",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/297.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/297.txt"
+    },
+    {
+      "id": "298",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/298.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/298.txt"
+    },
+    {
+      "id": "299",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/299.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/299.txt"
+    },
+    {
+      "id": "3",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/3.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/3.txt"
+    },
+    {
+      "id": "30",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/30.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/30.txt"
+    },
+    {
+      "id": "300",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/300.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/300.txt"
+    },
+    {
+      "id": "301",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/301.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/301.txt"
+    },
+    {
+      "id": "302",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/302.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/302.txt"
+    },
+    {
+      "id": "303",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/303.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/303.txt"
+    },
+    {
+      "id": "305",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/305.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/305.txt"
+    },
+    {
+      "id": "306",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/306.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/306.txt"
+    },
+    {
+      "id": "308",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/308.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/308.txt"
+    },
+    {
+      "id": "309",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/309.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/309.txt"
+    },
+    {
+      "id": "310",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/310.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/310.txt"
+    },
+    {
+      "id": "311",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/311.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/311.txt"
+    },
+    {
+      "id": "312",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/312.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/312.txt"
+    },
+    {
+      "id": "313",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/313.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/313.txt"
+    },
+    {
+      "id": "314",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/314.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/314.txt"
+    },
+    {
+      "id": "315",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/315.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/315.txt"
+    },
+    {
+      "id": "316",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/316.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/316.txt"
+    },
+    {
+      "id": "317",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/317.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/317.txt"
+    },
+    {
+      "id": "318",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/318.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/318.txt"
+    },
+    {
+      "id": "319",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/319.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/319.txt"
+    },
+    {
+      "id": "32",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/32.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/32.txt"
+    },
+    {
+      "id": "320",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/320.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/320.txt"
+    },
+    {
+      "id": "321",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/321.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/321.txt"
+    },
+    {
+      "id": "322",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/322.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/322.txt"
+    },
+    {
+      "id": "323",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/323.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/323.txt"
+    },
+    {
+      "id": "324",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/324.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/324.txt"
+    },
+    {
+      "id": "325",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/325.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/325.txt"
+    },
+    {
+      "id": "326",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/326.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/326.txt"
+    },
+    {
+      "id": "327",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/327.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/327.txt"
+    },
+    {
+      "id": "328",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/328.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/328.txt"
+    },
+    {
+      "id": "329",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/329.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/329.txt"
+    },
+    {
+      "id": "33",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/33.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/33.txt"
+    },
+    {
+      "id": "331",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/331.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/331.txt"
+    },
+    {
+      "id": "332",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/332.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/332.txt"
+    },
+    {
+      "id": "333",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/333.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/333.txt"
+    },
+    {
+      "id": "334",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/334.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/334.txt"
+    },
+    {
+      "id": "335",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/335.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/335.txt"
+    },
+    {
+      "id": "336",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/336.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/336.txt"
+    },
+    {
+      "id": "337",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/337.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/337.txt"
+    },
+    {
+      "id": "338",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/338.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/338.txt"
+    },
+    {
+      "id": "339",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/339.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/339.txt"
+    },
+    {
+      "id": "34",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/34.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/34.txt"
+    },
+    {
+      "id": "340",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/340.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/340.txt"
+    },
+    {
+      "id": "341",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/341.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/341.txt"
+    },
+    {
+      "id": "342",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/342.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/342.txt"
+    },
+    {
+      "id": "343",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/343.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/343.txt"
+    },
+    {
+      "id": "344",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/344.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/344.txt"
+    },
+    {
+      "id": "346",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/346.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/346.txt"
+    },
+    {
+      "id": "347",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/347.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/347.txt"
+    },
+    {
+      "id": "348",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/348.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/348.txt"
+    },
+    {
+      "id": "349",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/349.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/349.txt"
+    },
+    {
+      "id": "350",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/350.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/350.txt"
+    },
+    {
+      "id": "351",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/351.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/351.txt"
+    },
+    {
+      "id": "353",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/353.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/353.txt"
+    },
+    {
+      "id": "354",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/354.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/354.txt"
+    },
+    {
+      "id": "355",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/355.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/355.txt"
+    },
+    {
+      "id": "356",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/356.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/356.txt"
+    },
+    {
+      "id": "358",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/358.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/358.txt"
+    },
+    {
+      "id": "359",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/359.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/359.txt"
+    },
+    {
+      "id": "36",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/36.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/36.txt"
+    },
+    {
+      "id": "360",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/360.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/360.txt"
+    },
+    {
+      "id": "361",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/361.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/361.txt"
+    },
+    {
+      "id": "362",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/362.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/362.txt"
+    },
+    {
+      "id": "363",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/363.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/363.txt"
+    },
+    {
+      "id": "365",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/365.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/365.txt"
+    },
+    {
+      "id": "366",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/366.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/366.txt"
+    },
+    {
+      "id": "367",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/367.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/367.txt"
+    },
+    {
+      "id": "368",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/368.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/368.txt"
+    },
+    {
+      "id": "369",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/369.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/369.txt"
+    },
+    {
+      "id": "371",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/371.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/371.txt"
+    },
+    {
+      "id": "372",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/372.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/372.txt"
+    },
+    {
+      "id": "373",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/373.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/373.txt"
+    },
+    {
+      "id": "374",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/374.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/374.txt"
+    },
+    {
+      "id": "375",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/375.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/375.txt"
+    },
+    {
+      "id": "378",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/378.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/378.txt"
+    },
+    {
+      "id": "379",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/379.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/379.txt"
+    },
+    {
+      "id": "38",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/38.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/38.txt"
+    },
+    {
+      "id": "380",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/380.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/380.txt"
+    },
+    {
+      "id": "381",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/381.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/381.txt"
+    },
+    {
+      "id": "382",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/382.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/382.txt"
+    },
+    {
+      "id": "384",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/384.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/384.txt"
+    },
+    {
+      "id": "385",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/385.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/385.txt"
+    },
+    {
+      "id": "386",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/386.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/386.txt"
+    },
+    {
+      "id": "387",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/387.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/387.txt"
+    },
+    {
+      "id": "389",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/389.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/389.txt"
+    },
+    {
+      "id": "39",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/39.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/39.txt"
+    },
+    {
+      "id": "390",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/390.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/390.txt"
+    },
+    {
+      "id": "392",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/392.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/392.txt"
+    },
+    {
+      "id": "394",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/394.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/394.txt"
+    },
+    {
+      "id": "395",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/395.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/395.txt"
+    },
+    {
+      "id": "396",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/396.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/396.txt"
+    },
+    {
+      "id": "399",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/399.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/399.txt"
+    },
+    {
+      "id": "4",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/4.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/4.txt"
+    },
+    {
+      "id": "40",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/40.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/40.txt"
+    },
+    {
+      "id": "400",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/400.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/400.txt"
+    },
+    {
+      "id": "401",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/401.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/401.txt"
+    },
+    {
+      "id": "403",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/403.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/403.txt"
+    },
+    {
+      "id": "404",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/404.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/404.txt"
+    },
+    {
+      "id": "405",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/405.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/405.txt"
+    },
+    {
+      "id": "406",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/406.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/406.txt"
+    },
+    {
+      "id": "408",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/408.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/408.txt"
+    },
+    {
+      "id": "409",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/409.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/409.txt"
+    },
+    {
+      "id": "410",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/410.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/410.txt"
+    },
+    {
+      "id": "411",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/411.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/411.txt"
+    },
+    {
+      "id": "413",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/413.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/413.txt"
+    },
+    {
+      "id": "414",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/414.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/414.txt"
+    },
+    {
+      "id": "415",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/415.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/415.txt"
+    },
+    {
+      "id": "416",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/416.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/416.txt"
+    },
+    {
+      "id": "417",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/417.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/417.txt"
+    },
+    {
+      "id": "418",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/418.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/418.txt"
+    },
+    {
+      "id": "419",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/419.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/419.txt"
+    },
+    {
+      "id": "420",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/420.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/420.txt"
+    },
+    {
+      "id": "423",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/423.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/423.txt"
+    },
+    {
+      "id": "424",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/424.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/424.txt"
+    },
+    {
+      "id": "425",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/425.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/425.txt"
+    },
+    {
+      "id": "426",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/426.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/426.txt"
+    },
+    {
+      "id": "427",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/427.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/427.txt"
+    },
+    {
+      "id": "429",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/429.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/429.txt"
+    },
+    {
+      "id": "43",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/43.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/43.txt"
+    },
+    {
+      "id": "430",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/430.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/430.txt"
+    },
+    {
+      "id": "431",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/431.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/431.txt"
+    },
+    {
+      "id": "432",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/432.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/432.txt"
+    },
+    {
+      "id": "433",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/433.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/433.txt"
+    },
+    {
+      "id": "435",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/435.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/435.txt"
+    },
+    {
+      "id": "436",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/436.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/436.txt"
+    },
+    {
+      "id": "437",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/437.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/437.txt"
+    },
+    {
+      "id": "439",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/439.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/439.txt"
+    },
+    {
+      "id": "440",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/440.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/440.txt"
+    },
+    {
+      "id": "441",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/441.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/441.txt"
+    },
+    {
+      "id": "442",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/442.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/442.txt"
+    },
+    {
+      "id": "443",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/443.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/443.txt"
+    },
+    {
+      "id": "444",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/444.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/444.txt"
+    },
+    {
+      "id": "445",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/445.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/445.txt"
+    },
+    {
+      "id": "446",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/446.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/446.txt"
+    },
+    {
+      "id": "447",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/447.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/447.txt"
+    },
+    {
+      "id": "449",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/449.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/449.txt"
+    },
+    {
+      "id": "450",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/450.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/450.txt"
+    },
+    {
+      "id": "451",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/451.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/451.txt"
+    },
+    {
+      "id": "452",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/452.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/452.txt"
+    },
+    {
+      "id": "453",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/453.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/453.txt"
+    },
+    {
+      "id": "455",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/455.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/455.txt"
+    },
+    {
+      "id": "456",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/456.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/456.txt"
+    },
+    {
+      "id": "457",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/457.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/457.txt"
+    },
+    {
+      "id": "458",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/458.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/458.txt"
+    },
+    {
+      "id": "459",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/459.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/459.txt"
+    },
+    {
+      "id": "46",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/46.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/46.txt"
+    },
+    {
+      "id": "460",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/460.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/460.txt"
+    },
+    {
+      "id": "461",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/461.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/461.txt"
+    },
+    {
+      "id": "462",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/462.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/462.txt"
+    },
+    {
+      "id": "463",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/463.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/463.txt"
+    },
+    {
+      "id": "464",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/464.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/464.txt"
+    },
+    {
+      "id": "465",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/465.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/465.txt"
+    },
+    {
+      "id": "466",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/466.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/466.txt"
+    },
+    {
+      "id": "467",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/467.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/467.txt"
+    },
+    {
+      "id": "468",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/468.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/468.txt"
+    },
+    {
+      "id": "469",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/469.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/469.txt"
+    },
+    {
+      "id": "472",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/472.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/472.txt"
+    },
+    {
+      "id": "473",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/473.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/473.txt"
+    },
+    {
+      "id": "474",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/474.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/474.txt"
+    },
+    {
+      "id": "475",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/475.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/475.txt"
+    },
+    {
+      "id": "476",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/476.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/476.txt"
+    },
+    {
+      "id": "477",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/477.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/477.txt"
+    },
+    {
+      "id": "478",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/478.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/478.txt"
+    },
+    {
+      "id": "479",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/479.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/479.txt"
+    },
+    {
+      "id": "48",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/48.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/48.txt"
+    },
+    {
+      "id": "481",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/481.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/481.txt"
+    },
+    {
+      "id": "482",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/482.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/482.txt"
+    },
+    {
+      "id": "483",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/483.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/483.txt"
+    },
+    {
+      "id": "484",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/484.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/484.txt"
+    },
+    {
+      "id": "485",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/485.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/485.txt"
+    },
+    {
+      "id": "486",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/486.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/486.txt"
+    },
+    {
+      "id": "487",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/487.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/487.txt"
+    },
+    {
+      "id": "488",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/488.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/488.txt"
+    },
+    {
+      "id": "49",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/49.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/49.txt"
+    },
+    {
+      "id": "490",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/490.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/490.txt"
+    },
+    {
+      "id": "491",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/491.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/491.txt"
+    },
+    {
+      "id": "492",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/492.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/492.txt"
+    },
+    {
+      "id": "493",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/493.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/493.txt"
+    },
+    {
+      "id": "494",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/494.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/494.txt"
+    },
+    {
+      "id": "495",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/495.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/495.txt"
+    },
+    {
+      "id": "496",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/496.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/496.txt"
+    },
+    {
+      "id": "497",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/497.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/497.txt"
+    },
+    {
+      "id": "498",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/498.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/498.txt"
+    },
+    {
+      "id": "50",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/50.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/50.txt"
+    },
+    {
+      "id": "52",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/52.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/52.txt"
+    },
+    {
+      "id": "53",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/53.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/53.txt"
+    },
+    {
+      "id": "54",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/54.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/54.txt"
+    },
+    {
+      "id": "55",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/55.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/55.txt"
+    },
+    {
+      "id": "56",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/56.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/56.txt"
+    },
+    {
+      "id": "57",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/57.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/57.txt"
+    },
+    {
+      "id": "59",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/59.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/59.txt"
+    },
+    {
+      "id": "60",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/60.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/60.txt"
+    },
+    {
+      "id": "61",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/61.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/61.txt"
+    },
+    {
+      "id": "62",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/62.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/62.txt"
+    },
+    {
+      "id": "63",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/63.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/63.txt"
+    },
+    {
+      "id": "64",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/64.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/64.txt"
+    },
+    {
+      "id": "65",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/65.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/65.txt"
+    },
+    {
+      "id": "66",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/66.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/66.txt"
+    },
+    {
+      "id": "68",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/68.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/68.txt"
+    },
+    {
+      "id": "69",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/69.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/69.txt"
+    },
+    {
+      "id": "7",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/7.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/7.txt"
+    },
+    {
+      "id": "70",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/70.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/70.txt"
+    },
+    {
+      "id": "71",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/71.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/71.txt"
+    },
+    {
+      "id": "73",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/73.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/73.txt"
+    },
+    {
+      "id": "74",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/74.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/74.txt"
+    },
+    {
+      "id": "75",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/75.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/75.txt"
+    },
+    {
+      "id": "76",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/76.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/76.txt"
+    },
+    {
+      "id": "77",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/77.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/77.txt"
+    },
+    {
+      "id": "78",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/78.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/78.txt"
+    },
+    {
+      "id": "79",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/79.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/79.txt"
+    },
+    {
+      "id": "80",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/80.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/80.txt"
+    },
+    {
+      "id": "82",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/82.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/82.txt"
+    },
+    {
+      "id": "83",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/83.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/83.txt"
+    },
+    {
+      "id": "85",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/85.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/85.txt"
+    },
+    {
+      "id": "86",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/86.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/86.txt"
+    },
+    {
+      "id": "88",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/88.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/88.txt"
+    },
+    {
+      "id": "89",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/89.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/89.txt"
+    },
+    {
+      "id": "9",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/9.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/9.txt"
+    },
+    {
+      "id": "91",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/91.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/91.txt"
+    },
+    {
+      "id": "92",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/92.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/92.txt"
+    },
+    {
+      "id": "93",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/93.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/93.txt"
+    },
+    {
+      "id": "94",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/94.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/94.txt"
+    },
+    {
+      "id": "95",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/95.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/95.txt"
+    },
+    {
+      "id": "97",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/97.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/97.txt"
+    },
+    {
+      "id": "98",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/98.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/98.txt"
+    },
+    {
+      "id": "99",
+      "split": "train",
+      "image": "data/DigitizePID_Dataset/images/train/99.jpg",
+      "label": "data/DigitizePID_Dataset/labels/train/99.txt"
+    },
+    {
+      "id": "100",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/100.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/100.txt"
+    },
+    {
+      "id": "109",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/109.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/109.txt"
+    },
+    {
+      "id": "11",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/11.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/11.txt"
+    },
+    {
+      "id": "111",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/111.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/111.txt"
+    },
+    {
+      "id": "112",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/112.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/112.txt"
+    },
+    {
+      "id": "118",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/118.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/118.txt"
+    },
+    {
+      "id": "119",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/119.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/119.txt"
+    },
+    {
+      "id": "13",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/13.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/13.txt"
+    },
+    {
+      "id": "130",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/130.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/130.txt"
+    },
+    {
+      "id": "134",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/134.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/134.txt"
+    },
+    {
+      "id": "138",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/138.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/138.txt"
+    },
+    {
+      "id": "140",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/140.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/140.txt"
+    },
+    {
+      "id": "142",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/142.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/142.txt"
+    },
+    {
+      "id": "144",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/144.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/144.txt"
+    },
+    {
+      "id": "145",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/145.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/145.txt"
+    },
+    {
+      "id": "15",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/15.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/15.txt"
+    },
+    {
+      "id": "155",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/155.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/155.txt"
+    },
+    {
+      "id": "162",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/162.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/162.txt"
+    },
+    {
+      "id": "17",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/17.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/17.txt"
+    },
+    {
+      "id": "171",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/171.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/171.txt"
+    },
+    {
+      "id": "173",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/173.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/173.txt"
+    },
+    {
+      "id": "187",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/187.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/187.txt"
+    },
+    {
+      "id": "19",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/19.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/19.txt"
+    },
+    {
+      "id": "195",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/195.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/195.txt"
+    },
+    {
+      "id": "198",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/198.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/198.txt"
+    },
+    {
+      "id": "199",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/199.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/199.txt"
+    },
+    {
+      "id": "2",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/2.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/2.txt"
+    },
+    {
+      "id": "200",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/200.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/200.txt"
+    },
+    {
+      "id": "202",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/202.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/202.txt"
+    },
+    {
+      "id": "205",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/205.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/205.txt"
+    },
+    {
+      "id": "210",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/210.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/210.txt"
+    },
+    {
+      "id": "22",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/22.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/22.txt"
+    },
+    {
+      "id": "220",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/220.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/220.txt"
+    },
+    {
+      "id": "224",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/224.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/224.txt"
+    },
+    {
+      "id": "226",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/226.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/226.txt"
+    },
+    {
+      "id": "231",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/231.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/231.txt"
+    },
+    {
+      "id": "233",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/233.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/233.txt"
+    },
+    {
+      "id": "253",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/253.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/253.txt"
+    },
+    {
+      "id": "255",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/255.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/255.txt"
+    },
+    {
+      "id": "257",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/257.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/257.txt"
+    },
+    {
+      "id": "261",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/261.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/261.txt"
+    },
+    {
+      "id": "263",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/263.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/263.txt"
+    },
+    {
+      "id": "265",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/265.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/265.txt"
+    },
+    {
+      "id": "266",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/266.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/266.txt"
+    },
+    {
+      "id": "269",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/269.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/269.txt"
+    },
+    {
+      "id": "272",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/272.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/272.txt"
+    },
+    {
+      "id": "273",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/273.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/273.txt"
+    },
+    {
+      "id": "291",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/291.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/291.txt"
+    },
+    {
+      "id": "293",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/293.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/293.txt"
+    },
+    {
+      "id": "304",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/304.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/304.txt"
+    },
+    {
+      "id": "307",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/307.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/307.txt"
+    },
+    {
+      "id": "31",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/31.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/31.txt"
+    },
+    {
+      "id": "330",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/330.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/330.txt"
+    },
+    {
+      "id": "345",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/345.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/345.txt"
+    },
+    {
+      "id": "35",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/35.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/35.txt"
+    },
+    {
+      "id": "352",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/352.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/352.txt"
+    },
+    {
+      "id": "357",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/357.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/357.txt"
+    },
+    {
+      "id": "364",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/364.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/364.txt"
+    },
+    {
+      "id": "37",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/37.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/37.txt"
+    },
+    {
+      "id": "370",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/370.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/370.txt"
+    },
+    {
+      "id": "376",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/376.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/376.txt"
+    },
+    {
+      "id": "377",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/377.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/377.txt"
+    },
+    {
+      "id": "383",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/383.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/383.txt"
+    },
+    {
+      "id": "388",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/388.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/388.txt"
+    },
+    {
+      "id": "391",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/391.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/391.txt"
+    },
+    {
+      "id": "393",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/393.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/393.txt"
+    },
+    {
+      "id": "397",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/397.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/397.txt"
+    },
+    {
+      "id": "398",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/398.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/398.txt"
+    },
+    {
+      "id": "402",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/402.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/402.txt"
+    },
+    {
+      "id": "407",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/407.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/407.txt"
+    },
+    {
+      "id": "41",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/41.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/41.txt"
+    },
+    {
+      "id": "412",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/412.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/412.txt"
+    },
+    {
+      "id": "42",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/42.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/42.txt"
+    },
+    {
+      "id": "421",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/421.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/421.txt"
+    },
+    {
+      "id": "422",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/422.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/422.txt"
+    },
+    {
+      "id": "428",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/428.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/428.txt"
+    },
+    {
+      "id": "434",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/434.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/434.txt"
+    },
+    {
+      "id": "438",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/438.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/438.txt"
+    },
+    {
+      "id": "44",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/44.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/44.txt"
+    },
+    {
+      "id": "448",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/448.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/448.txt"
+    },
+    {
+      "id": "45",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/45.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/45.txt"
+    },
+    {
+      "id": "454",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/454.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/454.txt"
+    },
+    {
+      "id": "47",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/47.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/47.txt"
+    },
+    {
+      "id": "470",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/470.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/470.txt"
+    },
+    {
+      "id": "471",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/471.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/471.txt"
+    },
+    {
+      "id": "480",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/480.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/480.txt"
+    },
+    {
+      "id": "489",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/489.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/489.txt"
+    },
+    {
+      "id": "499",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/499.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/499.txt"
+    },
+    {
+      "id": "5",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/5.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/5.txt"
+    },
+    {
+      "id": "51",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/51.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/51.txt"
+    },
+    {
+      "id": "58",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/58.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/58.txt"
+    },
+    {
+      "id": "6",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/6.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/6.txt"
+    },
+    {
+      "id": "67",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/67.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/67.txt"
+    },
+    {
+      "id": "72",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/72.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/72.txt"
+    },
+    {
+      "id": "8",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/8.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/8.txt"
+    },
+    {
+      "id": "81",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/81.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/81.txt"
+    },
+    {
+      "id": "84",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/84.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/84.txt"
+    },
+    {
+      "id": "87",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/87.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/87.txt"
+    },
+    {
+      "id": "90",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/90.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/90.txt"
+    },
+    {
+      "id": "96",
+      "split": "val",
+      "image": "data/DigitizePID_Dataset/images/val/96.jpg",
+      "label": "data/DigitizePID_Dataset/labels/val/96.txt"
+    },
+    {
+      "id": "gen_0000",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0000.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0000.txt"
+    },
+    {
+      "id": "gen_0001",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0001.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0001.txt"
+    },
+    {
+      "id": "gen_0002",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0002.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0002.txt"
+    },
+    {
+      "id": "gen_0003",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0003.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0003.txt"
+    },
+    {
+      "id": "gen_0004",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0004.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0004.txt"
+    },
+    {
+      "id": "gen_0005",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0005.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0005.txt"
+    },
+    {
+      "id": "gen_0006",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0006.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0006.txt"
+    },
+    {
+      "id": "gen_0007",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0007.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0007.txt"
+    },
+    {
+      "id": "gen_0008",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0008.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0008.txt"
+    },
+    {
+      "id": "gen_0009",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0009.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0009.txt"
+    },
+    {
+      "id": "gen_0010",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0010.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0010.txt"
+    },
+    {
+      "id": "gen_0011",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0011.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0011.txt"
+    },
+    {
+      "id": "gen_0012",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0012.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0012.txt"
+    },
+    {
+      "id": "gen_0013",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0013.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0013.txt"
+    },
+    {
+      "id": "gen_0014",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0014.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0014.txt"
+    },
+    {
+      "id": "gen_0015",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0015.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0015.txt"
+    },
+    {
+      "id": "gen_0016",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0016.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0016.txt"
+    },
+    {
+      "id": "gen_0017",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0017.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0017.txt"
+    },
+    {
+      "id": "gen_0018",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0018.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0018.txt"
+    },
+    {
+      "id": "gen_0019",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0019.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0019.txt"
+    },
+    {
+      "id": "gen_0020",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0020.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0020.txt"
+    },
+    {
+      "id": "gen_0021",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0021.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0021.txt"
+    },
+    {
+      "id": "gen_0022",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0022.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0022.txt"
+    },
+    {
+      "id": "gen_0023",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0023.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0023.txt"
+    },
+    {
+      "id": "gen_0024",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0024.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0024.txt"
+    },
+    {
+      "id": "gen_0025",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0025.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0025.txt"
+    },
+    {
+      "id": "gen_0026",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0026.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0026.txt"
+    },
+    {
+      "id": "gen_0027",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0027.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0027.txt"
+    },
+    {
+      "id": "gen_0028",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0028.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0028.txt"
+    },
+    {
+      "id": "gen_0029",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0029.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0029.txt"
+    },
+    {
+      "id": "gen_0030",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0030.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0030.txt"
+    },
+    {
+      "id": "gen_0031",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0031.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0031.txt"
+    },
+    {
+      "id": "gen_0032",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0032.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0032.txt"
+    },
+    {
+      "id": "gen_0033",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0033.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0033.txt"
+    },
+    {
+      "id": "gen_0034",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0034.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0034.txt"
+    },
+    {
+      "id": "gen_0035",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0035.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0035.txt"
+    },
+    {
+      "id": "gen_0036",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0036.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0036.txt"
+    },
+    {
+      "id": "gen_0037",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0037.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0037.txt"
+    },
+    {
+      "id": "gen_0038",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0038.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0038.txt"
+    },
+    {
+      "id": "gen_0039",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0039.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0039.txt"
+    },
+    {
+      "id": "gen_0040",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0040.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0040.txt"
+    },
+    {
+      "id": "gen_0041",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0041.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0041.txt"
+    },
+    {
+      "id": "gen_0042",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0042.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0042.txt"
+    },
+    {
+      "id": "gen_0043",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0043.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0043.txt"
+    },
+    {
+      "id": "gen_0044",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0044.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0044.txt"
+    },
+    {
+      "id": "gen_0045",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0045.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0045.txt"
+    },
+    {
+      "id": "gen_0046",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0046.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0046.txt"
+    },
+    {
+      "id": "gen_0047",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0047.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0047.txt"
+    },
+    {
+      "id": "gen_0048",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0048.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0048.txt"
+    },
+    {
+      "id": "gen_0049",
+      "split": "generated",
+      "image": "data/DigitizePID_Dataset/images/generated/gen_0049.jpg",
+      "label": "data/DigitizePID_Dataset/labels/generated/gen_0049.txt"
+    }
+  ]
+}
