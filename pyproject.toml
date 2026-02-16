@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "automation-labs-digitize-pid-viewer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "huggingface-hub>=1.4.1",
+    "networkx>=3.0",
+]
+
+[project.scripts]
+digitize-pid-viewer = "main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
