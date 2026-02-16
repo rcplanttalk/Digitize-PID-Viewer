@@ -117,63 +117,24 @@ def init_canvas() -> tuple[Image.Image, ImageDraw.ImageDraw]:
 
 
 # ---------------------------------------------------------------------------
-# Stage 4 — Title block
+# Stage 4 — Title block (delegated to title_block module)
 # ---------------------------------------------------------------------------
 
 def draw_title_block(
     draw: ImageDraw.ImageDraw,
     metadata: dict | None = None,
 ) -> None:
-    """Draw the title block at the bottom of the canvas (§15).
+    """Draw the ISO 7200-compliant title block (§15).
+
+    Delegates to :func:`pid_generator.title_block.draw_title_block`.
 
     Args:
         draw:     ImageDraw context on the canvas.
-        metadata: Optional dict with keys ``project``, ``title``, ``sheet``,
-                  ``rev``, ``org``, ``disclaimer``.
+        metadata: Dict from ``generate_title_block_metadata()``.
+                  A minimal placeholder block is drawn when ``None``.
     """
-    if metadata is None:
-        metadata = {}
-
-    block_h = 100
-    x0 = MARGIN
-    y0 = CANVAS_H - MARGIN - block_h
-    x1 = CANVAS_W - MARGIN
-    y1 = CANVAS_H - MARGIN
-
-    # Title block rectangle
-    draw.rectangle([x0, y0, x1, y1], outline=FG_COLOR, width=1)
-
-    # Vertical divider
-    div_x = x1 - 300
-    draw.line([(div_x, y0), (div_x, y1)], fill=FG_COLOR, width=1)
-
-    font      = _font(small=False)
-    font_sm   = _font(small=True)
-
-    # Left side — org + title
-    org   = metadata.get("org",   "AUTOMATION LABS")
-    title = metadata.get("title", "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM")
-    draw.text((x0 + 8, y0 + 8),  org,   fill=FG_COLOR, font=font)
-    draw.text((x0 + 8, y0 + 36), title, fill=FG_COLOR, font=font_sm)
-
-    # Right side — sheet + rev
-    sheet = metadata.get("sheet", "P&ID-01")
-    rev   = metadata.get("rev",   "A")
-    draw.text((div_x + 8, y0 + 8),  f"Sheet: {sheet}", fill=FG_COLOR, font=font)
-    draw.text((div_x + 8, y0 + 36), f"Rev:   {rev}",   fill=FG_COLOR, font=font)
-
-    # Disclaimer below title block
-    disclaimer = metadata.get(
-        "disclaimer",
-        "THIS DOCUMENT IS SYNTHETICALLY GENERATED FOR RESEARCH PURPOSES ONLY. "
-        "NOT A REAL ENGINEERING DRAWING.",
-    )
-    draw.text(
-        (x0 + 8, y1 + 4),
-        disclaimer,
-        fill=(120, 120, 120),
-        font=font_sm,
-    )
+    from .title_block import draw_title_block as _draw_title_block
+    _draw_title_block(draw, metadata)
 
 
 # ---------------------------------------------------------------------------
@@ -479,19 +440,31 @@ def render_diagram(
     out_path: str,
     metadata: dict | None = None,
     apply_noise: bool = False,
+    idx: int = 1,
+    seed: int | None = None,
 ) -> Image.Image:
     """Run Stages 4–8 and save the diagram as a PNG (§18).
+
+    If *metadata* is ``None``, a fully-populated random metadata dict is
+    generated via ``generate_title_block_metadata(idx, seed)`` so that
+    every diagram has a unique, realistic title block.
 
     Args:
         G:            Validated directed graph.
         pos:          Node positions from ``assign_grid_positions()``.
         out_path:     Output PNG path.
-        metadata:     Title block fields (see ``draw_title_block``).
+        metadata:     Title block metadata dict.  Auto-generated if None.
         apply_noise:  If True, apply generation-time augmentations (Stage 9).
+        idx:          Diagram index passed to metadata generator.
+        seed:         RNG seed passed to metadata generator.
 
     Returns:
         The rendered ``PIL.Image``.
     """
+    if metadata is None:
+        from .title_block import generate_title_block_metadata
+        metadata = generate_title_block_metadata(idx=idx, seed=seed)
+
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
 
     img, draw = init_canvas()

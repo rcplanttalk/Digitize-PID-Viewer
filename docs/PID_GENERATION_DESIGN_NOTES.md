@@ -531,56 +531,119 @@ G.add_node("OPC_IN_01",  type="off_page", direction="in",
 
 Every real P&ID sheet has a standardised border. Including it in generated images makes the training data much closer to real scanned drawings.
 
+### Governing Standard — ISO 7200:2004
+
+**ISO 7200:2004** (*Technical product documentation — Data fields in title blocks and document headers*) is the international standard that defines exactly which fields must and may appear in an engineering drawing title block.  It supersedes ISO 7200:1984 and is the standard against which the generator is aligned.
+
+#### Mandatory fields (ISO 7200:2004 §5)
+
+| ISO 7200 field name | Generator key | Source / logic |
+|---|---|---|
+| Legal owner | `legal_owner` | Random pick from `ORGANIZATION_NAMES` |
+| Document identification number | `doc_number` | `{project_number}-PID-{idx:04d}` |
+| Document title | `doc_title` + `doc_title_2` | Random pair from `DIAGRAM_TITLE_PAIRS` |
+| Creator (draughtsman) | `creator` | Random initials from `PERSON_INITIALS` |
+| Date of creation | `creation_date` | Random date 30–365 days before generation date |
+| Approval person | `approval_person` | Random initials from `PERSON_INITIALS` |
+| Date of approval | `approval_date` | `creation_date` + 1–14 days |
+| Document type | `doc_type` | Random pick from `CONTRACT_NAMES` |
+| Sheet / segment number | `sheet_number` | `P&ID-{idx:02d}` |
+
+#### Optional fields rendered by the generator (ISO 7200:2004 §6 / industry practice)
+
+| Field name | Generator key | Source / logic |
+|---|---|---|
+| Customer / client | `client` | Random pick from `CLIENT_NAMES` |
+| Plant / facility | `plant` | Random pick from `PLANT_NAMES` |
+| Project number | `project_number` | `PRJ-{randint(1000,9999)}` |
+| Revision index | `revisions[i].rev` | Letters `A`–`E` |
+| Revision description | `revisions[i].description` | Random pick from `REVISION_DESCRIPTIONS` |
+| Revision date | `revisions[i].date` | Incremented after creation date |
+| Checked by | `revisions[i].chk` | Random initials from `PERSON_INITIALS` |
+| Scale | `scale` | Always `"NTS"` (Not to Scale) |
+
+> ISO 7200 also defines optional fields for *language code*, *superseded document number*, and *electronic file reference* which are not rendered by the generator as they add no training-data value.
+
+### Layout
+
+The title block occupies the bottom **180 px** of the canvas and is divided into three vertical columns:
+
+```
+┌──────────────────────────────────┬──────────────────┬──────────────────┐
+│ LEGAL OWNER                      │ REV | DESC | DATE │ DOC NUMBER       │
+│ CLIENT: …                        │ A   | …    | …    │ DOC TYPE         │
+│ PLANT:  …                        │ B   | …    | …    │ PROJ NUMBER      │
+│ TITLE LINE 1                     │ C   | …    | …    ├──────────────────┤
+│ TITLE LINE 2                     │                   │ SHEET   SCALE    │
+│ DRN: XX  DATE   APPR: YY  DATE   │                   │ P&ID-01  NTS     │
+└──────────────────────────────────┴──────────────────┴──────────────────┘
+  DISCLAIMER TEXT (two lines, grey, below the block boundary)
+```
+
+Column widths (px, 4096-wide canvas):
+- Left panel: `total_width − 500 − 260`
+- Revision table: `500`
+- Stamp column: `260`
+
 ### Constant Pools Used
 
 ```python
 ORGANIZATION_NAMES = [
     "AUTOMATION LABS", "SYNTH ENGINEERING", "PROCESS SYSTEMS INC",
     "DIGITAL PROCESS CO", "CONTROL DYNAMICS LTD",
+    "APEX PROCESS GROUP", "MERIDIAN ENGINEERING", "CRESTLINE INDUSTRIAL",
+    "VECTOR PROCESS TECH", "PINNACLE SYSTEMS ENG",
+]
+
+CLIENT_NAMES = [
+    "GLOBAL PETROCHEMICALS LTD", "NORTHFIELD REFINING CO",
+    "STRATA ENERGY CORP", "BLUECREST UTILITIES", "IRONGATE PROCESSING INC",
+    "VERITAS CHEMICAL GROUP", "SOLARIS FUELS PLC", "CONTINENTAL OIL & GAS",
+]
+
+PLANT_NAMES = [
+    "SYNTH PLANT A", "UNIT 100 — CRUDE DISTILLATION",
+    "UNIT 200 — HYDROTREATER", "UNIT 300 — REFORMER",
+    "OFFSITE STORAGE AREA", "UTILITIES ISLAND",
+    "TANK FARM COMPLEX", "COOLING WATER SYSTEM",
 ]
 
 CONTRACT_NAMES = [
     "PROJ. DEF P&ID", "SYNTH PROC. P&ID", "PROCESS FLOW DWG",
     "PLANT LAYOUT P&ID", "UTILITY SYS. P&ID",
+    "OFFSITE FACILITIES P&ID", "TANK FARM PIPING P&ID",
+    "COMPRESSOR STATION P&ID", "HEAT RECOVERY UNIT P&ID",
+    "WATER TREATMENT P&ID",
 ]
 
-DIAGRAM_TITLES = [
-    "SYNTHETIC PROCESS FLOW DIAGRAM",
-    "SYNTHETIC PROCESS ENGINEERING FLOW SCHEME",
-    "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM",
-    "SYNTHETIC UTILITY FLOW DIAGRAM",
-]
-
-# Paired titles for two-line title blocks
 DIAGRAM_TITLE_PAIRS = [
-    ("SYNTHETIC PROCESS FLOW DIAGRAM",        "SYNTHETIC PROCESS ENGINEERING FLOW SCHEME"),
-    ("SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM", "SYNTHETIC UTILITY FLOW DIAGRAM"),
-    ("SYNTHETIC PROCESS FLOW DIAGRAM",        "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM"),
+    ("SYNTHETIC PROCESS FLOW DIAGRAM",
+     "SYNTHETIC PROCESS ENGINEERING FLOW SCHEME"),
+    ("SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM",
+     "SYNTHETIC UTILITY FLOW DIAGRAM"),
+    ("SYNTHETIC PROCESS FLOW DIAGRAM",
+     "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM"),
+    ("SYNTHETIC MECHANICAL FLOW DIAGRAM",
+     "SYNTHETIC HEAT & MATERIAL BALANCE DIAGRAM"),
 ]
 
 REVISION_DESCRIPTIONS = [
     "ISSUED FOR CONSTRUCTION", "ISSUED FOR REVIEW", "ISSUED FOR APPROVAL",
     "ISSUE CONSTR. REV.", "REVISED PER COMMENTS", "PRELIMINARY ISSUE",
-    "AS BUILT REVISION", "UPDATED PER CLIENT REV.", "FINAL ISSUE", "ISSUED FOR BID",
+    "AS BUILT REVISION", "UPDATED PER CLIENT REV.", "FINAL ISSUE",
+    "ISSUED FOR BID", "ISSUED FOR DESIGN", "ISSUED FOR INFORMATION",
+    "ISSUED FOR PROCUREMENT", "REVISED PER HAZOP", "UPDATED PER SITE SURVEY",
+]
+
+PERSON_INITIALS = [
+    "J.R.", "S.K.", "A.M.", "T.W.", "R.P.",
+    "D.L.", "C.H.", "M.F.", "B.N.", "E.C.",
 ]
 ```
 
-### Minimum Title Block Fields
-
-| Field | Source |
-|---|---|
-| Organisation | Random pick from `ORGANIZATION_NAMES` |
-| Contract / project | Random pick from `CONTRACT_NAMES` |
-| Diagram title (line 1) | Random pair from `DIAGRAM_TITLE_PAIRS[i][0]` |
-| Diagram title (line 2) | Random pair from `DIAGRAM_TITLE_PAIRS[i][1]` |
-| Sheet number | `P&ID-{seq:02d}` |
-| Revision letter | `A`–`E` (incremented per revision row) |
-| Revision description | Random pick from `REVISION_DESCRIPTIONS` |
-| Scale | `NTS` (Not to Scale — always) |
-
 ### Disclaimer
 
-Every generated drawing must include the disclaimer text in a visually prominent location (typically below the title block or along the bottom margin):
+Every generated drawing must include the disclaimer text below the title block:
 
 ```python
 DISCLAIMER_TEXT = (
@@ -592,35 +655,32 @@ DISCLAIMER_TEXT = (
 )
 ```
 
-### Revision Table (right or bottom margin)
+### Generator API
+
+```python
+from pid_generator.title_block import generate_title_block_metadata, draw_title_block
+
+metadata = generate_title_block_metadata(idx=1, seed=42)
+# Returns a fully-populated dict with all mandatory + optional ISO 7200 fields.
+# render_diagram() calls this automatically when metadata=None.
+```
+
+### Revision Table
+
+Up to 3 revision rows are generated per diagram.  Row count is sampled from `randint(1, 3)`.
 
 | Rev | Description | Date | By | Chk |
 |---|---|---|---|---|
-| A | *(from `REVISION_DESCRIPTIONS`)* | *(generated date)* | — | — |
-| B | *(from `REVISION_DESCRIPTIONS`)* | *(generated date)* | — | — |
+| A | *(from `REVISION_DESCRIPTIONS`)* | *(creation_date + offset)* | *(initials)* | *(initials)* |
+| B | *(from `REVISION_DESCRIPTIONS`)* | *(prev + 7–60 days)* | *(initials)* | *(initials)* |
 
-### PIL Implementation Sketch
+### Standards Reference
 
-```python
-def draw_title_block(draw, canvas_w, canvas_h, metadata: dict):
-    margin = 40
-    block_h = 80
-    # Outer border
-    draw.rectangle([margin, margin, canvas_w - margin, canvas_h - margin],
-                   outline="black", width=2)
-    # Title block at bottom
-    draw.rectangle([margin, canvas_h - margin - block_h,
-                    canvas_w - margin, canvas_h - margin],
-                   outline="black", width=1)
-    draw.text((margin + 8, canvas_h - margin - block_h + 8),
-              metadata.get("project", ""), fill="black")
-    draw.text((margin + 8, canvas_h - margin - block_h + 28),
-              metadata.get("title", ""),  fill="black")
-    draw.text((canvas_w - 200, canvas_h - margin - block_h + 8),
-              f"Sheet: {metadata.get('sheet', '')}", fill="black")
-    draw.text((canvas_w - 200, canvas_h - margin - block_h + 28),
-              f"Rev: {metadata.get('rev', 'A')}",   fill="black")
-```
+| Standard | Scope |
+|---|---|
+| **ISO 7200:2004** | Mandatory and optional title block data fields for technical product documentation |
+| **ISO 10628-1:2014** | Flow diagrams for process plants — rules on sheet content and drawing structure |
+| **ISO 5457:1999** | Technical product documentation — sizes and layout of drawing sheets |
 
 ---
 
