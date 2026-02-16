@@ -1474,3 +1474,192 @@ After partitioning, every `direction="out"` node on sheet X must have exactly on
 | **IEC 62424** | Process control diagrams (CAEX) | Control loop pairing, signal consistency (Section 3.3) |
 
 > These standards are referenced for design intent only. The generator produces synthetic training data, not certified engineering drawings.
+
+---
+
+## 31. Random Topology Mode (Level 1 Fallback)
+
+To align with the Paliwal et al. (2021) Digitize-PID approach, the generator supports a **purely random graph topology** as a Level 1 mode before any domain constraints are applied. This is useful for generating high-volume, visually varied data without engineering correctness requirements.
+
+### When to Use
+
+| Mode | Use case |
+|---|---|
+| Random topology | Maximum visual diversity; symbol detector pre-training |
+| Domain-constrained (Sections 3–5) | Engineering-aware training; context-learning phase |
+
+### Algorithm
+
+```
+1. Sample node count N from uniform(MIN_NODES, MAX_NODES).
+2. Create N nodes, each assigned a class_id sampled uniformly from
+   the 42-class pool (Section 11).
+3. Build edges using one of:
+   a. Erdős–Rényi  — G(N, p) with p = 0.3 (sparse random)
+   b. Barabási–Albert — preferential attachment; creates hubs like
+      real P&ID junction points.
+4. Convert to DiGraph; assign random flow direction per edge.
+5. Assign size + spec to every edge (random draw from PIPE_SIZES /
+   PIPE_SPEC_CODES), ignoring size-match rules.
+6. Skip validation (Section 28); proceed directly to layout.
+```
+
+### Implementation
+
+```python
+import random
+import networkx as nx
+
+PIPE_SIZES      = [2, 4, 6, 8, 10, 12, 14, 16]
+PIPE_SPEC_CODES = ["JD", "CK", "AB", "EF", "GH", "PN", "WR", "ST", "HX", "MN"]
+ALL_CLASS_IDS   = list(range(42))   # 0–41 per Section 11
+
+def create_random_topology(
+    min_nodes: int = 6,
+    max_nodes: int = 20,
+    edge_prob: float = 0.3,
+) -> nx.DiGraph:
+    N   = random.randint(min_nodes, max_nodes)
+    ug  = nx.erdos_renyi_graph(N, edge_prob, seed=None)
+    G   = nx.DiGraph(ug)   # arbitrarily directed
+
+    for i, node in enumerate(G.nodes()):
+        cid = random.choice(ALL_CLASS_IDS)
+        G.nodes[node].update({
+            "id":       f"NODE_{i:03d}",
+            "class_id": cid,
+            "type":     _type_from_class(cid),
+            "size":     random.choice(PIPE_SIZES),
+            "tag":      f"SYM-{i:03d}",
+        })
+
+    for u, v in G.edges():
+        G[u][v].update({
+            "size": random.choice(PIPE_SIZES),
+            "spec": random.choice(PIPE_SPEC_CODES),
+            "type": "process",
+        })
+
+    return G
+
+def _type_from_class(cid: int) -> str:
+    if cid <= 11:  return "valve"
+    if cid <= 23:  return "instrument"
+    if cid <= 31:  return "equipment"
+    return "fitting"
+```
+
+### Class Balance Enforcement
+
+Uniform random sampling will naturally skew toward the most common class IDs. To enforce balance across the 42 classes, use a **stratified draw**:
+
+```python
+def create_balanced_random_topology(n_nodes: int = 42) -> nx.DiGraph:
+    """Guarantee at least one node per class in a single diagram."""
+    G = nx.DiGraph()
+    cids = list(range(42))
+    random.shuffle(cids)
+
+    for i, cid in enumerate(cids[:n_nodes]):
+        G.add_node(i, class_id=cid, type=_type_from_class(cid),
+                   size=random.choice(PIPE_SIZES), tag=f"SYM-{i:03d}")
+
+    # Sparse random edges
+    nodes = list(G.nodes())
+    for u in nodes:
+        for v in nodes:
+            if u != v and random.random() < 0.15:
+                G.add_edge(u, v, size=random.choice(PIPE_SIZES),
+                           spec=random.choice(PIPE_SPEC_CODES), type="process")
+    return G
+```
+
+---
+
+## 32. Graph Serialisation (Ground-Truth Connectivity Export)
+
+The YOLO label file (Section 18, Stage 10) records **bounding boxes only** — it does not capture which symbols are connected. For digitization research (training a graph-recovery pipeline), the underlying `nx.DiGraph` must also be persisted alongside each image.
+
+### Output Format
+
+Each generated image `pid_XXXX.png` must have a companion file `pid_XXXX_graph.json` in the same directory, containing the full node-link representation of the graph.
+
+### Serialisation
+
+```python
+import json
+import networkx as nx
+from networkx.readwrite import node_link_data
+
+def export_graph(G: nx.DiGraph, out_path: str):
+    """Serialise graph to JSON using NetworkX node-link format."""
+    data = node_link_data(G)
+    with open(out_path, "w") as f:
+        json.dump(data, f, indent=2)
+```
+
+### Deserialisation
+
+```python
+from networkx.readwrite import node_link_graph
+
+def load_graph(path: str) -> nx.DiGraph:
+    with open(path) as f:
+        data = json.load(f)
+    return node_link_graph(data, directed=True, multigraph=False)
+```
+
+### File Naming Convention
+
+```python
+def graph_filename(idx: int) -> str:
+    return f"pid_{idx:04d}_graph.json"
+```
+
+### JSON Structure (example)
+
+```json
+{
+  "directed": true,
+  "multigraph": false,
+  "nodes": [
+    {"id": "PUMP_01", "type": "equipment", "class_id": 24,
+     "size": 8, "tag": "P-101", "pos": [0.2, 0.5]},
+    {"id": "VALVE_01", "type": "valve", "class_id": 4,
+     "size": 8, "tag": "GV-042", "pos": [0.4, 0.5]}
+  ],
+  "links": [
+    {"source": "PUMP_01", "target": "VALVE_01",
+     "size": 8, "spec": "AB", "type": "process", "tag": "8-AB-0001"}
+  ]
+}
+```
+
+### Manifest Update
+
+Add `graph_path` to the manifest CSV (Section 26):
+
+```
+idx, seed, sheet_count, node_count, edge_count, split, graph_path
+1,   42,   1,           18,         22,          train, labels/train/pid_0001_graph.json
+```
+
+### Dataset Folder Layout (updated)
+
+```
+dataset/
+├── data.yaml
+├── images/
+│   ├── train/
+│   │   ├── pid_0001.png
+│   │   └── ...
+│   └── val/ ...
+└── labels/
+    ├── train/
+    │   ├── pid_0001.txt          ← YOLO bounding boxes
+    │   ├── pid_0001_graph.json   ← ground-truth connectivity
+    │   └── ...
+    └── val/ ...
+```
+
+> **Note (Paliwal et al. limitation):** The publicly released Dataset-P&ID provides image and bounding-box annotations but does not always include the ground-truth graph in a direct format. Exporting `_graph.json` alongside every image addresses this gap and makes the synthetic dataset usable for both detection and graph-recovery benchmarks.

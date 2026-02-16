@@ -13,6 +13,7 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+.idea/
 
 # Dependencies
 node_modules/
