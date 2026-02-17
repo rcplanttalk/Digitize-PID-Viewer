@@ -133,7 +133,7 @@ def generate_one(
 
 def generate_dataset(
     n: int = 10,
-    dataset_root: str = "dataset",
+    dataset_root: str = "output/dataset",
     base_seed: int = 42,
     topology: str = "logical",
     apply_noise: bool = True,

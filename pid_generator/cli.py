@@ -7,10 +7,10 @@ pid-gen single   [options]   — render one diagram; auto-increments output inde
 
 Examples
 --------
-    pid-gen generate --n 100 --output dataset/ --seed 42
+    pid-gen generate --n 100 --output output/dataset/ --seed 42
     pid-gen generate --n 50  --topology random --no-noise
-    pid-gen single   --output output/ --seed 7
-    pid-gen single   --output output/ --no-noise
+    pid-gen single   --output output/single/ --seed 7
+    pid-gen single   --output output/single/ --no-noise
 """
 
 from __future__ import annotations
@@ -101,8 +101,8 @@ def build_parser() -> argparse.ArgumentParser:
     gen = sub.add_parser("generate", help="Batch-generate N diagrams into a dataset folder.")
     gen.add_argument("--n",        type=int,  default=10,        metavar="N",
                      help="Number of diagrams to generate (default: 10).")
-    gen.add_argument("--output",   type=str,  default="dataset",
-                     help="Output root directory (default: dataset/).")
+    gen.add_argument("--output",   type=str,  default="output/dataset",
+                     help="Output root directory (default: output/dataset/).")
     gen.add_argument("--seed",     type=int,  default=42,
                      help="Base RNG seed; each diagram uses seed+idx (default: 42).")
     gen.add_argument("--topology", choices=["logical", "random"], default="logical",
@@ -112,8 +112,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
-    sng.add_argument("--output", type=str, default="output",
-                     help="Output directory (default: output/).")
+    sng.add_argument("--output", type=str, default="output/single",
+                     help="Output directory (default: output/single/).")
     sng.add_argument("--seed",   type=int, default=42,
                      help="RNG seed (default: 42).")
     sng.add_argument("--noise",  action=argparse.BooleanOptionalAction, default=False,

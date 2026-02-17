@@ -14,7 +14,7 @@ def export_graph(G: nx.DiGraph, out_path: str) -> None:
 
     Args:
         G:        The directed graph to serialise.
-        out_path: Destination file path (e.g. ``'output/pid_0001_graph.json'``).
+        out_path: Destination file path (e.g. ``'output/single/pid_0001_graph.json'``).
     """
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
     data = node_link_data(G)
