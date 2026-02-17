@@ -17,7 +17,14 @@ from collections import defaultdict
 
 import networkx as nx
 
-from pid_generator.constants import CANVAS_H, CANVAS_W, GRID, MARGIN
+from pid_generator.constants import (
+    CANVAS_H,
+    CANVAS_W,
+    DEFAULT_SAFE_ZONE,
+    GRID,
+    MARGIN,
+    SafeZone,
+)
 
 # Re-export so existing importers of layout.CANVAS_W etc. still work.
 __all__ = [
@@ -231,7 +238,7 @@ def assign_grid_positions(
             placed_signal[node] = (0.5, 0.05)
 
     pos.update(placed_signal)
-    _resolve_collisions(pos, max_y=y_max)
+    _resolve_collisions(pos, max_y=y_max, safe_zone=DEFAULT_SAFE_ZONE)
 
     for node, (nx_, ny_) in pos.items():
         G.nodes[node]["pos"] = [nx_, ny_]
@@ -256,9 +263,23 @@ def _resolve_collisions(
     pos: dict[str, tuple[float, float]],
     min_gap: float = 0.06,
     max_y: float = 0.90,
+    safe_zone: SafeZone | None = None,
 ) -> None:
-    """Nudge nodes that share the same grid cell to prevent W002 overlaps."""
+    """Nudge nodes that share the same grid cell or overlap title block (ISO 7200 SAFE_ZONE).
+
+    Args:
+        pos: Dictionary of node positions (normalised coords).
+        min_gap: Minimum separation between nodes (default 0.06 ≈ 6% canvas height).
+        max_y: Maximum allowed y-position for nodes (default 0.90, below title block).
+        safe_zone: Bounding box for collision avoidance (title block + dead zone).
+                   If None, uses DEFAULT_SAFE_ZONE.
+    """
+    if safe_zone is None:
+        safe_zone = DEFAULT_SAFE_ZONE
+
     nodes = list(pos.keys())
+
+    # First pass: resolve inter-node collisions
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
             a, b = nodes[i], nodes[j]
@@ -266,3 +287,16 @@ def _resolve_collisions(
             bx, by = pos[b]
             if abs(ax - bx) < min_gap and abs(ay - by) < min_gap:
                 pos[b] = (bx, min(max_y, by + min_gap))
+
+    # Second pass: clamp nodes away from safe zone
+    for node in nodes:
+        nx_, ny_ = pos[node]
+
+        # If node is in the safe zone, nudge it upward
+        if safe_zone.contains(nx_, ny_):
+            # Move node above the dead zone
+            pos[node] = (nx_, min(safe_zone.dead_zone_y_min - min_gap, max_y))
+        # If node is in the dead zone, nudge it upward
+        elif safe_zone.contains_in_dead_zone(nx_, ny_):
+            pos[node] = (nx_, min(safe_zone.dead_zone_y_min - min_gap, max_y))
+

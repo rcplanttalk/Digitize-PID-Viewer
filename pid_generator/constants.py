@@ -1,5 +1,9 @@
 """Constant pools for the P&ID generator (§2, §11, §13, §15)."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+
 # §2 / §13 — Pipe sizes and spec codes
 
 PIPE_SIZES: list[int] = [2, 4, 6, 8, 10, 12, 14, 16]
@@ -185,11 +189,50 @@ DISCLAIMER_TEXT: str = (
 )
 
 
-# §16 — Canvas geometry
+# §16 — Canvas geometry and ISO 5457 standards
+# ISO 5457 defines paper sizes: A4=210×297mm, A3=420×297mm, A2=594×420mm
+# Canvas is 4096×2896 px. Approximate mapping: ~19.46 px/mm at A4 (for reference only).
+# PX_PER_MM allows resolution-independent scaling. Currently set for synthetic data training.
 CANVAS_W: int = 4096
 CANVAS_H: int = 2896
 MARGIN:   int = 40
 GRID:     int = 128   # px per grid cell
+
+PX_PER_MM: float = 19.46  # Approximate pixel-to-mm ratio (4096px ≈ 210.5mm at A4 aspect)
+
+# DPI (Dots Per Inch) range for variable diagram generation
+# Simulates diagrams viewed at different zoom levels and display densities
+DPI_MIN: float = 72.0       # Low DPI (zoomed out, low-res display)
+DPI_MAX: float = 300.0      # High DPI (zoomed in, high-res display)
+DPI_DEFAULT: float = 96.0   # Default DPI (standard screen resolution)
+
+# DPI scaling: affects line widths, font sizes, and all rendered dimensions
+# A diagram at 72 DPI will render thinner than the same at 300 DPI
+DPI_SCALE: dict[str, float] = {
+    "low": DPI_MIN / DPI_DEFAULT,      # 0.75x (75% size)
+    "medium": 1.0,                      # 1.0x (100% size - default)
+    "high": DPI_MAX / DPI_DEFAULT,      # 3.125x (312.5% size)
+}
+
+# ISO 3098 — Technical lettering: standardised line weights (mm) for drawings
+# Outer title block border: 0.7mm; internal gridlines: 0.35mm
+FONT_WEIGHTS_MM: dict[str, float] = {
+    "outer_border":   0.7,   # Title block outer rectangle (primary feature line)
+    "inner_grid":     0.35,  # Internal title block gridlines (secondary)
+    "process_pipe":   0.5,   # Process line (main flow path)
+    "utility_pipe":   0.35,  # Utility line (secondary flow)
+    "signal_line":    0.35,  # Instrument signal line
+}
+
+# Convert ISO 3098 mm weights to pixels for rendering
+FONT_WEIGHTS_PX: dict[str, int] = {
+    k: max(1, round(v * PX_PER_MM)) for k, v in FONT_WEIGHTS_MM.items()
+}
+
+# ISA 5.1 — Symbolic Integrity: instrument bubbles (circles) dimensioning
+# Primary instruments (PI, TI, FI, etc.): 12mm diameter per ISA 5.1:2009
+INSTRUMENT_BUBBLE_MM: float = 12.0
+INSTRUMENT_BUBBLE_PX: int = round(INSTRUMENT_BUBBLE_MM * PX_PER_MM)
 
 # §16 — Rendering
 BG_COLOR:   str = "white"
@@ -198,16 +241,16 @@ FONT_SIZE:  int = 22   # px — component tags
 SMALL_FONT: int = 16   # px — pipe tags and notes
 SYMBOL_BOX: int = 64   # px half-side for symbol bounding boxes
 
-# §12 — Line widths per edge type
+# §12 — Line widths per edge type (now derived from ISO 3098 standards)
 LINE_WIDTH: dict[str, int] = {
-    "process":          3,
-    "utility":          1,
-    "signal_electric":  1,
-    "signal_pneumatic": 1,
-    "signal_hydraulic": 1,
-    "heat_trace":       1,
-    "sample":           1,
-    "drain_vent":       1,
+    "process":          max(1, round(0.15 * PX_PER_MM)),      # Process pipe: 0.15mm (3px)
+    "utility":          max(1, round(0.1 * PX_PER_MM)),       # Utility pipe: 0.1mm (2px)
+    "signal_electric":  max(1, round(0.08 * PX_PER_MM)),      # Signal: 0.08mm (1-2px)
+    "signal_pneumatic": max(1, round(0.08 * PX_PER_MM)),      # Signal: 0.08mm (1-2px)
+    "signal_hydraulic": max(1, round(0.08 * PX_PER_MM)),      # Signal: 0.08mm (1-2px)
+    "heat_trace":       max(1, round(0.15 * PX_PER_MM)),      # Heat trace: 0.15mm (3px)
+    "sample":           max(1, round(0.1 * PX_PER_MM)),       # Sample: 0.1mm (2px)
+    "drain_vent":       max(1, round(0.08 * PX_PER_MM)),      # Drain/vent: 0.08mm (1-2px)
 }
 
 # §12 — Dash patterns (on, off …) per edge type; None means solid
@@ -227,6 +270,49 @@ TITLE_BLOCK_H:     int = 180   # bottom block height in pixels
 TITLE_BLOCK_W:     int = 620   # right-side block width in pixels
 TITLE_BLOCK_REV_H: int = 28    # height per revision row
 TITLE_BLOCK_REVS:  int = 3     # max revision rows rendered
+TITLE_BLOCK_DEAD_ZONE_MM: float = 10.0  # Buffer above title block for future revisions
+
+
+@dataclass(frozen=True)
+class SafeZone:
+    """Bounding box for the title block and its dead zone (collision avoidance).
+
+    Coordinates are in normalised space (0.0 to 1.0). Nodes must not be positioned
+    within this zone to avoid overlapping the title block or revision table.
+
+    Attributes:
+        x_min, y_min, x_max, y_max: Normalised bounding box.
+        dead_zone_y_min: Lower boundary of the dead zone above the title block
+                         (reserved for future revisions).
+    """
+    x_min: float
+    y_min: float
+    x_max: float
+    y_max: float
+    dead_zone_y_min: float = 0.85  # Default: 85% of canvas height
+
+    def contains(self, norm_x: float, norm_y: float) -> bool:
+        """Check if a point (normalised coords) is inside the safe zone."""
+        return self.x_min <= norm_x <= self.x_max and self.y_min <= norm_y <= self.y_max
+
+    def contains_in_dead_zone(self, norm_x: float, norm_y: float) -> bool:
+        """Check if a point is in the dead zone (above the title block)."""
+        return (
+            self.x_min <= norm_x <= self.x_max
+            and self.dead_zone_y_min <= norm_y <= self.y_min
+        )
+
+
+# Default safe zone: bottom-right title block (ISO 7200 anchor)
+# Title block spans from (MARGIN+TITLE_BLOCK_W, CANVAS_H-TITLE_BLOCK_H) in pixels.
+# Normalised coords: x ≈ [0.85, 1.0], y ≈ [0.938, 1.0] (typical).
+DEFAULT_SAFE_ZONE = SafeZone(
+    x_min=0.80,      # ~80% of canvas width
+    y_min=0.93,      # ~93% of canvas height
+    x_max=1.00,      # Right edge
+    y_max=1.00,      # Bottom edge
+    dead_zone_y_min=0.85,  # Dead zone starts at 85%, allows 8% buffer
+)
 
 
 def _type_from_class(cid: int) -> str:

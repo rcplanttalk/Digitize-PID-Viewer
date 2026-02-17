@@ -22,6 +22,9 @@ from pid_generator.constants import (
     CANVAS_H,
     CANVAS_W,
     DASH_PATTERN,
+    DPI_DEFAULT,
+    DPI_MAX,
+    DPI_MIN,
     FG_COLOR,
     FONT_SIZE,
     LINE_WIDTH,
@@ -146,8 +149,14 @@ def _draw_edge(
     p2: tuple[int, int],
     edge_type: str,
     wp_x: int | None = None,
+    dpi_scale: float = 1.0,
 ) -> None:
-    width = LINE_WIDTH.get(edge_type, 1)
+    """Draw an edge with consistent line width regardless of DPI.
+
+    DPI affects output quality/resolution but NOT line thickness.
+    """
+    # Line width is constant across all DPI values
+    width = max(1, LINE_WIDTH.get(edge_type, 1))
     dash  = DASH_PATTERN.get(edge_type)
     segs  = route_edge(p1, p2, wp_x)
     for seg_p1, seg_p2 in segs:
@@ -165,8 +174,17 @@ def render_pipes(
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
     waypoints: dict | None = None,
+    dpi_scale: float = 1.0,
 ) -> None:
-    """Draw all edges, process lines first then signal lines (§18, Stage 5)."""
+    """Draw all edges, process lines first then signal lines (§18, Stage 5).
+
+    Args:
+        draw: PIL ImageDraw object.
+        G: The P&ID graph.
+        pos: Node positions (normalised coordinates).
+        waypoints: Computed edge waypoints (computed if None).
+        dpi_scale: DPI scaling factor (affects line widths).
+    """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
     order = ["process", "utility", "heat_trace", "drain_vent", "sample",
@@ -183,7 +201,7 @@ def render_pipes(
             p1  = snap_to_grid(*to_pixel(*pos[u]))
             p2  = snap_to_grid(*to_pixel(*pos[v]))
             wp_x = waypoints.get((u, v)) if etype == "process" else None
-            _draw_edge(draw, p1, p2, etype, wp_x=wp_x)
+            _draw_edge(draw, p1, p2, etype, wp_x=wp_x, dpi_scale=dpi_scale)
 
 
 # Stage 6 — Pipe crossing gaps
@@ -194,17 +212,19 @@ def draw_pipe_crossing_gaps(
     pos: dict[str, tuple[float, float]],
     hop_radius: int = 20,
     waypoints: dict | None = None,
+    dpi_scale: float = 1.0,
 ) -> None:
     """Draw hop arcs at pipe crossings that are not junctions (§1.1).
 
     The horizontal segment remains continuous; the vertical segment gets a
     right-facing semicircular hop arc where it crosses the horizontal pipe.
-    All edge types are checked so signal lines also produce visible hops.
+
+    Args:
+        dpi_scale: DPI scaling factor (affects line widths).
     """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
 
-    # Collect (segment_start, segment_end, edge_key, edge_type) for H and V runs
     h_segs: list[tuple] = []
     v_segs: list[tuple] = []
     for u, v, edata in G.edges(data=True):
@@ -228,21 +248,17 @@ def draw_pipe_crossing_gaps(
         hx1 = min(hp1[0], hp2[0])
         hx2 = max(hp1[0], hp2[0])
         hy  = hp1[1]
-        h_w = LINE_WIDTH.get(h_etype, 1)
+        h_w = max(1, LINE_WIDTH.get(h_etype, 1))
         for vp1, vp2, vkey, v_etype in v_segs:
             if hkey == vkey:
                 continue
             vx  = vp1[0]
             vy1 = min(vp1[1], vp2[1])
             vy2 = max(vp1[1], vp2[1])
-            v_w = LINE_WIDTH.get(v_etype, 1)
+            v_w = max(1, LINE_WIDTH.get(v_etype, 1))
             if hx1 < vx < hx2 and vy1 < hy < vy2:
-                # Erase crossing area
                 draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
-                # Redraw horizontal pipe continuously through the gap
                 draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
-                # Right-facing semicircular hop arc on the vertical pipe
-                # (PIL angles: 0=right, 90=bottom, 180=left, 270=top, clockwise)
                 draw.arc(
                     [vx - r, hy - r, vx + r, hy + r],
                     start=270, end=90,
@@ -265,6 +281,7 @@ def render_symbol_placeholders(
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
+    dpi_scale: float = 1.0,
 ) -> None:
     """Draw labelled bounding-box placeholders per node (Stage 7 stub)."""
     half = SYMBOL_BOX // 2
@@ -308,8 +325,13 @@ def render_tags(
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
     waypoints: dict | None = None,
+    dpi_scale: float = 1.0,
 ) -> None:
-    """Draw node and edge text tags onto the canvas (§2, §8, Stage 8)."""
+    """Draw node and edge text tags onto the canvas (§2, §8, Stage 8).
+
+    Args:
+        dpi_scale: DPI scaling factor (currently not used for text, reserved for future).
+    """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
 
@@ -369,29 +391,55 @@ def render_diagram(
     apply_noise: bool = False,
     idx: int = 1,
     seed: int | None = None,
+    dpi: float | None = None,
 ) -> Image.Image:
     """Run Stages 4–8 and save the diagram as a PNG (§18).
 
     If *metadata* is ``None``, ``generate_title_block_metadata(idx, seed)``
     is called automatically so every diagram gets a unique title block.
+
+    Args:
+        G: The P&ID graph.
+        pos: Node positions (normalised coordinates).
+        out_path: Output file path for PNG.
+        metadata: ISO 7200 metadata dict (auto-generated if None).
+        apply_noise: Whether to apply Stage 9 noise augmentation.
+        idx: Diagram index for metadata generation.
+        seed: RNG seed for reproducibility.
+        dpi: Display DPI (72–300). If None, uses random value in range.
+             Affects output quality/resolution. Line thickness remains constant.
     """
     if metadata is None:
         from pid_generator.title_block import generate_title_block_metadata
         metadata = generate_title_block_metadata(idx=idx, seed=seed)
+
+    # Handle variable DPI: if not specified, choose random DPI in range
+    if dpi is None:
+        import random as _random
+        rng = _random.Random(seed) if seed is not None else _random.Random()
+        dpi = rng.uniform(DPI_MIN, DPI_MAX)
+
+    # Ensure DPI is within valid range
+    dpi = max(DPI_MIN, min(dpi, DPI_MAX))
+
+    # Calculate DPI scaling factor (relative to default 96 DPI)
+    dpi_scale = dpi / DPI_DEFAULT
 
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
 
     img, draw = init_canvas()
     draw_title_block(draw, metadata)
     waypoints = compute_edge_waypoints(G, pos)
-    render_pipes(draw, G, pos, waypoints)
-    draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints)
-    render_symbol_placeholders(draw, G, pos)
-    render_tags(img, draw, G, pos, waypoints)
+    render_pipes(draw, G, pos, waypoints, dpi_scale=dpi_scale)
+    draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints, dpi_scale=dpi_scale)
+    render_symbol_placeholders(draw, G, pos, dpi_scale=dpi_scale)
+    render_tags(img, draw, G, pos, waypoints, dpi_scale=dpi_scale)
 
     if apply_noise:
         from pid_generator.noise import apply_generation_noise
         img = apply_generation_noise(img)
 
-    img.save(out_path, format="PNG")
+    # Add DPI metadata to PNG
+    img.info["dpi"] = (dpi, dpi)
+    img.save(out_path, format="PNG", dpi=(dpi, dpi))
     return img

@@ -1,8 +1,12 @@
-"""P&ID graph validator — E001–E008, W001–W004 (§28)."""
+"""P&ID graph validator — E001–E008, W001–W004 (§28), plus ISO 7200/ISA 5.1 checks."""
 
 import networkx as nx
 
-from pid_generator.constants import PIPE_SIZES, PIPE_SPEC_CODES
+from pid_generator.constants import (
+    DEFAULT_SAFE_ZONE,
+    PIPE_SIZES,
+    PIPE_SPEC_CODES,
+)
 
 
 def validate_pid_logic(G: nx.DiGraph) -> list[str]:
@@ -124,3 +128,133 @@ def validate_pid_logic(G: nx.DiGraph) -> list[str]:
                 )
 
     return issues
+
+
+def validate_iso7200_metadata(metadata: dict) -> list[str]:
+    """Validate ISO 7200:2004 title block mandatory fields.
+
+    Per ISO 7200:2004 §5, the following fields are mandatory:
+    - legal_owner (company/organisation)
+    - doc_number (document identification)
+    - doc_title (primary diagram title)
+    - doc_type (type of document)
+    - sheet_number (sheet identification)
+    - creator (drawn by)
+    - creation_date (date issued)
+    - approval_person (approved by)
+    - approval_date (date approved)
+
+    Args:
+        metadata: ISO 7200 metadata dict from generate_title_block_metadata().
+
+    Returns:
+        List of validation errors (empty if all mandatory fields present).
+    """
+    issues: list[str] = []
+
+    mandatory_fields = [
+        "legal_owner",
+        "doc_number",
+        "doc_title",
+        "doc_type",
+        "sheet_number",
+        "creator",
+        "creation_date",
+        "approval_person",
+        "approval_date",
+    ]
+
+    for field in mandatory_fields:
+        value = metadata.get(field, "").strip()
+        if not value:
+            issues.append(f"ISO7200: Mandatory field '{field}' is missing or empty")
+
+    return issues
+
+
+def validate_isa51_collisions(
+    G: nx.DiGraph,
+    pos: dict[str, tuple[float, float]],
+    safe_zone=None,
+) -> list[str]:
+    """Validate ISA 5.1 collision detection: symbols must not overlap title block (§5).
+
+    Per ISA 5.1:2009, P&ID symbols (nodes) must be positioned to avoid collision
+    with mandatory document information (title block). This function checks that
+    no process or instrumentation symbols are positioned within the safe zone
+    defined by the ISO 7200 title block.
+
+    Args:
+        G: The P&ID graph with node positions.
+        pos: Dict of node positions (normalised coords).
+        safe_zone: SafeZone object defining the collision avoidance region.
+                   If None, uses DEFAULT_SAFE_ZONE.
+
+    Returns:
+        List of ISA 5.1 compliance warnings (empty if no collisions).
+    """
+    if safe_zone is None:
+        safe_zone = DEFAULT_SAFE_ZONE
+
+    issues: list[str] = []
+
+    for node, (norm_x, norm_y) in pos.items():
+        node_type = G.nodes[node].get("type", "unknown")
+
+        # Check if node is in the title block safe zone
+        if safe_zone.contains(norm_x, norm_y):
+            issues.append(
+                f"ISA51: Symbol '{node}' ({node_type}) overlaps title block "
+                f"at position ({norm_x:.3f}, {norm_y:.3f})"
+            )
+
+        # Check if node is in the dead zone (above title block)
+        elif safe_zone.contains_in_dead_zone(norm_x, norm_y):
+            issues.append(
+                f"ISA51: Symbol '{node}' ({node_type}) in dead zone "
+                f"at ({norm_x:.3f}, {norm_y:.3f}) — reserved for future revisions"
+            )
+
+    return issues
+
+
+def validate_orthogonal_routing(G: nx.DiGraph, pos: dict[str, tuple[float, float]]) -> list[str]:
+    """Validate ISA 5.1 orthogonal routing: all signal lines must be 90° (§22).
+
+    Per ISA 5.1:2009 §22, signal lines (and process lines) should follow orthogonal
+    routing (horizontal/vertical segments only, no diagonals). This validation checks
+    that all edges in the graph can be routed orthogonally without diagonal segments.
+
+    Args:
+        G: The P&ID graph.
+        pos: Dict of node positions (normalised coords).
+
+    Returns:
+        List of ISA 5.1 routing violations (empty if all orthogonal).
+    """
+    issues: list[str] = []
+
+    for u, v, edata in G.edges(data=True):
+        if u not in pos or v not in pos:
+            continue
+
+        ux, uy = pos[u]
+        vx, vy = pos[v]
+
+        edge_type = edata.get("type", "process")
+
+        # Check for diagonal routing (neither horizontal nor vertical)
+        is_horizontal = abs(uy - vy) < 0.001  # Same row
+        is_vertical = abs(ux - vx) < 0.001    # Same column
+
+        if not (is_horizontal or is_vertical):
+            # Diagonal edge detected
+            if edge_type in ("signal_electric", "signal_pneumatic", "signal_hydraulic"):
+                issues.append(
+                    f"ISA51: Signal line ('{u}'→'{v}') is diagonal "
+                    f"from ({ux:.3f}, {uy:.3f}) to ({vx:.3f}, {vy:.3f})"
+                )
+
+    return issues
+
+
