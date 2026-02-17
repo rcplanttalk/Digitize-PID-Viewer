@@ -11,27 +11,29 @@ image_filename(idx)                    -> str
 from __future__ import annotations
 
 import os
+from typing import TYPE_CHECKING
 
-import networkx as nx
+from pid_generator.layout import CANVAS_H, CANVAS_W, snap_to_grid, to_pixel
+from pid_generator.renderer import SYMBOL_BOX
 
-from .layout import CANVAS_H, CANVAS_W, snap_to_grid, to_pixel
-from .renderer import SYMBOL_BOX
+if TYPE_CHECKING:
+    import networkx as nx
 
 # ---------------------------------------------------------------------------
 # Class name registry (§25 data.yaml)
 # ---------------------------------------------------------------------------
 
 CLASS_NAMES: dict[int, str] = {
-    0:  "ball_valve",
-    1:  "butterfly_valve",
-    2:  "check_valve",
-    3:  "control_valve",
-    4:  "gate_valve",
-    5:  "globe_valve",
-    6:  "needle_valve",
-    7:  "plug_valve",
-    8:  "relief_valve",
-    9:  "pressure_reducing_valve",
+    0: "ball_valve",
+    1: "butterfly_valve",
+    2: "check_valve",
+    3: "control_valve",
+    4: "gate_valve",
+    5: "globe_valve",
+    6: "needle_valve",
+    7: "plug_valve",
+    8: "relief_valve",
+    9: "pressure_reducing_valve",
     10: "diaphragm_valve",
     11: "angle_valve",
     12: "pressure_transmitter",
@@ -67,12 +69,13 @@ CLASS_NAMES: dict[int, str] = {
 }
 
 # Symbol bounding-box size in pixels (§16 — default 96×96; renderer uses SYMBOL_BOX*2)
-_BBOX_PX: int = SYMBOL_BOX * 2   # 128 px
+_BBOX_PX: int = SYMBOL_BOX * 2  # 128 px
 
 
 # ---------------------------------------------------------------------------
 # File naming helpers (§26)
 # ---------------------------------------------------------------------------
+
 
 def image_filename(idx: int) -> str:
     """Return the canonical image filename for diagram index *idx*."""
@@ -87,6 +90,7 @@ def label_filename(idx: int) -> str:
 # ---------------------------------------------------------------------------
 # Stage 10 — YOLO label export
 # ---------------------------------------------------------------------------
+
 
 def export_yolo_labels(
     G: nx.DiGraph,
@@ -132,6 +136,7 @@ def export_yolo_labels(
 # ---------------------------------------------------------------------------
 # data.yaml writer
 # ---------------------------------------------------------------------------
+
 
 def write_data_yaml(dataset_root: str) -> None:
     """Write a YOLOv8-compatible ``data.yaml`` to *dataset_root* (§25).

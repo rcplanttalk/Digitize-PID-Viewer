@@ -1,6 +1,6 @@
 """Tag builders for P&ID components (§13)."""
 
-from .constants import PIPE_SIZES, PIPE_SPEC_CODES
+from pid_generator.constants import PIPE_SIZES, PIPE_SPEC_CODES
 
 
 def build_pipe_tag(size: int, spec: str, seq: int) -> str:
@@ -12,9 +12,11 @@ def build_pipe_tag(size: int, spec: str, seq: int) -> str:
         seq:  Unique sequence number for this pipe run.
     """
     if size not in PIPE_SIZES:
-        raise ValueError(f"size {size} not in PIPE_SIZES {PIPE_SIZES}")
+        msg = f"size {size} not in PIPE_SIZES {PIPE_SIZES}"
+        raise ValueError(msg)
     if spec not in PIPE_SPEC_CODES:
-        raise ValueError(f"spec '{spec}' not in PIPE_SPEC_CODES {PIPE_SPEC_CODES}")
+        msg = f"spec '{spec}' not in PIPE_SPEC_CODES {PIPE_SPEC_CODES}"
+        raise ValueError(msg)
     return f"{size}-{spec}-{seq:04d}"
 
 

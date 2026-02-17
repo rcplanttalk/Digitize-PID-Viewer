@@ -21,13 +21,14 @@ def scan_split(split):
             continue
         stem = os.path.splitext(fname)[0]
         label_file = os.path.join(lbl_dir, stem + ".txt")
-        entries.append({
-            "id": stem,
-            "split": split,
-            "image": f"data/DigitizePID_Dataset/images/{split}/{fname}",
-            "label": f"data/DigitizePID_Dataset/labels/{split}/{stem}.txt"
-                     if os.path.isfile(label_file) else None,
-        })
+        entries.append(
+            {
+                "id": stem,
+                "split": split,
+                "image": f"data/DigitizePID_Dataset/images/{split}/{fname}",
+                "label": f"data/DigitizePID_Dataset/labels/{split}/{stem}.txt" if os.path.isfile(label_file) else None,
+            }
+        )
     return entries
 
 
@@ -45,7 +46,7 @@ def main():
     with open(OUTPUT, "w") as f:
         json.dump(manifest, f, indent=2)
     parts = [f"{manifest['train_count']} train", f"{manifest['val_count']} val"]
-    if manifest['generated_count']:
+    if manifest["generated_count"]:
         parts.append(f"{manifest['generated_count']} generated")
     print(f"Wrote {OUTPUT} with {manifest['total']} entries ({', '.join(parts)})")
 

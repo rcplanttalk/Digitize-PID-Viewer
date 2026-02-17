@@ -13,60 +13,55 @@ from __future__ import annotations
 
 import math
 import os
-import random
+from typing import TYPE_CHECKING
 
-import networkx as nx
 from PIL import Image, ImageDraw, ImageFont
 
-from .layout import (
-    CANVAS_H,
-    CANVAS_W,
-    GRID,
-    MARGIN,
-    route_orthogonal,
-    snap_to_grid,
-    to_pixel,
-)
+from pid_generator.layout import CANVAS_H, CANVAS_W, MARGIN, route_orthogonal, snap_to_grid, to_pixel
+
+if TYPE_CHECKING:
+    import networkx as nx
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-BG_COLOR    = "white"
-FG_COLOR    = "black"
-FONT_SIZE   = 22   # px for component tags
-SMALL_FONT  = 16   # px for pipe tags and notes
+BG_COLOR = "white"
+FG_COLOR = "black"
+FONT_SIZE = 22  # px for component tags
+SMALL_FONT = 16  # px for pipe tags and notes
 
 # Line widths per edge type (§12)
 _LINE_WIDTH: dict[str, int] = {
-    "process":          3,
-    "utility":          1,
-    "signal_electric":  1,
+    "process": 3,
+    "utility": 1,
+    "signal_electric": 1,
     "signal_pneumatic": 1,
     "signal_hydraulic": 1,
-    "heat_trace":       1,
-    "sample":           1,
-    "drain_vent":       1,
+    "heat_trace": 1,
+    "sample": 1,
+    "drain_vent": 1,
 }
 
 # Dash patterns (on, off) per edge type — None means solid (§12)
 _DASH_PATTERN: dict[str, tuple | None] = {
-    "process":          None,
-    "utility":          None,
-    "signal_electric":  (8, 4),
+    "process": None,
+    "utility": None,
+    "signal_electric": (8, 4),
     "signal_pneumatic": (8, 4),
     "signal_hydraulic": (8, 4, 2, 4),
-    "heat_trace":       None,
-    "sample":           (16, 6),
-    "drain_vent":       None,
+    "heat_trace": None,
+    "sample": (16, 6),
+    "drain_vent": None,
 }
 
 # Placeholder symbol box size (§16)
-SYMBOL_BOX = 64   # px half-side for placeholder rectangles
+SYMBOL_BOX = 64  # px half-side for placeholder rectangles
 
 # ---------------------------------------------------------------------------
 # Font loading (graceful fallback to default)
 # ---------------------------------------------------------------------------
+
 
 def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     try:
@@ -82,7 +77,7 @@ def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
 
 
 _FONT_NORMAL = None
-_FONT_SMALL  = None
+_FONT_SMALL = None
 
 
 def _font(small: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -100,18 +95,20 @@ def _font(small: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
 # Stage 4 — Canvas initialisation
 # ---------------------------------------------------------------------------
 
+
 def init_canvas() -> tuple[Image.Image, ImageDraw.ImageDraw]:
     """Create a blank white canvas at the standard P&ID size (§16).
 
     Returns:
         ``(img, draw)`` — a PIL Image and its associated ImageDraw context.
     """
-    img  = Image.new("RGB", (CANVAS_W, CANVAS_H), BG_COLOR)
+    img = Image.new("RGB", (CANVAS_W, CANVAS_H), BG_COLOR)
     draw = ImageDraw.Draw(img)
     # Outer border
     draw.rectangle(
         [MARGIN, MARGIN, CANVAS_W - MARGIN, CANVAS_H - MARGIN],
-        outline=FG_COLOR, width=2,
+        outline=FG_COLOR,
+        width=2,
     )
     return img, draw
 
@@ -119,6 +116,7 @@ def init_canvas() -> tuple[Image.Image, ImageDraw.ImageDraw]:
 # ---------------------------------------------------------------------------
 # Stage 4 — Title block (delegated to title_block module)
 # ---------------------------------------------------------------------------
+
 
 def draw_title_block(
     draw: ImageDraw.ImageDraw,
@@ -133,13 +131,15 @@ def draw_title_block(
         metadata: Dict from ``generate_title_block_metadata()``.
                   A minimal placeholder block is drawn when ``None``.
     """
-    from .title_block import draw_title_block as _draw_title_block
+    from pid_generator.title_block import draw_title_block as _draw_title_block
+
     _draw_title_block(draw, metadata)
 
 
 # ---------------------------------------------------------------------------
 # Stage 5 — Pipe / edge rendering
 # ---------------------------------------------------------------------------
+
 
 def _draw_dashed_line(
     draw: ImageDraw.ImageDraw,
@@ -160,8 +160,8 @@ def _draw_dashed_line(
     pattern = list(dash)
     pat_len = len(pattern)
     pos_along = 0.0
-    pat_idx   = 0
-    drawing   = True
+    pat_idx = 0
+    drawing = True
     while pos_along < length:
         seg = pattern[pat_idx % pat_len]
         end = min(pos_along + seg, length)
@@ -169,13 +169,14 @@ def _draw_dashed_line(
             draw.line(
                 [
                     (x1 + dx * pos_along, y1 + dy * pos_along),
-                    (x1 + dx * end,       y1 + dy * end),
+                    (x1 + dx * end, y1 + dy * end),
                 ],
-                fill=fill, width=width,
+                fill=fill,
+                width=width,
             )
         pos_along = end
-        pat_idx  += 1
-        drawing   = not drawing
+        pat_idx += 1
+        drawing = not drawing
 
 
 def _draw_edge(
@@ -185,8 +186,8 @@ def _draw_edge(
     edge_type: str,
 ) -> None:
     """Draw a single edge in the correct style for its type."""
-    width   = _LINE_WIDTH.get(edge_type, 1)
-    dash    = _DASH_PATTERN.get(edge_type, None)
+    width = _LINE_WIDTH.get(edge_type, 1)
+    dash = _DASH_PATTERN.get(edge_type)
     segments = route_orthogonal(p1, p2)
 
     for seg_p1, seg_p2 in segments:
@@ -215,15 +216,15 @@ def _draw_pneumatic_ticks(
     if length == 0:
         return
     dx, dy = (x2 - x1) / length, (y2 - y1) / length
-    px, py = -dy, dx   # perpendicular unit vector
+    px, py = -dy, dx  # perpendicular unit vector
     pos_along = spacing / 2
     while pos_along < length:
         cx = x1 + dx * pos_along
         cy = y1 + dy * pos_along
         draw.line(
-            [(cx - px * tick_len, cy - py * tick_len),
-             (cx + px * tick_len, cy + py * tick_len)],
-            fill=FG_COLOR, width=1,
+            [(cx - px * tick_len, cy - py * tick_len), (cx + px * tick_len, cy + py * tick_len)],
+            fill=FG_COLOR,
+            width=1,
         )
         pos_along += spacing
 
@@ -241,8 +242,16 @@ def render_pipes(
         pos:  Node position dict ``{node: (norm_x, norm_y)}``.
     """
     # Draw order: process → utility → signal types (so signals render on top)
-    order = ["process", "utility", "heat_trace", "drain_vent", "sample",
-             "signal_electric", "signal_pneumatic", "signal_hydraulic"]
+    order = [
+        "process",
+        "utility",
+        "heat_trace",
+        "drain_vent",
+        "sample",
+        "signal_electric",
+        "signal_pneumatic",
+        "signal_hydraulic",
+    ]
 
     edges_by_type: dict[str, list] = {t: [] for t in order}
     edges_by_type["other"] = []
@@ -251,7 +260,7 @@ def render_pipes(
         etype = edata.get("type", "process")
         edges_by_type.get(etype, edges_by_type["other"]).append((u, v, edata))
 
-    for etype in order + ["other"]:
+    for etype in [*order, "other"]:
         for u, v, _ in edges_by_type.get(etype, []):
             if u not in pos or v not in pos:
                 continue
@@ -263,6 +272,7 @@ def render_pipes(
 # ---------------------------------------------------------------------------
 # Stage 6 — Pipe crossing gaps
 # ---------------------------------------------------------------------------
+
 
 def draw_pipe_crossing_gaps(
     draw: ImageDraw.ImageDraw,
@@ -282,7 +292,7 @@ def draw_pipe_crossing_gaps(
         gap_radius: Half-size of the gap circle in pixels.
     """
     # Collect all orthogonal segments and classify as H or V
-    h_segs: list[tuple[tuple, tuple, tuple]] = []   # (p1, p2, edge_key)
+    h_segs: list[tuple[tuple, tuple, tuple]] = []  # (p1, p2, edge_key)
     v_segs: list[tuple[tuple, tuple, tuple]] = []
 
     for u, v, edata in G.edges(data=True):
@@ -302,19 +312,18 @@ def draw_pipe_crossing_gaps(
                 v_segs.append((seg_p1, seg_p2, key))
 
     # Find intersections between H and V segments from different edges
-    for (hp1, hp2, hkey) in h_segs:
+    for hp1, hp2, hkey in h_segs:
         hx1, hy = min(hp1[0], hp2[0]), hp1[1]
-        hx2     = max(hp1[0], hp2[0])
-        for (vp1, vp2, vkey) in v_segs:
+        hx2 = max(hp1[0], hp2[0])
+        for vp1, vp2, vkey in v_segs:
             if hkey == vkey:
                 continue
             vx, vy1 = vp1[0], min(vp1[1], vp2[1])
-            vy2     = max(vp1[1], vp2[1])
+            vy2 = max(vp1[1], vp2[1])
             if hx1 < vx < hx2 and vy1 < hy < vy2:
                 # Draw white gap on the vertical pipe at the crossing
                 draw.ellipse(
-                    [vx - gap_radius, hy - gap_radius,
-                     vx + gap_radius, hy + gap_radius],
+                    [vx - gap_radius, hy - gap_radius, vx + gap_radius, hy + gap_radius],
                     fill=BG_COLOR,
                 )
 
@@ -324,11 +333,11 @@ def draw_pipe_crossing_gaps(
 # ---------------------------------------------------------------------------
 
 _NODE_COLORS: dict[str, str] = {
-    "equipment":  "#D6EAF8",   # light blue
-    "valve":      "#D5F5E3",   # light green
-    "instrument": "#FEF9E7",   # light yellow
-    "fitting":    "#F5EEF8",   # light purple
-    "off_page":   "#FDFEFE",   # near-white
+    "equipment": "#D6EAF8",  # light blue
+    "valve": "#D5F5E3",  # light green
+    "instrument": "#FEF9E7",  # light yellow
+    "fitting": "#F5EEF8",  # light purple
+    "off_page": "#FDFEFE",  # near-white
 }
 
 
@@ -367,7 +376,9 @@ def render_symbol_placeholders(
         # Symbol box
         draw.rectangle(
             [cx - half, cy - half, cx + half, cy + half],
-            outline=FG_COLOR, fill=color, width=2,
+            outline=FG_COLOR,
+            fill=color,
+            width=2,
         )
         # class_id label
         cid_text = str(data.get("class_id", "?"))
@@ -377,6 +388,7 @@ def render_symbol_placeholders(
 # ---------------------------------------------------------------------------
 # Stage 8 — Text tag rendering
 # ---------------------------------------------------------------------------
+
 
 def render_tags(
     draw: ImageDraw.ImageDraw,
@@ -393,9 +405,9 @@ def render_tags(
         G:    Directed graph with ``tag`` attributes.
         pos:  Node position dict.
     """
-    font    = _font(small=False)
+    font = _font(small=False)
     font_sm = _font(small=True)
-    half    = SYMBOL_BOX // 2
+    half = SYMBOL_BOX // 2
 
     # Node tags
     for node, data in G.nodes(data=True):
@@ -406,7 +418,9 @@ def render_tags(
         if tag:
             draw.text(
                 (cx - len(tag) * 5, cy - half - FONT_SIZE - 2),
-                tag, fill=FG_COLOR, font=font,
+                tag,
+                fill=FG_COLOR,
+                font=font,
             )
 
     # Edge (pipe) tags — only process edges carry a tag
@@ -426,13 +440,13 @@ def render_tags(
         sx2, sy2 = segs[0][1]
         mx = (sx1 + sx2) // 2
         my = (sy1 + sy2) // 2
-        draw.text((mx - len(tag) * 4, my - SMALL_FONT - 2),
-                  tag, fill=(80, 80, 80), font=font_sm)
+        draw.text((mx - len(tag) * 4, my - SMALL_FONT - 2), tag, fill=(80, 80, 80), font=font_sm)
 
 
 # ---------------------------------------------------------------------------
 # Full pipeline
 # ---------------------------------------------------------------------------
+
 
 def render_diagram(
     G: nx.DiGraph,
@@ -462,7 +476,8 @@ def render_diagram(
         The rendered ``PIL.Image``.
     """
     if metadata is None:
-        from .title_block import generate_title_block_metadata
+        from pid_generator.title_block import generate_title_block_metadata
+
         metadata = generate_title_block_metadata(idx=idx, seed=seed)
 
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
@@ -476,7 +491,8 @@ def render_diagram(
     render_tags(draw, G, pos)
 
     if apply_noise:
-        from .noise import apply_generation_noise
+        from pid_generator.noise import apply_generation_noise
+
         img = apply_generation_noise(img)
 
     img.save(out_path, format="PNG")

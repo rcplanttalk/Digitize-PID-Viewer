@@ -18,13 +18,13 @@ import random
 
 import numpy as np
 
-from .graph_builder import create_logical_system
-from .layout import assign_grid_positions
-from .random_topology import create_random_topology
-from .renderer import render_diagram
-from .serialiser import export_graph, graph_filename
-from .validator import validate_pid_logic
-from .yolo import export_yolo_labels, image_filename, label_filename, write_data_yaml
+from pid_generator.graph_builder import create_logical_system
+from pid_generator.layout import assign_grid_positions
+from pid_generator.random_topology import create_random_topology
+from pid_generator.renderer import render_diagram
+from pid_generator.serialiser import export_graph, graph_filename
+from pid_generator.validator import validate_pid_logic
+from pid_generator.yolo import export_yolo_labels, image_filename, label_filename, write_data_yaml
 
 # ---------------------------------------------------------------------------
 # Split ratios (§26)
@@ -32,20 +32,28 @@ from .yolo import export_yolo_labels, image_filename, label_filename, write_data
 
 SPLIT_RATIOS: dict[str, float] = {
     "train": 0.80,
-    "val":   0.10,
-    "test":  0.10,
+    "val": 0.10,
+    "test": 0.10,
 }
 
 MANIFEST_FIELDS = [
-    "idx", "seed", "topology", "sheet_count",
-    "node_count", "edge_count", "split",
-    "image_path", "label_path", "graph_path",
+    "idx",
+    "seed",
+    "topology",
+    "sheet_count",
+    "node_count",
+    "edge_count",
+    "split",
+    "image_path",
+    "label_path",
+    "graph_path",
 ]
 
 
 # ---------------------------------------------------------------------------
 # Seed control
 # ---------------------------------------------------------------------------
+
 
 def set_global_seed(seed: int) -> None:
     """Set both Python random and NumPy seeds for reproducibility (§26)."""
@@ -56,6 +64,7 @@ def set_global_seed(seed: int) -> None:
 # ---------------------------------------------------------------------------
 # Single-diagram worker
 # ---------------------------------------------------------------------------
+
 
 def generate_one(
     idx: int,
@@ -81,33 +90,29 @@ def generate_one(
     set_global_seed(seed)
 
     # Stage 1 — build
-    if topology == "random":
-        G = create_random_topology()
-    else:
-        G = create_logical_system(seed=seed)
+    G = create_random_topology() if topology == "random" else create_logical_system(seed=seed)
 
     # Stage 2 — validate (non-fatal; log but continue)
     errors = validate_pid_logic(G)
     if errors:
         # Print warnings but don't abort — random topology may trigger some
-        for e in errors:
-            print(f"  [idx={idx}] {e}")
+        for _e in errors:
+            pass
 
     # Stage 3 — layout
     pos = assign_grid_positions(G)
 
     # File paths
-    img_fname   = image_filename(idx)
-    lbl_fname   = label_filename(idx)
-    grph_fname  = graph_filename(idx)
+    img_fname = image_filename(idx)
+    lbl_fname = label_filename(idx)
+    grph_fname = graph_filename(idx)
 
-    img_path    = os.path.join(dataset_root, "images",  split, img_fname)
-    lbl_path    = os.path.join(dataset_root, "labels",  split, lbl_fname)
-    grph_path   = os.path.join(dataset_root, "graphs",  split, grph_fname)
+    img_path = os.path.join(dataset_root, "images", split, img_fname)
+    lbl_path = os.path.join(dataset_root, "labels", split, lbl_fname)
+    grph_path = os.path.join(dataset_root, "graphs", split, grph_fname)
 
     # Stages 4–9 — render (metadata auto-generated per diagram)
-    render_diagram(G, pos, img_path, apply_noise=apply_noise,
-                   idx=idx, seed=seed)
+    render_diagram(G, pos, img_path, apply_noise=apply_noise, idx=idx, seed=seed)
 
     # Stage 10 — YOLO labels
     export_yolo_labels(G, pos, lbl_path)
@@ -116,22 +121,23 @@ def generate_one(
     export_graph(G, grph_path)
 
     return {
-        "idx":         idx,
-        "seed":        seed,
-        "topology":    topology,
+        "idx": idx,
+        "seed": seed,
+        "topology": topology,
         "sheet_count": 1,
-        "node_count":  G.number_of_nodes(),
-        "edge_count":  G.number_of_edges(),
-        "split":       split,
-        "image_path":  img_path,
-        "label_path":  lbl_path,
-        "graph_path":  grph_path,
+        "node_count": G.number_of_nodes(),
+        "edge_count": G.number_of_edges(),
+        "split": split,
+        "image_path": img_path,
+        "label_path": lbl_path,
+        "graph_path": grph_path,
     }
 
 
 # ---------------------------------------------------------------------------
 # Batch driver
 # ---------------------------------------------------------------------------
+
 
 def generate_dataset(
     n: int = 10,
@@ -163,8 +169,8 @@ def generate_dataset(
     """
     # Determine split boundaries
     n_train = max(1, round(n * SPLIT_RATIOS["train"]))
-    n_val   = max(1, round(n * SPLIT_RATIOS["val"]))
-    n_test  = n - n_train - n_val
+    n_val = max(1, round(n * SPLIT_RATIOS["val"]))
+    n_test = n - n_train - n_val
     if n_test < 1:
         n_test = 1
         n_train = n - n_val - n_test
@@ -190,11 +196,9 @@ def generate_dataset(
 
     for idx in range(1, n + 1):
         split = _split_for(idx)
-        seed  = base_seed + idx
-        print(f"  Generating {idx}/{n}  split={split}  seed={seed} ...", end=" ")
+        seed = base_seed + idx
         row = generate_one(idx, seed, split, dataset_root, topology, apply_noise)
         rows.append(row)
-        print(f"nodes={row['node_count']}  edges={row['edge_count']}")
 
     # Write manifest CSV
     with open(manifest_path, "w", newline="", encoding="utf-8") as f:

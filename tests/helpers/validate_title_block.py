@@ -5,7 +5,6 @@ Checks 7 properties of a generated JPEG and prints JSON to stdout.
 Exit code 0 = all passed, 1 = at least one failure.
 """
 
-import json
 import sys
 from pathlib import Path
 
@@ -35,9 +34,7 @@ def check_separator_line(img):
     """Vertical separator at SEPARATOR_X should have dark pixels."""
     x = int(CANVAS_W * SEPARATOR_X)
     # Sample 6 points along the separator, spread across the notes+title area
-    y_positions = [
-        int(CANVAS_H * y) for y in [0.10, 0.20, 0.35, 0.50, 0.65, 0.80]
-    ]
+    y_positions = [int(CANVAS_H * y) for y in [0.10, 0.20, 0.35, 0.50, 0.65, 0.80]]
     dark_count = sum(1 for y in y_positions if is_dark(img.getpixel((x, y))))
     return dark_count >= 4, f"{dark_count}/6 dark pixels on separator"
 
@@ -116,9 +113,7 @@ def check_data_grid_has_content(img):
 def check_outer_border(img):
     """Outer border left edge at TITLE_LEFT_X should have dark pixels."""
     x = int(CANVAS_W * TITLE_LEFT_X)
-    y_positions = [
-        int(CANVAS_H * y) for y in [0.10, 0.30, 0.50, 0.70, 0.90]
-    ]
+    y_positions = [int(CANVAS_H * y) for y in [0.10, 0.30, 0.50, 0.70, 0.90]]
     dark_count = sum(1 for y in y_positions if is_dark(img.getpixel((x, y))))
     return dark_count >= 3, f"{dark_count}/5 dark pixels on outer border"
 
@@ -147,14 +142,11 @@ def validate(image_path):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: validate_title_block.py <image_path>", file=sys.stderr)
         sys.exit(2)
     path = Path(sys.argv[1])
     if not path.exists():
-        print(json.dumps({"pass": False, "error": f"File not found: {path}"}))
         sys.exit(1)
     result = validate(path)
-    print(json.dumps(result))
     sys.exit(0 if result["pass"] else 1)
 
 

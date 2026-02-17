@@ -21,13 +21,14 @@ import networkx as nx
 
 CANVAS_W: int = 4096
 CANVAS_H: int = 2896
-MARGIN:   int = 40
-GRID:     int = 128   # px per grid cell
+MARGIN: int = 40
+GRID: int = 128  # px per grid cell
 
 
 # ---------------------------------------------------------------------------
 # Coordinate helpers
 # ---------------------------------------------------------------------------
+
 
 def to_pixel(norm_x: float, norm_y: float) -> tuple[int, int]:
     """Convert normalised (0–1) coordinates to canvas pixel coordinates (§16).
@@ -64,6 +65,7 @@ def snap_to_grid(px: int, py: int) -> tuple[int, int]:
 # Orthogonal routing
 # ---------------------------------------------------------------------------
 
+
 def route_orthogonal(
     p1: tuple[int, int],
     p2: tuple[int, int],
@@ -88,9 +90,9 @@ def route_orthogonal(
 
     if p1 == p2:
         return []
-    if y1 == y2:            # Case A — horizontal
+    if y1 == y2:  # Case A — horizontal
         return [(p1, p2)]
-    if x1 == x2:            # Case B — vertical
+    if x1 == x2:  # Case B — vertical
         return [(p1, p2)]
 
     # Case C — L-shape via waypoint at (x2, y1)
@@ -101,6 +103,7 @@ def route_orthogonal(
 # ---------------------------------------------------------------------------
 # Automatic grid position assignment
 # ---------------------------------------------------------------------------
+
 
 def assign_grid_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
     """Assign normalised grid positions to every node using topological order (§6.2).
@@ -124,10 +127,7 @@ def assign_grid_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
     """
     # Work on a process-only subgraph for topological layering so that
     # signal edges do not distort the left-to-right flow layout.
-    process_edges = [
-        (u, v) for u, v, d in G.edges(data=True)
-        if d.get("type", "process") == "process"
-    ]
+    process_edges = [(u, v) for u, v, d in G.edges(data=True) if d.get("type", "process") == "process"]
     P = nx.DiGraph()
     P.add_nodes_from(G.nodes())
     P.add_edges_from(process_edges)
@@ -154,10 +154,7 @@ def assign_grid_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
 
         # y: evenly spaced rows within column
         for row_idx, node in enumerate(nodes_in_col):
-            if n == 1:
-                norm_y = 0.5
-            else:
-                norm_y = y_margin + (row_idx / (n - 1)) * (1 - 2 * y_margin)
+            norm_y = 0.5 if n == 1 else y_margin + row_idx / (n - 1) * (1 - 2 * y_margin)
             pos[node] = (round(norm_x, 4), round(norm_y, 4))
 
     # --- place signal-only nodes (instruments not on process graph) ---
@@ -171,13 +168,13 @@ def assign_grid_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
             continue
         # Find the closest process node via signal edges
         signal_nbrs = [
-            v for _, v, d in G.out_edges(node, data=True)
-            if d.get("type") in ("signal_electric", "signal_pneumatic")
-            and v in pos
+            v
+            for _, v, d in G.out_edges(node, data=True)
+            if d.get("type") in ("signal_electric", "signal_pneumatic") and v in pos
         ] + [
-            u for u, _, d in G.in_edges(node, data=True)
-            if d.get("type") in ("signal_electric", "signal_pneumatic")
-            and u in pos
+            u
+            for u, _, d in G.in_edges(node, data=True)
+            if d.get("type") in ("signal_electric", "signal_pneumatic") and u in pos
         ]
         if signal_nbrs:
             ref_x, ref_y = pos[signal_nbrs[0]]
@@ -205,11 +202,13 @@ def assign_grid_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+
 def _fallback_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
     """Simple circular fallback when topological sort fails (cyclic graph)."""
     nodes = list(G.nodes())
     n = len(nodes)
     import math
+
     pos = {}
     for i, node in enumerate(nodes):
         angle = 2 * math.pi * i / max(n, 1)

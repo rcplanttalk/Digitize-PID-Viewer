@@ -4,6 +4,7 @@
 import os
 import sys
 
+
 def main():
     try:
         from huggingface_hub import snapshot_download

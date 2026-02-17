@@ -9,8 +9,6 @@ Subcommands:
 """
 
 import argparse
-import math
-import os
 import random
 import sys
 from pathlib import Path
@@ -40,19 +38,43 @@ NOTES_AREA = (0.790, 0.043, 0.950, 0.700)
 TITLE_AREA = (0.726, 0.700, 0.950, 0.950)
 
 # Right-panel layout
-SEPARATOR_X = 0.790   # vertical line splitting notes left/right
+SEPARATOR_X = 0.790  # vertical line splitting notes left/right
 TITLE_LEFT_X = 0.726  # left edge of title block (below notes)
 
 PIPE_SIZES = [2, 4, 6, 8, 10, 12, 14, 16]
 
 # Tag prefixes by class type
 VALVE_PREFIXES = [
-    "GV", "GLV", "BV", "BFV", "CK", "PV", "RV", "NV",
-    "DV", "AV", "TWV", "CV", "SOL", "MOV", "PCV", "HV",
+    "GV",
+    "GLV",
+    "BV",
+    "BFV",
+    "CK",
+    "PV",
+    "RV",
+    "NV",
+    "DV",
+    "AV",
+    "TWV",
+    "CV",
+    "SOL",
+    "MOV",
+    "PCV",
+    "HV",
 ]
 INSTRUMENT_PREFIXES = [
-    "PI", "TI", "FI", "LI", "FIC", "TIC", "LIC", "PIC",
-    "FT", "TT", "LT", "PT",
+    "PI",
+    "TI",
+    "FI",
+    "LI",
+    "FIC",
+    "TIC",
+    "LIC",
+    "PIC",
+    "FT",
+    "TT",
+    "LT",
+    "PT",
 ]
 EQUIPMENT_PREFIXES = ["P", "C", "T", "E", "V"]
 
@@ -72,9 +94,9 @@ NOTES_POOL = [
     "ALL WELDING PER AWS D1.1 AND PROJECT SPEC.",
     "CONTROL VALVES FAIL CLOSED UNLESS NOTED.",
     "RELIEF VALVES SET PER PROCESS DATA SHEETS.",
-    "DRAIN AND VENT VALVES 3/4\" MIN SIZE.",
+    'DRAIN AND VENT VALVES 3/4" MIN SIZE.',
     "SPECTACLE BLINDS AT ALL BATTERY LIMIT CONNECTIONS.",
-    "SAMPLE CONNECTIONS 1\" WITH BLOCK VALVE.",
+    'SAMPLE CONNECTIONS 1" WITH BLOCK VALVE.',
     "TEST CONNECTIONS WITH BLOCK AND BLEED VALVES.",
     "TEMPORARY STRAINERS DURING COMMISSIONING.",
     "ALL FLANGED JOINTS TO USE SPIRAL WOUND GASKETS.",
@@ -153,7 +175,7 @@ def extract_templates():
         print(f"ERROR: Training images not found at {img_dir}")
         sys.exit(1)
 
-    class_counts = {i: 0 for i in range(NUM_CLASSES)}
+    class_counts = dict.fromkeys(range(NUM_CLASSES), 0)
     TEMPLATES_DIR.mkdir(parents=True, exist_ok=True)
     for cid in range(NUM_CLASSES):
         cdir = TEMPLATES_DIR / str(cid)
@@ -231,11 +253,10 @@ def load_templates():
 
 def draw_dashed_rect(draw, x1, y1, x2, y2, dash=20, gap=12, width=2, fill="black"):
     """Draw a dashed rectangle."""
-    for start, end in [((x1, y1), (x2, y1)), ((x2, y1), (x2, y2)),
-                        ((x2, y2), (x1, y2)), ((x1, y2), (x1, y1))]:
+    for start, end in [((x1, y1), (x2, y1)), ((x2, y1), (x2, y2)), ((x2, y2), (x1, y2)), ((x1, y2), (x1, y1))]:
         dx = end[0] - start[0]
         dy = end[1] - start[1]
-        length = (dx ** 2 + dy ** 2) ** 0.5
+        length = (dx**2 + dy**2) ** 0.5
         if length == 0:
             continue
         ux, uy = dx / length, dy / length
@@ -243,9 +264,9 @@ def draw_dashed_rect(draw, x1, y1, x2, y2, dash=20, gap=12, width=2, fill="black
         while pos < length:
             seg_end = min(pos + dash, length)
             draw.line(
-                [(start[0] + ux * pos, start[1] + uy * pos),
-                 (start[0] + ux * seg_end, start[1] + uy * seg_end)],
-                fill=fill, width=width
+                [(start[0] + ux * pos, start[1] + uy * pos), (start[0] + ux * seg_end, start[1] + uy * seg_end)],
+                fill=fill,
+                width=width,
             )
             pos += dash + gap
 
@@ -254,7 +275,7 @@ def draw_dashed_line(draw, x1, y1, x2, y2, dash=16, gap=10, width=2, fill="gray"
     """Draw a single dashed line segment."""
     dx = x2 - x1
     dy = y2 - y1
-    length = (dx ** 2 + dy ** 2) ** 0.5
+    length = (dx**2 + dy**2) ** 0.5
     if length == 0:
         return
     ux, uy = dx / length, dy / length
@@ -262,9 +283,9 @@ def draw_dashed_line(draw, x1, y1, x2, y2, dash=16, gap=10, width=2, fill="gray"
     while pos < length:
         seg_end = min(pos + dash, length)
         draw.line(
-            [(x1 + ux * pos, y1 + uy * pos),
-             (x1 + ux * seg_end, y1 + uy * seg_end)],
-            fill=fill, width=width
+            [(x1 + ux * pos, y1 + uy * pos), (x1 + ux * seg_end, y1 + uy * seg_end)],
+            fill=fill,
+            width=width,
         )
         pos += dash + gap
 
@@ -376,10 +397,9 @@ def place_symbols_on_network(h_pipes, v_pipes, junctions, templates):
     signal_connections = []
     occupied = []  # (cx, cy, w, h) for collision avoidance
 
-    def has_overlap(cx, cy, w, h, min_gap=20):
+    def has_overlap(cx, cy, w, h, min_gap=20) -> bool:
         for ox, oy, ow, oh in occupied:
-            if (abs(cx - ox) < (w + ow) / 2 + min_gap and
-                    abs(cy - oy) < (h + oh) / 2 + min_gap):
+            if abs(cx - ox) < (w + ow) / 2 + min_gap and abs(cy - oy) < (h + oh) / 2 + min_gap:
                 return True
         return False
 
@@ -446,7 +466,7 @@ def place_symbols_on_network(h_pipes, v_pipes, junctions, templates):
             equip_count += 1
 
     # ── Phase 3: Valves ON pipe segments (classes 0-15) ──
-    valve_classes = [c for c in range(0, 16) if c in templates]
+    valve_classes = [c for c in range(16) if c in templates]
     valve_target = random.randint(25, 50)
     valve_count = 0
 
@@ -596,31 +616,30 @@ def draw_signal_lines(draw, signal_connections):
         draw_dashed_line(draw, ix, iy, px, py, dash=10, gap=8, width=1, fill=(120, 120, 120))
 
 
-def generate_tag(class_id):
+def generate_tag(class_id) -> str:
     """Generate a realistic ISA-style tag for a given class."""
     if 0 <= class_id <= 15:
         # Valve
         prefix = VALVE_PREFIXES[class_id]
         num = random.randint(100, 29999)
         return f"{prefix}-{num}"
-    elif 16 <= class_id <= 22:
+    if 16 <= class_id <= 22:
         # Instrument
         prefix = random.choice(INSTRUMENT_PREFIXES)
         num = random.randint(1000, 9999)
         return f"{prefix}-{num}"
-    elif 23 <= class_id <= 27:
+    if 23 <= class_id <= 27:
         # Equipment
         prefix = EQUIPMENT_PREFIXES[class_id - 23]
         num = random.randint(100, 999)
         suffix = random.choice(["", "A", "B", ""])
         return f"{prefix}-{num}{suffix}"
-    else:
-        # Basics (28-31) generally don't get prominent tags, but give a short ID
-        return ""
+    # Basics (28-31) generally don't get prominent tags, but give a short ID
+    return ""
 
 
-def generate_line_number(pipe_size):
-    """Generate a realistic pipe line number like 4\"-JD-9505."""
+def generate_line_number(pipe_size) -> str:
+    r"""Generate a realistic pipe line number like 4\"-JD-9505."""
     code = random.choice(PIPE_SPEC_CODES)
     num = random.randint(1000, 9999)
     return f'{pipe_size}"-{code}-{num}'
@@ -663,8 +682,8 @@ def draw_pipe_size_labels(draw, h_pipes, v_pipes, font_sm):
 def draw_separator_line(draw):
     """Draw continuous vertical separator at SEPARATOR_X from notes top to title bottom."""
     sx = int(CANVAS_W * SEPARATOR_X)
-    sy1 = int(CANVAS_H * NOTES_AREA[1])   # top of notes area
-    sy2 = int(CANVAS_H * TITLE_AREA[3])   # bottom of title area
+    sy1 = int(CANVAS_H * NOTES_AREA[1])  # top of notes area
+    sy2 = int(CANVAS_H * TITLE_AREA[3])  # bottom of title area
     draw.line([(sx, sy1), (sx, sy2)], fill="black", width=2)
 
 
@@ -921,7 +940,7 @@ def draw_notes_section(draw, font, font_sm, font_bold):
 # ── Paste symbol templates ─────────────────────────────────────────
 def paste_symbols(img, placements):
     """Paste template images onto canvas at their placed positions."""
-    for cx, cy, sw, sh, cid, tpath in placements:
+    for cx, cy, sw, sh, _cid, tpath in placements:
         timg = Image.open(tpath).convert("RGBA")
         timg = timg.resize((sw, sh), Image.LANCZOS)
         px = cx - sw // 2
@@ -1014,7 +1033,10 @@ def generate_images(n_images, seed=None):
 
         # 3. Place symbols on network
         placements, signal_connections = place_symbols_on_network(
-            h_pipes, v_pipes, junctions, templates
+            h_pipes,
+            v_pipes,
+            junctions,
+            templates,
         )
 
         # 4. Draw pipes (under symbols)
@@ -1057,23 +1079,19 @@ def generate_images(n_images, seed=None):
 # ── CLI ────────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(
-        description="Synthetic P&ID generator with YOLO annotations"
+        description="Synthetic P&ID generator with YOLO annotations",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("extract", help="Extract symbol templates from training images")
 
     gen_p = sub.add_parser("generate", help="Generate synthetic P&ID images")
-    gen_p.add_argument("-n", "--count", type=int, default=50,
-                       help="Number of images to generate (default: 50)")
-    gen_p.add_argument("--seed", type=int, default=None,
-                       help="Random seed for reproducibility")
+    gen_p.add_argument("-n", "--count", type=int, default=50, help="Number of images to generate (default: 50)")
+    gen_p.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
 
     all_p = sub.add_parser("all", help="Extract templates then generate images")
-    all_p.add_argument("-n", "--count", type=int, default=50,
-                       help="Number of images to generate (default: 50)")
-    all_p.add_argument("--seed", type=int, default=None,
-                       help="Random seed for reproducibility")
+    all_p.add_argument("-n", "--count", type=int, default=50, help="Number of images to generate (default: 50)")
+    all_p.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
 
     args = parser.parse_args()
 

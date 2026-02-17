@@ -4,7 +4,7 @@ import random
 
 import networkx as nx
 
-from .constants import PIPE_SIZES, PIPE_SPEC_CODES, ALL_CLASS_IDS, _type_from_class
+from pid_generator.constants import ALL_CLASS_IDS, PIPE_SIZES, PIPE_SPEC_CODES, _type_from_class
 
 
 def create_random_topology(
@@ -31,20 +31,24 @@ def create_random_topology(
 
     for i, node in enumerate(G.nodes()):
         cid = random.choice(ALL_CLASS_IDS)
-        G.nodes[node].update({
-            "id":       f"NODE_{i:03d}",
-            "class_id": cid,
-            "type":     _type_from_class(cid),
-            "size":     random.choice(PIPE_SIZES),
-            "tag":      f"SYM-{i:03d}",
-        })
+        G.nodes[node].update(
+            {
+                "id": f"NODE_{i:03d}",
+                "class_id": cid,
+                "type": _type_from_class(cid),
+                "size": random.choice(PIPE_SIZES),
+                "tag": f"SYM-{i:03d}",
+            }
+        )
 
     for u, v in G.edges():
-        G[u][v].update({
-            "size": random.choice(PIPE_SIZES),
-            "spec": random.choice(PIPE_SPEC_CODES),
-            "type": "process",
-        })
+        G[u][v].update(
+            {
+                "size": random.choice(PIPE_SIZES),
+                "spec": random.choice(PIPE_SPEC_CODES),
+                "type": "process",
+            }
+        )
 
     return G
 
@@ -66,18 +70,11 @@ def create_balanced_random_topology(n_nodes: int = 42) -> nx.DiGraph:
     random.shuffle(cids)
 
     for i, cid in enumerate(cids[:n_nodes]):
-        G.add_node(i,
-                   class_id=cid,
-                   type=_type_from_class(cid),
-                   size=random.choice(PIPE_SIZES),
-                   tag=f"SYM-{i:03d}")
+        G.add_node(i, class_id=cid, type=_type_from_class(cid), size=random.choice(PIPE_SIZES), tag=f"SYM-{i:03d}")
 
     nodes = list(G.nodes())
     for u in nodes:
         for v in nodes:
             if u != v and random.random() < 0.15:
-                G.add_edge(u, v,
-                           size=random.choice(PIPE_SIZES),
-                           spec=random.choice(PIPE_SPEC_CODES),
-                           type="process")
+                G.add_edge(u, v, size=random.choice(PIPE_SIZES), spec=random.choice(PIPE_SPEC_CODES), type="process")
     return G

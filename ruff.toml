@@ -243,6 +243,7 @@ ignore = [
     "E114",    # Indentation
     "E117",    # Over-indented
     "E501",    # Line too long (handled by formatter)
+    "COM812",  # Trailing comma (conflicts with formatter)
 
     # Docstring rules (too strict for all code)
     "D100",    # Missing docstring in public module
@@ -254,8 +255,6 @@ ignore = [
     "D213",    # Multi-line docstring summary should start at second line
 
     # Type annotation rules (can be too strict)
-    "ANN101",  # Missing type annotation for self
-    "ANN102",  # Missing type annotation for cls
     "ANN401",  # Dynamically typed expressions (Any)
 
     # Boolean traps (sometimes necessary)
@@ -332,6 +331,45 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 "scripts/*.py" = [
     "T20",     # Print statements
     "INP001",  # Implicit namespace package
+    "S311",    # Random not for crypto
+    "S605",    # Shell injection (controlled context)
+    "ANN",     # Type annotations
+    "D",       # Docstrings
+    "C901",    # Complexity
+    "PLR0912", # Too many branches
+    "PLR0915", # Too many statements
+    "PTH",     # Use pathlib (legacy code)
+    "PLC0415", # Import not at top-level (conditional imports)
+    "ARG001",  # Unused function arguments
+]
+
+# Main scripts
+"main.py" = [
+    "T20",     # Print statements
+    "D",       # Docstrings
+]
+
+"server.py" = [
+    "T20",     # Print statements
+    "D",       # Docstrings
+]
+
+# PID Generator package
+"pid_generator/*.py" = [
+    "S311",    # Random not for crypto
+    "RUF002",  # Ambiguous characters in docstrings (en-dash)
+    "RUF003",  # Ambiguous characters in comments (en-dash)
+    "PLC0415", # Import not at top-level (conditional imports are OK)
+    "PLW0603", # Global statement (sometimes necessary)
+    "PTH",     # Use pathlib (legacy code uses os.path)
+    "ARG001",  # Unused function arguments (interface compatibility)
+    "C901",    # Complexity (legacy code)
+    "PLR0912", # Too many branches (legacy code)
+    "PLR0915", # Too many statements (legacy code)
+    "PERF203", # try-except in loop (acceptable here)
+    "S110",    # try-except-pass (acceptable here)
+    "BLE001",  # Blind except (acceptable here)
+    "PERF401", # List comprehension (legacy code)
 ]
 
 # ============================================================================

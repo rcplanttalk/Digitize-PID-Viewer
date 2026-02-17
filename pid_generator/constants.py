@@ -7,7 +7,16 @@
 PIPE_SIZES: list[int] = [2, 4, 6, 8, 10, 12, 14, 16]
 
 PIPE_SPEC_CODES: list[str] = [
-    "JD", "CK", "AB", "EF", "GH", "PN", "WR", "ST", "HX", "MN"
+    "JD",
+    "CK",
+    "AB",
+    "EF",
+    "GH",
+    "PN",
+    "WR",
+    "ST",
+    "HX",
+    "MN",
 ]
 
 # ---------------------------------------------------------------------------
@@ -15,13 +24,37 @@ PIPE_SPEC_CODES: list[str] = [
 # ---------------------------------------------------------------------------
 
 VALVE_PREFIXES: list[str] = [
-    "GV", "GLV", "BV", "BFV", "CK", "PV", "RV", "NV",
-    "DV", "AV", "TWV", "CV", "SOL", "MOV", "PCV", "HV",
+    "GV",
+    "GLV",
+    "BV",
+    "BFV",
+    "CK",
+    "PV",
+    "RV",
+    "NV",
+    "DV",
+    "AV",
+    "TWV",
+    "CV",
+    "SOL",
+    "MOV",
+    "PCV",
+    "HV",
 ]
 
 INSTRUMENT_PREFIXES: list[str] = [
-    "PI", "TI", "FI", "LI", "FIC", "TIC", "LIC", "PIC",
-    "FT", "TT", "LT", "PT",
+    "PI",
+    "TI",
+    "FI",
+    "LI",
+    "FIC",
+    "TIC",
+    "LIC",
+    "PIC",
+    "FT",
+    "TT",
+    "LT",
+    "PT",
 ]
 
 EQUIPMENT_PREFIXES: list[str] = ["P", "C", "T", "E", "V"]
@@ -35,10 +68,10 @@ EQUIPMENT_PREFIXES: list[str] = ["P", "C", "T", "E", "V"]
 # 24–31 : equipment
 # 32–41 : fittings / structural
 
-CLASS_ID_VALVE_MAX      = 11
+CLASS_ID_VALVE_MAX = 11
 CLASS_ID_INSTRUMENT_MAX = 23
-CLASS_ID_EQUIPMENT_MAX  = 31
-CLASS_ID_FITTING_MAX    = 41
+CLASS_ID_EQUIPMENT_MAX = 31
+CLASS_ID_FITTING_MAX = 41
 
 ALL_CLASS_IDS: list[int] = list(range(42))
 
@@ -111,14 +144,10 @@ DIAGRAM_TITLES: list[str] = [
 
 # Paired second-line titles (some companies use two title lines)
 DIAGRAM_TITLE_PAIRS: list[tuple[str, str]] = [
-    ("SYNTHETIC PROCESS FLOW DIAGRAM",
-     "SYNTHETIC PROCESS ENGINEERING FLOW SCHEME"),
-    ("SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM",
-     "SYNTHETIC UTILITY FLOW DIAGRAM"),
-    ("SYNTHETIC PROCESS FLOW DIAGRAM",
-     "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM"),
-    ("SYNTHETIC MECHANICAL FLOW DIAGRAM",
-     "SYNTHETIC HEAT & MATERIAL BALANCE DIAGRAM"),
+    ("SYNTHETIC PROCESS FLOW DIAGRAM", "SYNTHETIC PROCESS ENGINEERING FLOW SCHEME"),
+    ("SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM", "SYNTHETIC UTILITY FLOW DIAGRAM"),
+    ("SYNTHETIC PROCESS FLOW DIAGRAM", "SYNTHETIC PIPING & INSTRUMENTATION DIAGRAM"),
+    ("SYNTHETIC MECHANICAL FLOW DIAGRAM", "SYNTHETIC HEAT & MATERIAL BALANCE DIAGRAM"),
 ]
 
 # Revision description pool (ISO 7200 "revision" field)
@@ -142,8 +171,16 @@ REVISION_DESCRIPTIONS: list[str] = [
 
 # Synthetic draughtsman / engineer initials
 PERSON_INITIALS: list[str] = [
-    "J.R.", "S.K.", "A.M.", "T.W.", "R.P.",
-    "D.L.", "C.H.", "M.F.", "B.N.", "E.C.",
+    "J.R.",
+    "S.K.",
+    "A.M.",
+    "T.W.",
+    "R.P.",
+    "D.L.",
+    "C.H.",
+    "M.F.",
+    "B.N.",
+    "E.C.",
 ]
 
 # Disclaimer text — must appear on every generated drawing

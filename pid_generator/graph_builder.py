@@ -8,8 +8,8 @@ import random
 
 import networkx as nx
 
-from .constants import PIPE_SIZES, PIPE_SPEC_CODES
-from .tags import build_pipe_tag, build_component_tag
+from pid_generator.constants import PIPE_SPEC_CODES
+from pid_generator.tags import build_component_tag, build_pipe_tag
 
 # ---------------------------------------------------------------------------
 # Instrument class IDs per measurement variable (§11.2)
@@ -42,6 +42,7 @@ def _ctl_class(variable: str) -> int:
 # Public API
 # ---------------------------------------------------------------------------
 
+
 def create_logical_system(seed: int | None = None) -> nx.DiGraph:
     """Build a validated process graph: PUMP → isolation valve → strainer → tank.
 
@@ -68,38 +69,33 @@ def create_logical_system(seed: int | None = None) -> nx.DiGraph:
     # Nodes
     # -----------------------------------------------------------------------
     # Off-page connector — feed inlet from upstream sheet
-    G.add_node("OPC_IN_01",
-               type="off_page", direction="in", class_id=38,
-               size=size, tag="OPC-IN-001", ref_sheet=0, ref_line="FEED")
+    G.add_node(
+        "OPC_IN_01",
+        type="off_page",
+        direction="in",
+        class_id=38,
+        size=size,
+        tag="OPC-IN-001",
+        ref_sheet=0,
+        ref_line="FEED",
+    )
 
-    G.add_node("PUMP_01",
-               type="equipment", class_id=24, size=size,
-               tag=build_component_tag("P", 101))
+    G.add_node("PUMP_01", type="equipment", class_id=24, size=size, tag=build_component_tag("P", 101))
 
     # Inlet isolation valve (gate valve, class_id=4)
-    G.add_node("GV_IN_01",
-               type="valve", class_id=4, size=size,
-               tag=build_component_tag("GV", 1))
+    G.add_node("GV_IN_01", type="valve", class_id=4, size=size, tag=build_component_tag("GV", 1))
 
     # Outlet isolation valve (gate valve, class_id=4)
-    G.add_node("GV_OUT_01",
-               type="valve", class_id=4, size=size,
-               tag=build_component_tag("GV", 2))
+    G.add_node("GV_OUT_01", type="valve", class_id=4, size=size, tag=build_component_tag("GV", 2))
 
     # Check valve on discharge (class_id=2)
-    G.add_node("CK_01",
-               type="valve", class_id=2, size=size,
-               tag=build_component_tag("CK", 1))
+    G.add_node("CK_01", type="valve", class_id=2, size=size, tag=build_component_tag("CK", 1))
 
     # Strainer upstream of control valve (class_id=34)
-    G.add_node("STR_01",
-               type="fitting", class_id=34, size=size,
-               tag=build_component_tag("GV", 3))
+    G.add_node("STR_01", type="fitting", class_id=34, size=size, tag=build_component_tag("GV", 3))
 
     # Destination tank (storage tank, class_id=30)
-    G.add_node("TANK_01",
-               type="equipment", class_id=30, size=size,
-               tag=build_component_tag("T", 101))
+    G.add_node("TANK_01", type="equipment", class_id=30, size=size, tag=build_component_tag("T", 101))
 
     # -----------------------------------------------------------------------
     # Edges (process flow direction: inlet → pump → discharge → tank)
@@ -113,13 +109,13 @@ def create_logical_system(seed: int | None = None) -> nx.DiGraph:
         return {"size": size, "spec": spec, "type": "process", "tag": tag}
 
     G.add_edge("OPC_IN_01", "GV_IN_01", **_pe("OPC_IN_01", "GV_IN_01"))
-    G.add_edge("GV_IN_01",  "PUMP_01",  **_pe("GV_IN_01",  "PUMP_01"))
-    G.add_edge("PUMP_01",   "GV_OUT_01", **_pe("PUMP_01",   "GV_OUT_01"))
-    G.add_edge("GV_OUT_01", "CK_01",    **_pe("GV_OUT_01", "CK_01"))
-    G.add_edge("CK_01",     "STR_01",   **_pe("CK_01",     "STR_01"))
+    G.add_edge("GV_IN_01", "PUMP_01", **_pe("GV_IN_01", "PUMP_01"))
+    G.add_edge("PUMP_01", "GV_OUT_01", **_pe("PUMP_01", "GV_OUT_01"))
+    G.add_edge("GV_OUT_01", "CK_01", **_pe("GV_OUT_01", "CK_01"))
+    G.add_edge("CK_01", "STR_01", **_pe("CK_01", "STR_01"))
 
     # The STR_01 → TANK_01 edge will be split by the control loop below.
-    G.add_edge("STR_01",    "TANK_01",  **_pe("STR_01",    "TANK_01"))
+    G.add_edge("STR_01", "TANK_01", **_pe("STR_01", "TANK_01"))
 
     # -----------------------------------------------------------------------
     # Control loop on the strainer → tank pipe (flow measurement)
@@ -152,28 +148,29 @@ def add_control_loop(
     size = data["size"]
     spec = data["spec"]
 
-    cv_id  = f"{variable}V_{loop_num:03d}"
-    tx_id  = f"{variable}T_{loop_num:03d}"
+    cv_id = f"{variable}V_{loop_num:03d}"
+    tx_id = f"{variable}T_{loop_num:03d}"
     ctl_id = f"{variable}IC_{loop_num:03d}"
 
     G.remove_edge(u, v)
 
-    G.add_node(cv_id,
-               type="valve", class_id=3,
-               size=size, tag=f"{variable}V-{loop_num}", loop=loop_num)
-    G.add_node(tx_id,
-               type="instrument", class_id=_tx_class(variable),
-               size=size, tag=f"{variable}T-{loop_num}", loop=loop_num)
-    G.add_node(ctl_id,
-               type="instrument", class_id=_ctl_class(variable),
-               size=size, tag=f"{variable}IC-{loop_num}", loop=loop_num)
+    G.add_node(cv_id, type="valve", class_id=3, size=size, tag=f"{variable}V-{loop_num}", loop=loop_num)
+    G.add_node(
+        tx_id, type="instrument", class_id=_tx_class(variable), size=size, tag=f"{variable}T-{loop_num}", loop=loop_num
+    )
+    G.add_node(
+        ctl_id,
+        type="instrument",
+        class_id=_ctl_class(variable),
+        size=size,
+        tag=f"{variable}IC-{loop_num}",
+        loop=loop_num,
+    )
 
-    pipe_tag_cv_in  = build_pipe_tag(size, spec, 900 + loop_num)
+    pipe_tag_cv_in = build_pipe_tag(size, spec, 900 + loop_num)
     pipe_tag_cv_out = build_pipe_tag(size, spec, 901 + loop_num)
 
-    G.add_edge(u,      cv_id, size=size, spec=spec, type="process",
-               tag=pipe_tag_cv_in)
-    G.add_edge(cv_id,  v,     size=size, spec=spec, type="process",
-               tag=pipe_tag_cv_out)
-    G.add_edge(tx_id,  ctl_id, type="signal_electric")
-    G.add_edge(ctl_id, cv_id,  type="signal_electric")
+    G.add_edge(u, cv_id, size=size, spec=spec, type="process", tag=pipe_tag_cv_in)
+    G.add_edge(cv_id, v, size=size, spec=spec, type="process", tag=pipe_tag_cv_out)
+    G.add_edge(tx_id, ctl_id, type="signal_electric")
+    G.add_edge(ctl_id, cv_id, type="signal_electric")

@@ -21,10 +21,9 @@ from __future__ import annotations
 
 import random
 from datetime import date, timedelta
+from typing import TYPE_CHECKING
 
-from PIL import ImageDraw
-
-from .constants import (
+from pid_generator.constants import (
     CLIENT_NAMES,
     CONTRACT_NAMES,
     DIAGRAM_TITLE_PAIRS,
@@ -34,19 +33,23 @@ from .constants import (
     PLANT_NAMES,
     REVISION_DESCRIPTIONS,
 )
-from .layout import CANVAS_H, CANVAS_W, MARGIN
+from pid_generator.layout import CANVAS_H, CANVAS_W, MARGIN
+
+if TYPE_CHECKING:
+    from PIL import ImageDraw
 
 # ---------------------------------------------------------------------------
 # Layout constants for the title block (§15)
 # ---------------------------------------------------------------------------
 
-BLOCK_H      = 180   # total title block height in pixels
-BLOCK_H_REV  = 28    # height per revision row
-REV_ROWS     = 3     # number of revision rows to render
+BLOCK_H = 180  # total title block height in pixels
+BLOCK_H_REV = 28  # height per revision row
+REV_ROWS = 3  # number of revision rows to render
 
 # ---------------------------------------------------------------------------
 # Metadata generator
 # ---------------------------------------------------------------------------
+
 
 def generate_title_block_metadata(
     idx: int = 1,
@@ -103,42 +106,45 @@ def generate_title_block_metadata(
     rev_date = creation_date
     for i in range(n_revs):
         rev_date = rev_date + timedelta(days=rng.randint(7, 60))
-        revisions.append({
-            "rev":         rev_letters[i],
-            "description": rng.choice(REVISION_DESCRIPTIONS),
-            "date":        rev_date.strftime("%Y-%m-%d"),
-            "by":          rng.choice(PERSON_INITIALS),
-            "chk":         rng.choice(PERSON_INITIALS),
-        })
+        revisions.append(
+            {
+                "rev": rev_letters[i],
+                "description": rng.choice(REVISION_DESCRIPTIONS),
+                "date": rev_date.strftime("%Y-%m-%d"),
+                "by": rng.choice(PERSON_INITIALS),
+                "chk": rng.choice(PERSON_INITIALS),
+            }
+        )
 
     proj_num = f"PRJ-{rng.randint(1000, 9999)}"
-    doc_num  = f"{proj_num}-PID-{idx:04d}"
+    doc_num = f"{proj_num}-PID-{idx:04d}"
 
     return {
         # ISO 7200 mandatory
-        "legal_owner":     rng.choice(ORGANIZATION_NAMES),
-        "doc_number":      doc_num,
-        "doc_title":       title_pair[0],
-        "doc_title_2":     title_pair[1],
-        "doc_type":        rng.choice(CONTRACT_NAMES),
-        "creator":         rng.choice(PERSON_INITIALS),
-        "creation_date":   creation_date.strftime("%Y-%m-%d"),
+        "legal_owner": rng.choice(ORGANIZATION_NAMES),
+        "doc_number": doc_num,
+        "doc_title": title_pair[0],
+        "doc_title_2": title_pair[1],
+        "doc_type": rng.choice(CONTRACT_NAMES),
+        "creator": rng.choice(PERSON_INITIALS),
+        "creation_date": creation_date.strftime("%Y-%m-%d"),
         "approval_person": rng.choice(PERSON_INITIALS),
-        "approval_date":   approval_date.strftime("%Y-%m-%d"),
-        "sheet_number":    f"P&ID-{idx:02d}",
+        "approval_date": approval_date.strftime("%Y-%m-%d"),
+        "sheet_number": f"P&ID-{idx:02d}",
         # ISO 7200 optional / industry standard
-        "client":          rng.choice(CLIENT_NAMES),
-        "plant":           rng.choice(PLANT_NAMES),
-        "project_number":  proj_num,
-        "scale":           "NTS",
-        "revisions":       revisions,
-        "disclaimer":      DISCLAIMER_TEXT,
+        "client": rng.choice(CLIENT_NAMES),
+        "plant": rng.choice(PLANT_NAMES),
+        "project_number": proj_num,
+        "scale": "NTS",
+        "revisions": revisions,
+        "disclaimer": DISCLAIMER_TEXT,
     }
 
 
 # ---------------------------------------------------------------------------
 # Renderer
 # ---------------------------------------------------------------------------
+
 
 def draw_title_block(
     draw: ImageDraw.ImageDraw,
@@ -164,7 +170,7 @@ def draw_title_block(
         metadata: Dict from ``generate_title_block_metadata()``.
                   Falls back to placeholder strings if None or missing keys.
     """
-    from .renderer import _font  # local import to avoid circular dependency
+    from pid_generator.renderer import _font  # local import to avoid circular dependency
 
     if metadata is None:
         metadata = {}
@@ -172,17 +178,17 @@ def draw_title_block(
     def _get(key: str, default: str = "") -> str:
         return str(metadata.get(key, default))
 
-    font    = _font(small=False)
+    font = _font(small=False)
     font_sm = _font(small=True)
-    fg      = "black"
-    grey    = (100, 100, 100)
+    fg = "black"
+    grey = (100, 100, 100)
 
     x0 = MARGIN
     x1 = CANVAS_W - MARGIN
     y1 = CANVAS_H - MARGIN
     y0 = y1 - BLOCK_H
 
-    pad = 6   # inner padding
+    pad = 6  # inner padding
 
     # -----------------------------------------------------------------------
     # Outer title block rectangle
@@ -192,15 +198,15 @@ def draw_title_block(
     # -----------------------------------------------------------------------
     # Vertical dividers: left info panel | revision table | right stamps
     # -----------------------------------------------------------------------
-    total_w   = x1 - x0
-    rev_w     = 500          # width of revision table column
-    stamp_w   = 260          # width of doc-number / sheet column
-    left_w    = total_w - rev_w - stamp_w
+    total_w = x1 - x0
+    rev_w = 500  # width of revision table column
+    stamp_w = 260  # width of doc-number / sheet column
+    left_w = total_w - rev_w - stamp_w
 
-    div_rev   = x0 + left_w
+    div_rev = x0 + left_w
     div_stamp = div_rev + rev_w
 
-    draw.line([(div_rev,   y0), (div_rev,   y1)], fill=fg, width=1)
+    draw.line([(div_rev, y0), (div_rev, y1)], fill=fg, width=1)
     draw.line([(div_stamp, y0), (div_stamp, y1)], fill=fg, width=1)
 
     # -----------------------------------------------------------------------
@@ -208,48 +214,35 @@ def draw_title_block(
     # -----------------------------------------------------------------------
     cy = y0 + pad
 
-    draw.text((x0 + pad, cy),
-              _get("legal_owner", "ORGANISATION"),
-              fill=fg, font=font)
+    draw.text((x0 + pad, cy), _get("legal_owner", "ORGANISATION"), fill=fg, font=font)
     cy += 24
 
-    draw.text((x0 + pad, cy),
-              f"CLIENT: {_get('client')}",
-              fill=grey, font=font_sm)
+    draw.text((x0 + pad, cy), f"CLIENT: {_get('client')}", fill=grey, font=font_sm)
     cy += 18
 
-    draw.text((x0 + pad, cy),
-              f"PLANT:  {_get('plant')}",
-              fill=grey, font=font_sm)
+    draw.text((x0 + pad, cy), f"PLANT:  {_get('plant')}", fill=grey, font=font_sm)
     cy += 18
 
-    draw.text((x0 + pad, cy),
-              _get("doc_title", "DIAGRAM TITLE"),
-              fill=fg, font=font)
+    draw.text((x0 + pad, cy), _get("doc_title", "DIAGRAM TITLE"), fill=fg, font=font)
     cy += 24
 
-    draw.text((x0 + pad, cy),
-              _get("doc_title_2"),
-              fill=fg, font=font_sm)
+    draw.text((x0 + pad, cy), _get("doc_title_2"), fill=fg, font=font_sm)
     cy += 20
 
     # Created / approved line
     sig_line = (
-        f"DRN: {_get('creator')}  {_get('creation_date')}   "
-        f"APPR: {_get('approval_person')}  {_get('approval_date')}"
+        f"DRN: {_get('creator')}  {_get('creation_date')}   APPR: {_get('approval_person')}  {_get('approval_date')}"
     )
-    draw.text((x0 + pad, y1 - 20),
-              sig_line, fill=grey, font=font_sm)
+    draw.text((x0 + pad, y1 - 20), sig_line, fill=grey, font=font_sm)
 
     # -----------------------------------------------------------------------
     # Revision table (middle column)
     # -----------------------------------------------------------------------
     # Header row
     hdr_h = 20
-    draw.rectangle([div_rev, y0, div_stamp, y0 + hdr_h],
-                   fill=(230, 230, 230), outline=fg, width=1)
-    col_widths = [30, 210, 110, 70, 70]   # Rev, Description, Date, By, Chk
-    headers    = ["REV", "DESCRIPTION", "DATE", "BY", "CHK"]
+    draw.rectangle([div_rev, y0, div_stamp, y0 + hdr_h], fill=(230, 230, 230), outline=fg, width=1)
+    col_widths = [30, 210, 110, 70, 70]  # Rev, Description, Date, By, Chk
+    headers = ["REV", "DESCRIPTION", "DATE", "BY", "CHK"]
     rx = div_rev
     for w, hdr in zip(col_widths, headers):
         draw.text((rx + 3, y0 + 3), hdr, fill=fg, font=font_sm)
@@ -282,28 +275,20 @@ def draw_title_block(
     mid_y = y0 + (BLOCK_H - 20) // 2
     draw.line([(div_stamp, mid_y), (x1, mid_y)], fill=fg, width=1)
 
-    draw.text((div_stamp + pad, y0 + pad),
-              "DOC NO.", fill=grey, font=font_sm)
-    draw.text((div_stamp + pad, y0 + pad + 18),
-              _get("doc_number"), fill=fg, font=font)
+    draw.text((div_stamp + pad, y0 + pad), "DOC NO.", fill=grey, font=font_sm)
+    draw.text((div_stamp + pad, y0 + pad + 18), _get("doc_number"), fill=fg, font=font)
 
-    draw.text((div_stamp + pad, y0 + pad + 48),
-              "TYPE: " + _get("doc_type"), fill=grey, font=font_sm)
+    draw.text((div_stamp + pad, y0 + pad + 48), "TYPE: " + _get("doc_type"), fill=grey, font=font_sm)
 
-    draw.text((div_stamp + pad, y0 + pad + 68),
-              "PROJ: " + _get("project_number"), fill=grey, font=font_sm)
+    draw.text((div_stamp + pad, y0 + pad + 68), "PROJ: " + _get("project_number"), fill=grey, font=font_sm)
 
     # Sheet / scale (bottom half)
-    draw.text((div_stamp + pad, mid_y + pad),
-              "SHEET", fill=grey, font=font_sm)
-    draw.text((div_stamp + pad, mid_y + pad + 18),
-              _get("sheet_number"), fill=fg, font=font)
+    draw.text((div_stamp + pad, mid_y + pad), "SHEET", fill=grey, font=font_sm)
+    draw.text((div_stamp + pad, mid_y + pad + 18), _get("sheet_number"), fill=fg, font=font)
 
     scale_x = div_stamp + stamp_w // 2
-    draw.text((scale_x, mid_y + pad),
-              "SCALE", fill=grey, font=font_sm)
-    draw.text((scale_x, mid_y + pad + 18),
-              _get("scale", "NTS"), fill=fg, font=font)
+    draw.text((scale_x, mid_y + pad), "SCALE", fill=grey, font=font_sm)
+    draw.text((scale_x, mid_y + pad + 18), _get("scale", "NTS"), fill=fg, font=font)
 
     # -----------------------------------------------------------------------
     # Disclaimer strip below title block
@@ -313,6 +298,6 @@ def draw_title_block(
     half = len(disclaimer) // 2
     space = disclaimer.rfind(" ", 0, half)
     line1 = disclaimer[:space]
-    line2 = disclaimer[space + 1:]
-    draw.text((x0 + pad, y1 + 4),   line1, fill=grey, font=font_sm)
-    draw.text((x0 + pad, y1 + 18),  line2, fill=grey, font=font_sm)
+    line2 = disclaimer[space + 1 :]
+    draw.text((x0 + pad, y1 + 4), line1, fill=grey, font=font_sm)
+    draw.text((x0 + pad, y1 + 18), line2, fill=grey, font=font_sm)

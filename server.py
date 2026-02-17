@@ -14,6 +14,4 @@ class CORSHandler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
 
-print(f"Serving at http://localhost:{PORT}")
-print(f"Open http://localhost:{PORT}/viewer/ in your browser")
 http.server.HTTPServer(("", PORT), CORSHandler).serve_forever()

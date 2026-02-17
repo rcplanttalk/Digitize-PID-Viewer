@@ -23,3 +23,7 @@ test-results/
 
 # Claude Code
 .claude/
+
+# Dataset and output folder
+dataset/
+output/
