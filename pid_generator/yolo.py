@@ -19,9 +19,7 @@ from pid_generator.renderer import SYMBOL_BOX
 if TYPE_CHECKING:
     import networkx as nx
 
-# ---------------------------------------------------------------------------
 # Class name registry (§25 data.yaml)
-# ---------------------------------------------------------------------------
 
 CLASS_NAMES: dict[int, str] = {
     0: "ball_valve",
@@ -72,9 +70,7 @@ CLASS_NAMES: dict[int, str] = {
 _BBOX_PX: int = SYMBOL_BOX * 2  # 128 px
 
 
-# ---------------------------------------------------------------------------
 # File naming helpers (§26)
-# ---------------------------------------------------------------------------
 
 
 def image_filename(idx: int) -> str:
@@ -87,9 +83,7 @@ def label_filename(idx: int) -> str:
     return f"pid_{idx:04d}.txt"
 
 
-# ---------------------------------------------------------------------------
 # Stage 10 — YOLO label export
-# ---------------------------------------------------------------------------
 
 
 def export_yolo_labels(
@@ -133,9 +127,7 @@ def export_yolo_labels(
             f.write("\n")
 
 
-# ---------------------------------------------------------------------------
 # data.yaml writer
-# ---------------------------------------------------------------------------
 
 
 def write_data_yaml(dataset_root: str) -> None:

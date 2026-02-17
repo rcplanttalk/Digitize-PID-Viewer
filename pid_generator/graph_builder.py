@@ -11,9 +11,7 @@ import networkx as nx
 from pid_generator.constants import PIPE_SPEC_CODES
 from pid_generator.tags import build_component_tag, build_pipe_tag
 
-# ---------------------------------------------------------------------------
 # Instrument class IDs per measurement variable (§11.2)
-# ---------------------------------------------------------------------------
 
 _TX_CLASS: dict[str, int] = {
     "P": 12,  # Pressure Transmitter
@@ -38,9 +36,7 @@ def _ctl_class(variable: str) -> int:
     return _CTL_CLASS.get(variable, 14)
 
 
-# ---------------------------------------------------------------------------
 # Public API
-# ---------------------------------------------------------------------------
 
 
 def create_logical_system(seed: int | None = None) -> nx.DiGraph:

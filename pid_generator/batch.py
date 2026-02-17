@@ -26,9 +26,7 @@ from pid_generator.serialiser import export_graph, graph_filename
 from pid_generator.validator import validate_pid_logic
 from pid_generator.yolo import export_yolo_labels, image_filename, label_filename, write_data_yaml
 
-# ---------------------------------------------------------------------------
 # Split ratios (§26)
-# ---------------------------------------------------------------------------
 
 SPLIT_RATIOS: dict[str, float] = {
     "train": 0.80,
@@ -50,9 +48,7 @@ MANIFEST_FIELDS = [
 ]
 
 
-# ---------------------------------------------------------------------------
 # Seed control
-# ---------------------------------------------------------------------------
 
 
 def set_global_seed(seed: int) -> None:
@@ -61,9 +57,7 @@ def set_global_seed(seed: int) -> None:
     np.random.seed(seed)
 
 
-# ---------------------------------------------------------------------------
 # Single-diagram worker
-# ---------------------------------------------------------------------------
 
 
 def generate_one(
@@ -134,9 +128,7 @@ def generate_one(
     }
 
 
-# ---------------------------------------------------------------------------
 # Batch driver
-# ---------------------------------------------------------------------------
 
 
 def generate_dataset(

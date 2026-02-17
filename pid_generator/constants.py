@@ -1,8 +1,6 @@
 """Constant pools for the P&ID generator (§2, §11, §13, §15)."""
 
-# ---------------------------------------------------------------------------
 # §2 / §13 — Pipe sizes and spec codes
-# ---------------------------------------------------------------------------
 
 PIPE_SIZES: list[int] = [2, 4, 6, 8, 10, 12, 14, 16]
 
@@ -19,9 +17,7 @@ PIPE_SPEC_CODES: list[str] = [
     "MN",
 ]
 
-# ---------------------------------------------------------------------------
 # §2 — Component prefix pools
-# ---------------------------------------------------------------------------
 
 VALVE_PREFIXES: list[str] = [
     "GV",
@@ -59,9 +55,7 @@ INSTRUMENT_PREFIXES: list[str] = [
 
 EQUIPMENT_PREFIXES: list[str] = ["P", "C", "T", "E", "V"]
 
-# ---------------------------------------------------------------------------
 # §11 — Class ID ranges (for _type_from_class helper)
-# ---------------------------------------------------------------------------
 
 # 0–11  : valves
 # 12–23 : instruments
@@ -76,9 +70,7 @@ CLASS_ID_FITTING_MAX = 41
 ALL_CLASS_IDS: list[int] = list(range(42))
 
 
-# ---------------------------------------------------------------------------
 # §15 — Title block constant pools (ISO 7200:2004)
-# ---------------------------------------------------------------------------
 
 # ISO 7200 mandatory field: "Legal owner" (organisation name)
 ORGANIZATION_NAMES: list[str] = [
