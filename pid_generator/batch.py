@@ -67,6 +67,7 @@ def generate_one(
     dataset_root: str,
     topology: str = "logical",
     apply_noise: bool = True,
+    n_nodes: int | None = None,
 ) -> dict:
     """Generate, validate, render, and export one diagram.
 
@@ -77,6 +78,7 @@ def generate_one(
         dataset_root: Root directory of the dataset.
         topology:     ``'logical'`` (domain-constrained) or ``'random'``.
         apply_noise:  Whether to apply Stage 9 noise augmentations.
+        n_nodes:      Target node count; ``None`` picks randomly in [10, 50].
 
     Returns:
         A manifest row dict.
@@ -84,7 +86,7 @@ def generate_one(
     set_global_seed(seed)
 
     # Stage 1 — build
-    G = create_random_topology() if topology == "random" else create_logical_system(seed=seed)
+    G = create_random_topology() if topology == "random" else create_logical_system(seed=seed, n_nodes=n_nodes)
 
     # Stage 2 — validate (non-fatal; log but continue)
     errors = validate_pid_logic(G)
@@ -137,6 +139,7 @@ def generate_dataset(
     base_seed: int = 42,
     topology: str = "logical",
     apply_noise: bool = True,
+    n_nodes: int | None = None,
 ) -> str:
     """Generate *n* diagrams and organise them into a YOLO dataset (§26).
 
@@ -155,6 +158,7 @@ def generate_dataset(
         base_seed:    Base RNG seed; each diagram uses ``base_seed + idx``.
         topology:     ``'logical'`` or ``'random'``.
         apply_noise:  Apply Stage 9 noise to every image.
+        n_nodes:      Target node count per diagram; ``None`` picks randomly in [10, 50].
 
     Returns:
         Absolute path to the manifest CSV.
@@ -189,7 +193,7 @@ def generate_dataset(
     for idx in range(1, n + 1):
         split = _split_for(idx)
         seed = base_seed + idx
-        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise)
+        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise, n_nodes)
         rows.append(row)
 
     # Write manifest CSV

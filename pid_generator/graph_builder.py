@@ -1,14 +1,15 @@
 """Logical P&ID graph builder (§6, §24).
 
-Builds a domain-constrained ``nx.DiGraph`` representing a simple pump-to-tank
-process system with a control loop.
+Builds a domain-constrained ``nx.DiGraph`` representing a scalable process
+system: parallel pump trains feeding into a series of processing stages with
+randomised control loops, all terminated at a product storage vessel.
 """
 
 import random
 
 import networkx as nx
 
-from pid_generator.constants import PIPE_SPEC_CODES
+from pid_generator.constants import PIPE_SIZES, PIPE_SPEC_CODES
 from pid_generator.tags import build_component_tag, build_pipe_tag
 
 # Instrument class IDs per measurement variable (§11.2)
@@ -22,10 +23,14 @@ _TX_CLASS: dict[str, int] = {
 
 _CTL_CLASS: dict[str, int] = {
     "P": 14,  # Pressure Controller
-    "T": 15,  # Temperature Controller (TIC shares TT class_id in §11.2; use 15 for TT, use 14 placeholder)
+    "T": 15,  # Temperature Controller
     "F": 19,  # Flow Controller
     "L": 22,  # Level Controller
 }
+
+# Equipment class IDs for intermediate inline process equipment (§11)
+_INLINE_EQUIP_CLASSES: list[int] = [26, 27, 28, 29]  # heat exchangers, separators, …
+_TANK_CLASSES: list[int] = [30, 31]                   # storage tanks, receivers
 
 
 def _tx_class(variable: str) -> int:
@@ -39,17 +44,17 @@ def _ctl_class(variable: str) -> int:
 # Public API
 
 
-def create_logical_system(seed: int | None = None) -> nx.DiGraph:
-    """Build a validated process graph: PUMP → isolation valve → strainer → tank.
+def create_logical_system(seed: int | None = None, n_nodes: int | None = None) -> nx.DiGraph:
+    """Build a validated process graph with variable complexity.
 
-    The graph follows the process logic rules in §5:
-    - Isolation valves on pump inlet and outlet.
-    - Check valve on pump discharge.
-    - Strainer upstream of control valve.
-    - One control loop (Flow) inserted on the main process line.
+    Structure: OPC_IN → feed valve → [parallel pump trains] → [serial
+    processing stages] → TANK.  The number of pumps, stages, and control
+    loops is derived from *n_nodes* so diagrams scale from simple (~10 nodes)
+    to complex (~50 nodes).
 
     Args:
-        seed: Optional random seed for reproducibility.
+        seed:    Optional RNG seed for reproducibility.
+        n_nodes: Target node count.  Randomly chosen in [10, 50] if *None*.
 
     Returns:
         A directed graph (``nx.DiGraph``) with fully attributed nodes and edges.
@@ -57,67 +62,161 @@ def create_logical_system(seed: int | None = None) -> nx.DiGraph:
     if seed is not None:
         random.seed(seed)
 
+    if n_nodes is None:
+        n_nodes = random.randint(10, 50)
+
+    # -----------------------------------------------------------------------
+    # Structural budget calculation
+    # -----------------------------------------------------------------------
+    # Node costs:  OPC_IN(1) + GV_FEED(1) + TANK(1) = 3 fixed
+    #              per pump train: GV_IN + PUMP + GV_OUT + CK = 4
+    #              suction + discharge headers (if multi-pump): 2
+    #              per stage: STR + EQ = 2
+    #              per control loop: TX + CTL + CV = 3
+
+    n_pumps = random.randint(1, min(3, max(1, n_nodes // 10)))
+    multi_pump = n_pumps > 1
+    overhead = 3 + n_pumps * 4 + (2 if multi_pump else 0)
+    remaining = max(2, n_nodes - overhead)
+
+    # Allocate ~half the remaining budget to stages (2 nodes each),
+    # use the rest for control loops (3 nodes each).
+    n_stages = max(1, remaining // 4)
+    n_loops = max(0, min((remaining - n_stages * 2) // 3, n_stages + n_pumps))
+
+    # -----------------------------------------------------------------------
+    # Counters and inline helpers
+    # -----------------------------------------------------------------------
     G = nx.DiGraph()
     spec = random.choice(PIPE_SPEC_CODES)
-    size = 8  # main line size
+    size = random.choice(PIPE_SIZES)
 
-    # -----------------------------------------------------------------------
-    # Nodes
-    # -----------------------------------------------------------------------
-    # Off-page connector — feed inlet from upstream sheet
-    G.add_node(
-        "OPC_IN_01",
-        type="off_page",
-        direction="in",
-        class_id=38,
-        size=size,
-        tag="OPC-IN-001",
-        ref_sheet=0,
-        ref_line="FEED",
-    )
+    _seq = {"pipe": 1, "gv": 1, "ck": 1, "pump": 1, "str": 1, "eq": 1}
 
-    G.add_node("PUMP_01", type="equipment", class_id=24, size=size, tag=build_component_tag("P", 101))
-
-    # Inlet isolation valve (gate valve, class_id=4)
-    G.add_node("GV_IN_01", type="valve", class_id=4, size=size, tag=build_component_tag("GV", 1))
-
-    # Outlet isolation valve (gate valve, class_id=4)
-    G.add_node("GV_OUT_01", type="valve", class_id=4, size=size, tag=build_component_tag("GV", 2))
-
-    # Check valve on discharge (class_id=2)
-    G.add_node("CK_01", type="valve", class_id=2, size=size, tag=build_component_tag("CK", 1))
-
-    # Strainer upstream of control valve (class_id=34)
-    G.add_node("STR_01", type="fitting", class_id=34, size=size, tag=build_component_tag("GV", 3))
-
-    # Destination tank (storage tank, class_id=30)
-    G.add_node("TANK_01", type="equipment", class_id=30, size=size, tag=build_component_tag("T", 101))
-
-    # -----------------------------------------------------------------------
-    # Edges (process flow direction: inlet → pump → discharge → tank)
-    # -----------------------------------------------------------------------
-    pipe_seq = 1
-
-    def _pe(u: str, v: str) -> dict:
-        nonlocal pipe_seq
-        tag = build_pipe_tag(size, spec, pipe_seq)
-        pipe_seq += 1
+    def _pe() -> dict:
+        tag = build_pipe_tag(size, spec, _seq["pipe"])
+        _seq["pipe"] += 1
         return {"size": size, "spec": spec, "type": "process", "tag": tag}
 
-    G.add_edge("OPC_IN_01", "GV_IN_01", **_pe("OPC_IN_01", "GV_IN_01"))
-    G.add_edge("GV_IN_01", "PUMP_01", **_pe("GV_IN_01", "PUMP_01"))
-    G.add_edge("PUMP_01", "GV_OUT_01", **_pe("PUMP_01", "GV_OUT_01"))
-    G.add_edge("GV_OUT_01", "CK_01", **_pe("GV_OUT_01", "CK_01"))
-    G.add_edge("CK_01", "STR_01", **_pe("CK_01", "STR_01"))
+    def _add(nid: str, ntype: str, class_id: int, tag: str) -> None:
+        G.add_node(nid, type=ntype, class_id=class_id, size=size, tag=tag)
 
-    # The STR_01 → TANK_01 edge will be split by the control loop below.
-    G.add_edge("STR_01", "TANK_01", **_pe("STR_01", "TANK_01"))
+    def _link(u: str, v: str) -> None:
+        G.add_edge(u, v, **_pe())
+
+    def _next_gv() -> tuple[str, str]:
+        i = _seq["gv"]; _seq["gv"] += 1
+        return f"GV_{i:02d}", build_component_tag("GV", i)
+
+    def _next_ck() -> tuple[str, str]:
+        i = _seq["ck"]; _seq["ck"] += 1
+        return f"CK_{i:02d}", build_component_tag("CK", i)
+
+    def _next_pump() -> tuple[str, str]:
+        i = _seq["pump"]; _seq["pump"] += 1
+        return f"PUMP_{i:02d}", build_component_tag("P", 100 + i)
+
+    def _next_str() -> tuple[str, str]:
+        i = _seq["str"]; _seq["str"] += 1
+        return f"STR_{i:02d}", build_component_tag("STR", i)
+
+    def _next_eq() -> tuple[str, str]:
+        i = _seq["eq"]; _seq["eq"] += 1
+        return f"EQ_{i:02d}", build_component_tag("E", 100 + i)
 
     # -----------------------------------------------------------------------
-    # Control loop on the strainer → tank pipe (flow measurement)
+    # Feed inlet
     # -----------------------------------------------------------------------
-    pipe_edge = ("STR_01", "TANK_01", G["STR_01"]["TANK_01"])
-    add_control_loop(G, pipe_edge, variable="F", loop_num=101)
+    _add("OPC_IN_01", "off_page", 38, "OPC-IN-001")
+    G.nodes["OPC_IN_01"].update({"direction": "in", "ref_sheet": 0, "ref_line": "FEED"})
+
+    gv_feed_id, gv_feed_tag = _next_gv()
+    _add(gv_feed_id, "valve", 4, gv_feed_tag)
+    _link("OPC_IN_01", gv_feed_id)
+
+    # -----------------------------------------------------------------------
+    # Suction header (only when multiple pump trains share one suction line)
+    # -----------------------------------------------------------------------
+    if multi_pump:
+        _add("HDR_SUCT_01", "fitting", 35, "HDR-S-001")
+        _link(gv_feed_id, "HDR_SUCT_01")
+        suct_source = "HDR_SUCT_01"
+    else:
+        suct_source = gv_feed_id
+
+    # -----------------------------------------------------------------------
+    # Parallel pump trains
+    # -----------------------------------------------------------------------
+    pump_outlets: list[str] = []
+    for _ in range(n_pumps):
+        gv_in_id,  gv_in_tag  = _next_gv()
+        pump_id,   pump_tag   = _next_pump()
+        gv_out_id, gv_out_tag = _next_gv()
+        ck_id,     ck_tag     = _next_ck()
+
+        _add(gv_in_id,  "valve",     4,                              gv_in_tag)
+        _add(pump_id,   "equipment", random.choice([24, 25]),        pump_tag)
+        _add(gv_out_id, "valve",     4,                              gv_out_tag)
+        _add(ck_id,     "valve",     2,                              ck_tag)
+
+        _link(suct_source, gv_in_id)
+        _link(gv_in_id, pump_id)
+        _link(pump_id, gv_out_id)
+        _link(gv_out_id, ck_id)
+        pump_outlets.append(ck_id)
+
+    # -----------------------------------------------------------------------
+    # Discharge header (merges parallel pump outlets)
+    # -----------------------------------------------------------------------
+    if multi_pump:
+        _add("HDR_DISCH_01", "fitting", 35, "HDR-D-001")
+        for po in pump_outlets:
+            _link(po, "HDR_DISCH_01")
+        current_tail = "HDR_DISCH_01"
+    else:
+        current_tail = pump_outlets[0]
+
+    # -----------------------------------------------------------------------
+    # Serial processing stages (strainer → inline equipment)
+    # -----------------------------------------------------------------------
+    stage_edges: list[tuple[str, str]] = []  # candidates for control loops
+
+    for _ in range(n_stages):
+        str_id, str_tag = _next_str()
+        eq_id,  eq_tag  = _next_eq()
+        eq_class = random.choice(_INLINE_EQUIP_CLASSES)
+
+        _add(str_id, "fitting",   34,       str_tag)
+        _add(eq_id,  "equipment", eq_class, eq_tag)
+
+        _link(current_tail, str_id)
+        _link(str_id, eq_id)
+
+        stage_edges.append((str_id, eq_id))    # inner-stage edge
+        stage_edges.append((current_tail, str_id))  # inter-stage entry edge
+        current_tail = eq_id
+
+    # -----------------------------------------------------------------------
+    # Product storage
+    # -----------------------------------------------------------------------
+    _add("TANK_01", "equipment", random.choice(_TANK_CLASSES), build_component_tag("T", 101))
+    _link(current_tail, "TANK_01")
+    stage_edges.append((current_tail, "TANK_01"))
+
+    # -----------------------------------------------------------------------
+    # Control loops on randomly selected process edges
+    # -----------------------------------------------------------------------
+    ctrl_vars = ["P", "T", "F", "L"] * ((n_loops // 4) + 1)
+    random.shuffle(ctrl_vars)
+
+    candidates = [e for e in stage_edges if G.has_edge(*e)]
+    random.shuffle(candidates)
+
+    loop_num = 101
+    for (u, v), var in zip(candidates[:n_loops], ctrl_vars):
+        if G.has_edge(u, v):
+            add_control_loop(G, (u, v, G[u][v]), variable=var, loop_num=loop_num)
+            loop_num += 1
 
     return G
 

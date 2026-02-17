@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import random
 import sys
 
 
@@ -41,15 +42,17 @@ def cmd_generate(args: argparse.Namespace) -> None:
     """Batch-generate N diagrams into a YOLO dataset folder."""
     from pid_generator.batch import generate_dataset
 
+    base_seed = args.seed if args.seed is not None else random.randint(0, 0xFFFF_FFFF)
     print(f"Generating {args.n} diagram(s) -> {os.path.normpath(args.output)}")
-    print(f"  topology={args.topology}  noise={args.noise}  seed={args.seed}")
+    print(f"  topology={args.topology}  noise={args.noise}  seed={base_seed}")
 
     manifest = generate_dataset(
         n=args.n,
         dataset_root=args.output,
-        base_seed=args.seed,
+        base_seed=base_seed,
         topology=args.topology,
         apply_noise=args.noise,
+        n_nodes=args.nodes,
     )
     print(f"Done. Manifest ->{manifest}")
 
@@ -64,10 +67,12 @@ def cmd_single(args: argparse.Namespace) -> None:
     from pid_generator.yolo import export_yolo_labels, image_filename, label_filename
     from pid_generator.serialiser import graph_filename
 
+    seed = args.seed if args.seed is not None else random.randint(0, 0xFFFF_FFFF)
+
     os.makedirs(args.output, exist_ok=True)
     idx = _next_index(args.output)
 
-    G      = create_logical_system(seed=args.seed)
+    G      = create_logical_system(seed=seed, n_nodes=args.nodes)
     errors = validate_pid_logic(G)
     if errors:
         for e in errors:
@@ -78,7 +83,7 @@ def cmd_single(args: argparse.Namespace) -> None:
     lbl_path = os.path.join(args.output, label_filename(idx))
     grp_path = os.path.join(args.output, graph_filename(idx))
 
-    render_diagram(G, pos, img_path, apply_noise=args.noise, idx=idx, seed=args.seed)
+    render_diagram(G, pos, img_path, apply_noise=args.noise, idx=idx, seed=seed)
     export_yolo_labels(G, pos, lbl_path)
     export_graph(G, grp_path)
 
@@ -86,6 +91,7 @@ def cmd_single(args: argparse.Namespace) -> None:
     print(f"  image   -> {img_path}")
     print(f"  labels  -> {lbl_path}")
     print(f"  graph   -> {grp_path}")
+    print(f"  seed={seed}")
     print(f"  nodes={G.number_of_nodes()}  edges={G.number_of_edges()}")
     print(f"  validation: {errors or 'OK'}")
 
@@ -103,21 +109,25 @@ def build_parser() -> argparse.ArgumentParser:
                      help="Number of diagrams to generate (default: 10).")
     gen.add_argument("--output",   type=str,  default="output/dataset",
                      help="Output root directory (default: output/dataset/).")
-    gen.add_argument("--seed",     type=int,  default=42,
-                     help="Base RNG seed; each diagram uses seed+idx (default: 42).")
+    gen.add_argument("--seed",     type=int,  default=None,
+                     help="Base RNG seed; each diagram uses seed+idx (default: random).")
     gen.add_argument("--topology", choices=["logical", "random"], default="logical",
                      help="Graph topology mode (default: logical).")
     gen.add_argument("--noise",    action=argparse.BooleanOptionalAction, default=True,
                      help="Apply Stage 9 noise augmentations (default: --noise).")
+    gen.add_argument("--nodes",    type=int,  default=None,
+                     help="Target node count per diagram (default: random 10–50).")
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
     sng.add_argument("--output", type=str, default="output/single",
                      help="Output directory (default: output/single/).")
-    sng.add_argument("--seed",   type=int, default=42,
-                     help="RNG seed (default: 42).")
+    sng.add_argument("--seed",   type=int, default=None,
+                     help="RNG seed (default: random).")
     sng.add_argument("--noise",  action=argparse.BooleanOptionalAction, default=False,
                      help="Apply Stage 9 noise augmentations (default: --no-noise).")
+    sng.add_argument("--nodes",  type=int, default=None,
+                     help="Target node count (default: random 10–50).")
 
     return parser
 
