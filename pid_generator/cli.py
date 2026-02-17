@@ -61,10 +61,12 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
 def cmd_single(args: argparse.Namespace) -> None:
     """Render one diagram; automatically increments the output index."""
+    from pid_generator.constants import CANVAS_W, MARGIN, TITLE_BLOCK_W
     from pid_generator.graph_builder import create_logical_system
     from pid_generator.layout import assign_grid_positions
     from pid_generator.renderer import render_diagram
     from pid_generator.serialiser import export_graph, graph_filename
+    from pid_generator.title_block import generate_title_block_metadata
     from pid_generator.validator import validate_pid_logic
     from pid_generator.yolo import export_yolo_labels, image_filename, label_filename
 
@@ -79,12 +81,18 @@ def cmd_single(args: argparse.Namespace) -> None:
         for e in errors:
             logger.warning("  [validation] %s", e)
 
-    pos      = assign_grid_positions(G)
+    metadata = generate_title_block_metadata(idx=idx, seed=seed)
+    x_right_fraction = (
+        TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN)
+        if metadata.get("position") == "right"
+        else 0.0
+    )
+    pos      = assign_grid_positions(G, x_right_fraction=x_right_fraction)
     img_path = os.path.join(args.output, image_filename(idx))
     lbl_path = os.path.join(args.output, label_filename(idx))
     grp_path = os.path.join(args.output, graph_filename(idx))
 
-    render_diagram(G, pos, img_path, apply_noise=args.noise, idx=idx, seed=seed)
+    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=args.noise, idx=idx, seed=seed)
     export_yolo_labels(G, pos, lbl_path)
     export_graph(G, grp_path)
 
@@ -136,6 +144,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> None:
     """Parse arguments and execute the requested command."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(message)s",
+    )
     parser = build_parser()
     args   = parser.parse_args(argv)
 

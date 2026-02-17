@@ -223,7 +223,8 @@ DASH_PATTERN: dict[str, tuple | None] = {
 }
 
 # §15 — Title block geometry
-TITLE_BLOCK_H:     int = 180   # total block height in pixels
+TITLE_BLOCK_H:     int = 180   # bottom block height in pixels
+TITLE_BLOCK_W:     int = 620   # right-side block width in pixels
 TITLE_BLOCK_REV_H: int = 28    # height per revision row
 TITLE_BLOCK_REVS:  int = 3     # max revision rows rendered
 

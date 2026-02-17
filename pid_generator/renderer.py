@@ -29,7 +29,7 @@ from pid_generator.constants import (
     SMALL_FONT,
     SYMBOL_BOX,
 )
-from pid_generator.layout import route_orthogonal, snap_to_grid, to_pixel
+from pid_generator.layout import compute_edge_waypoints, route_edge, snap_to_grid, to_pixel
 
 if TYPE_CHECKING:
     import networkx as nx
@@ -145,16 +145,18 @@ def _draw_edge(
     p1: tuple[int, int],
     p2: tuple[int, int],
     edge_type: str,
+    wp_x: int | None = None,
 ) -> None:
     width = LINE_WIDTH.get(edge_type, 1)
     dash  = DASH_PATTERN.get(edge_type)
-    for seg_p1, seg_p2 in route_orthogonal(p1, p2):
+    segs  = route_edge(p1, p2, wp_x)
+    for seg_p1, seg_p2 in segs:
         if dash:
             _draw_dashed_line(draw, seg_p1, seg_p2, dash=dash, width=width)
         else:
             draw.line([seg_p1, seg_p2], fill=FG_COLOR, width=width)
     if edge_type == "signal_pneumatic":
-        for seg_p1, seg_p2 in route_orthogonal(p1, p2):
+        for seg_p1, seg_p2 in segs:
             _draw_pneumatic_ticks(draw, seg_p1, seg_p2)
 
 
@@ -162,8 +164,11 @@ def render_pipes(
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
+    waypoints: dict | None = None,
 ) -> None:
     """Draw all edges, process lines first then signal lines (§18, Stage 5)."""
+    if waypoints is None:
+        waypoints = compute_edge_waypoints(G, pos)
     order = ["process", "utility", "heat_trace", "drain_vent", "sample",
              "signal_electric", "signal_pneumatic", "signal_hydraulic"]
     by_type: dict[str, list] = {t: [] for t in order}
@@ -175,9 +180,10 @@ def render_pipes(
         for u, v, _ in by_type.get(etype, []):
             if u not in pos or v not in pos:
                 continue
-            p1 = snap_to_grid(*to_pixel(*pos[u]))
-            p2 = snap_to_grid(*to_pixel(*pos[v]))
-            _draw_edge(draw, p1, p2, etype)
+            p1  = snap_to_grid(*to_pixel(*pos[u]))
+            p2  = snap_to_grid(*to_pixel(*pos[v]))
+            wp_x = waypoints.get((u, v)) if etype == "process" else None
+            _draw_edge(draw, p1, p2, etype, wp_x=wp_x)
 
 
 # Stage 6 — Pipe crossing gaps
@@ -187,6 +193,7 @@ def draw_pipe_crossing_gaps(
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
     hop_radius: int = 20,
+    waypoints: dict | None = None,
 ) -> None:
     """Draw hop arcs at pipe crossings that are not junctions (§1.1).
 
@@ -194,6 +201,9 @@ def draw_pipe_crossing_gaps(
     right-facing semicircular hop arc where it crosses the horizontal pipe.
     All edge types are checked so signal lines also produce visible hops.
     """
+    if waypoints is None:
+        waypoints = compute_edge_waypoints(G, pos)
+
     # Collect (segment_start, segment_end, edge_key, edge_type) for H and V runs
     h_segs: list[tuple] = []
     v_segs: list[tuple] = []
@@ -201,9 +211,10 @@ def draw_pipe_crossing_gaps(
         if u not in pos or v not in pos:
             continue
         etype = edata.get("type", "process")
-        p1 = snap_to_grid(*to_pixel(*pos[u]))
-        p2 = snap_to_grid(*to_pixel(*pos[v]))
-        for sp1, sp2 in route_orthogonal(p1, p2):
+        p1   = snap_to_grid(*to_pixel(*pos[u]))
+        p2   = snap_to_grid(*to_pixel(*pos[v]))
+        wp_x = waypoints.get((u, v)) if etype == "process" else None
+        for sp1, sp2 in route_edge(p1, p2, wp_x):
             dx = sp2[0] - sp1[0]
             dy = sp2[1] - sp1[1]
             key = (u, v)
@@ -296,11 +307,16 @@ def render_tags(
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
+    waypoints: dict | None = None,
 ) -> None:
     """Draw node and edge text tags onto the canvas (§2, §8, Stage 8)."""
+    if waypoints is None:
+        waypoints = compute_edge_waypoints(G, pos)
+
     font    = _font(small=False)
     font_sm = _font(small=True)
     half    = SYMBOL_BOX // 2
+    halo    = "white"
 
     for node, data in G.nodes(data=True):
         if node not in pos:
@@ -308,8 +324,12 @@ def render_tags(
         cx, cy = snap_to_grid(*to_pixel(*pos[node]))
         tag = data.get("tag", "")
         if tag:
-            draw.text((cx - len(tag) * 5, cy - half - FONT_SIZE - 2),
-                      tag, fill=FG_COLOR, font=font)
+            tx = cx - len(tag) * 5
+            ty = cy - half - FONT_SIZE - 2
+            # White halo background
+            draw.rectangle([tx - 2, ty - 1, tx + len(tag) * 5 + 2, ty + FONT_SIZE + 1],
+                           fill=halo)
+            draw.text((tx, ty), tag, fill=FG_COLOR, font=font)
 
     for u, v, edata in G.edges(data=True):
         tag = edata.get("tag", "")
@@ -317,8 +337,10 @@ def render_tags(
             continue
         if u not in pos or v not in pos:
             continue
-        segs = route_orthogonal(snap_to_grid(*to_pixel(*pos[u])),
-                                snap_to_grid(*to_pixel(*pos[v])))
+        wp_x = waypoints.get((u, v))
+        segs = route_edge(snap_to_grid(*to_pixel(*pos[u])),
+                          snap_to_grid(*to_pixel(*pos[v])),
+                          wp_x)
         if not segs:
             continue
         # Place the label on the longest segment
@@ -330,8 +352,11 @@ def render_tags(
         if is_vertical:
             _paste_rotated_tag(img, tag, mx - SMALL_FONT - 4, my, font_sm)
         else:
-            draw.text((mx - len(tag) * 4, my - SMALL_FONT - 2),
-                      tag, fill=(80, 80, 80), font=font_sm)
+            tx = mx - len(tag) * 4
+            ty = my - SMALL_FONT - 2
+            draw.rectangle([tx - 2, ty - 1, tx + len(tag) * 8 + 2, ty + SMALL_FONT + 1],
+                           fill=halo)
+            draw.text((tx, ty), tag, fill=(80, 80, 80), font=font_sm)
 
 
 # Full pipeline
@@ -358,10 +383,11 @@ def render_diagram(
 
     img, draw = init_canvas()
     draw_title_block(draw, metadata)
-    render_pipes(draw, G, pos)
-    draw_pipe_crossing_gaps(draw, G, pos)
+    waypoints = compute_edge_waypoints(G, pos)
+    render_pipes(draw, G, pos, waypoints)
+    draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints)
     render_symbol_placeholders(draw, G, pos)
-    render_tags(img, draw, G, pos)
+    render_tags(img, draw, G, pos, waypoints)
 
     if apply_noise:
         from pid_generator.noise import apply_generation_noise

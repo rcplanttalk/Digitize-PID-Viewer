@@ -18,11 +18,13 @@ import random
 
 import numpy as np
 
+from pid_generator.constants import CANVAS_W, MARGIN, TITLE_BLOCK_W
 from pid_generator.graph_builder import create_logical_system
 from pid_generator.layout import assign_grid_positions
 from pid_generator.random_topology import create_random_topology
 from pid_generator.renderer import render_diagram
 from pid_generator.serialiser import export_graph, graph_filename
+from pid_generator.title_block import generate_title_block_metadata
 from pid_generator.validator import validate_pid_logic
 from pid_generator.yolo import export_yolo_labels, image_filename, label_filename, write_data_yaml
 
@@ -95,8 +97,16 @@ def generate_one(
         for _e in errors:
             pass
 
+    # Stage 2.5 — title block metadata (determines layout x_right_fraction)
+    metadata = generate_title_block_metadata(idx=idx, seed=seed)
+    x_right_fraction = (
+        TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN)
+        if metadata.get("position") == "right"
+        else 0.0
+    )
+
     # Stage 3 — layout
-    pos = assign_grid_positions(G)
+    pos = assign_grid_positions(G, x_right_fraction=x_right_fraction)
 
     # File paths
     img_fname = image_filename(idx)
@@ -107,8 +117,8 @@ def generate_one(
     lbl_path = os.path.join(dataset_root, "labels", split, lbl_fname)
     grph_path = os.path.join(dataset_root, "graphs", split, grph_fname)
 
-    # Stages 4–9 — render (metadata auto-generated per diagram)
-    render_diagram(G, pos, img_path, apply_noise=apply_noise, idx=idx, seed=seed)
+    # Stages 4–9 — render
+    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=apply_noise, idx=idx, seed=seed)
 
     # Stage 10 — YOLO labels
     export_yolo_labels(G, pos, lbl_path)
