@@ -61,7 +61,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
 def cmd_single(args: argparse.Namespace) -> None:
     """Render one diagram; automatically increments the output index."""
-    from pid_generator.constants import CANVAS_W, MARGIN, TITLE_BLOCK_W
+    from pid_generator.constants import CANVAS_H, CANVAS_W, MARGIN, TITLE_BLOCK_H, TITLE_BLOCK_W
     from pid_generator.graph_builder import create_logical_system
     from pid_generator.layout import assign_grid_positions
     from pid_generator.renderer import render_diagram
@@ -82,12 +82,10 @@ def cmd_single(args: argparse.Namespace) -> None:
             logger.warning("  [validation] %s", e)
 
     metadata = generate_title_block_metadata(idx=idx, seed=seed)
-    x_right_fraction = (
-        TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN)
-        if metadata.get("position") == "right"
-        else 0.0
-    )
-    pos      = assign_grid_positions(G, x_right_fraction=x_right_fraction)
+    position = metadata.get("position", "bottom")
+    x_right_fraction  = TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN) if position == "right"  else 0.0
+    y_bottom_fraction = TITLE_BLOCK_H / (CANVAS_H - 2 * MARGIN) if position == "bottom" else 0.0
+    pos      = assign_grid_positions(G, x_right_fraction=x_right_fraction, y_bottom_fraction=y_bottom_fraction)
     img_path = os.path.join(args.output, image_filename(idx))
     lbl_path = os.path.join(args.output, label_filename(idx))
     grp_path = os.path.join(args.output, graph_filename(idx))
@@ -155,3 +153,7 @@ def main(argv: list[str] | None = None) -> None:
         cmd_generate(args)
     elif args.command == "single":
         cmd_single(args)
+
+
+if __name__ == "__main__":
+    main()

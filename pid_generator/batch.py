@@ -18,7 +18,7 @@ import random
 
 import numpy as np
 
-from pid_generator.constants import CANVAS_W, MARGIN, TITLE_BLOCK_W
+from pid_generator.constants import CANVAS_H, CANVAS_W, MARGIN, TITLE_BLOCK_H, TITLE_BLOCK_W
 from pid_generator.graph_builder import create_logical_system
 from pid_generator.layout import assign_grid_positions
 from pid_generator.random_topology import create_random_topology
@@ -97,16 +97,14 @@ def generate_one(
         for _e in errors:
             pass
 
-    # Stage 2.5 — title block metadata (determines layout x_right_fraction)
+    # Stage 2.5 — title block metadata (determines layout margins)
     metadata = generate_title_block_metadata(idx=idx, seed=seed)
-    x_right_fraction = (
-        TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN)
-        if metadata.get("position") == "right"
-        else 0.0
-    )
+    position = metadata.get("position", "bottom")
+    x_right_fraction  = TITLE_BLOCK_W / (CANVAS_W - 2 * MARGIN) if position == "right"  else 0.0
+    y_bottom_fraction = TITLE_BLOCK_H / (CANVAS_H - 2 * MARGIN) if position == "bottom" else 0.0
 
     # Stage 3 — layout
-    pos = assign_grid_positions(G, x_right_fraction=x_right_fraction)
+    pos = assign_grid_positions(G, x_right_fraction=x_right_fraction, y_bottom_fraction=y_bottom_fraction)
 
     # File paths
     img_fname = image_filename(idx)

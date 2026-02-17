@@ -139,7 +139,7 @@ def compute_edge_waypoints(
         else:
             groups[(p1, p2[0])].append((u, v, p1, p2))
 
-    for (p1, tgt_x), edges in groups.items():
+    for (_p1, tgt_x), edges in groups.items():
         n = len(edges)
         for i, (u, v, src_p, _) in enumerate(edges):
             if n == 1:
@@ -155,6 +155,7 @@ def compute_edge_waypoints(
 def assign_grid_positions(
     G: nx.DiGraph,
     x_right_fraction: float = 0.0,
+    y_bottom_fraction: float = 0.0,
 ) -> dict[str, tuple[float, float]]:
     """Assign normalised grid positions to every node using topological order (§6.2).
 
@@ -167,11 +168,15 @@ def assign_grid_positions(
     4. Positions are written back into each node's ``pos`` attribute.
 
     Args:
-        G:                The P&ID graph.
-        x_right_fraction: Fraction of usable canvas width to reserve on the
-                          right side (e.g. 0.16 when the title block is on the
-                          right).  Nodes are confined to
-                          ``[x_margin, 1 - x_margin - x_right_fraction]``.
+        G:                 The P&ID graph.
+        x_right_fraction:  Fraction of usable canvas width to reserve on the
+                           right side (e.g. 0.155 when the title block is on
+                           the right).  Nodes are confined to
+                           ``[x_margin, 1 - x_margin - x_right_fraction]``.
+        y_bottom_fraction: Fraction of usable canvas height to reserve at the
+                           bottom (e.g. 0.064 when the title block is at the
+                           bottom).  Nodes are confined to
+                           ``[y_margin, 1 - y_margin - y_bottom_fraction]``.
 
     Falls back to a circular layout for graphs with cycles.
     """
@@ -192,6 +197,8 @@ def assign_grid_positions(
     x_margin = 0.05
     y_margin = 0.10
     x_span   = 1.0 - 2 * x_margin - x_right_fraction
+    y_max    = 1.0 - y_margin - y_bottom_fraction
+    y_span   = y_max - y_margin
     pos: dict[str, tuple[float, float]] = {}
 
     for col_idx, gen in enumerate(generations):
@@ -199,7 +206,7 @@ def assign_grid_positions(
         n = len(nodes_in_col)
         norm_x = x_margin + (col_idx / max(num_cols - 1, 1)) * x_span
         for row_idx, node in enumerate(nodes_in_col):
-            norm_y = 0.5 if n == 1 else y_margin + row_idx / (n - 1) * (1 - 2 * y_margin)
+            norm_y = 0.5 if n == 1 else y_margin + row_idx / (n - 1) * y_span
             pos[node] = (round(norm_x, 4), round(norm_y, 4))
 
     signal_offset_y = 0.12
@@ -218,13 +225,13 @@ def assign_grid_positions(
         if signal_nbrs:
             ref_x, ref_y = pos[signal_nbrs[0]]
             cand_x = round(ref_x + 0.04, 4)
-            cand_y = round(max(y_margin, min(1 - y_margin, ref_y - signal_offset_y)), 4)
+            cand_y = round(max(y_margin, min(y_max, ref_y - signal_offset_y)), 4)
             placed_signal[node] = (cand_x, cand_y)
         else:
             placed_signal[node] = (0.5, 0.05)
 
     pos.update(placed_signal)
-    _resolve_collisions(pos)
+    _resolve_collisions(pos, max_y=y_max)
 
     for node, (nx_, ny_) in pos.items():
         G.nodes[node]["pos"] = [nx_, ny_]
@@ -248,6 +255,7 @@ def _fallback_positions(G: nx.DiGraph) -> dict[str, tuple[float, float]]:
 def _resolve_collisions(
     pos: dict[str, tuple[float, float]],
     min_gap: float = 0.06,
+    max_y: float = 0.90,
 ) -> None:
     """Nudge nodes that share the same grid cell to prevent W002 overlaps."""
     nodes = list(pos.keys())
@@ -257,4 +265,4 @@ def _resolve_collisions(
             ax, ay = pos[a]
             bx, by = pos[b]
             if abs(ax - bx) < min_gap and abs(ay - by) < min_gap:
-                pos[b] = (bx, min(0.95, by + min_gap))
+                pos[b] = (bx, min(max_y, by + min_gap))
