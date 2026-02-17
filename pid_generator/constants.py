@@ -193,6 +193,49 @@ DISCLAIMER_TEXT: str = (
 )
 
 
+# §16 — Canvas geometry
+CANVAS_W: int = 4096
+CANVAS_H: int = 2896
+MARGIN:   int = 40
+GRID:     int = 128   # px per grid cell
+
+# §16 — Rendering
+BG_COLOR:   str = "white"
+FG_COLOR:   str = "black"
+FONT_SIZE:  int = 22   # px — component tags
+SMALL_FONT: int = 16   # px — pipe tags and notes
+SYMBOL_BOX: int = 64   # px half-side for symbol bounding boxes
+
+# §12 — Line widths per edge type
+LINE_WIDTH: dict[str, int] = {
+    "process":          3,
+    "utility":          1,
+    "signal_electric":  1,
+    "signal_pneumatic": 1,
+    "signal_hydraulic": 1,
+    "heat_trace":       1,
+    "sample":           1,
+    "drain_vent":       1,
+}
+
+# §12 — Dash patterns (on, off …) per edge type; None means solid
+DASH_PATTERN: dict[str, tuple | None] = {
+    "process":          None,
+    "utility":          None,
+    "signal_electric":  (8, 4),
+    "signal_pneumatic": (8, 4),
+    "signal_hydraulic": (8, 4, 2, 4),
+    "heat_trace":       None,
+    "sample":           (16, 6),
+    "drain_vent":       None,
+}
+
+# §15 — Title block geometry
+TITLE_BLOCK_H:     int = 180   # total block height in pixels
+TITLE_BLOCK_REV_H: int = 28    # height per revision row
+TITLE_BLOCK_REVS:  int = 3     # max revision rows rendered
+
+
 def _type_from_class(cid: int) -> str:
     """Return the node type string for a given class_id (§11)."""
     if cid <= CLASS_ID_VALVE_MAX:

@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 digitize-pid-viewer = "main:main"
+pid-gen = "pid_generator.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
