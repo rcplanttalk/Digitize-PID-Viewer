@@ -2,10 +2,10 @@
 
 Usage
 -----
-pid-gen generate [options]   — batch-generate N diagrams into a YOLO dataset
-pid-gen single   [options]   — render one diagram; auto-increments output index
+pid-gen generate [options]   - batch-generate N diagrams into a YOLO dataset
+pid-gen single   [options]   - render one diagram; auto-increments output index
 
-Examples
+Examples:
 --------
     pid-gen generate --n 100 --output output/dataset/ --seed 42
     pid-gen generate --n 50  --topology random --no-noise
@@ -16,9 +16,11 @@ Examples
 from __future__ import annotations
 
 import argparse
+import logging
 import os
 import random
-import sys
+
+logger = logging.getLogger(__name__)
 
 
 def _next_index(directory: str, prefix: str = "pid_", ext: str = ".png") -> int:
@@ -43,8 +45,8 @@ def cmd_generate(args: argparse.Namespace) -> None:
     from pid_generator.batch import generate_dataset
 
     base_seed = args.seed if args.seed is not None else random.randint(0, 0xFFFF_FFFF)
-    print(f"Generating {args.n} diagram(s) -> {os.path.normpath(args.output)}")
-    print(f"  topology={args.topology}  noise={args.noise}  seed={base_seed}")
+    logger.info("Generating %d diagram(s) -> %s", args.n, os.path.normpath(args.output))
+    logger.info("  topology=%s  noise=%s  seed=%s", args.topology, args.noise, base_seed)
 
     manifest = generate_dataset(
         n=args.n,
@@ -54,7 +56,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
         apply_noise=args.noise,
         n_nodes=args.nodes,
     )
-    print(f"Done. Manifest ->{manifest}")
+    logger.info("Done. Manifest ->%s", manifest)
 
 
 def cmd_single(args: argparse.Namespace) -> None:
@@ -62,10 +64,9 @@ def cmd_single(args: argparse.Namespace) -> None:
     from pid_generator.graph_builder import create_logical_system
     from pid_generator.layout import assign_grid_positions
     from pid_generator.renderer import render_diagram
-    from pid_generator.serialiser import export_graph
+    from pid_generator.serialiser import export_graph, graph_filename
     from pid_generator.validator import validate_pid_logic
     from pid_generator.yolo import export_yolo_labels, image_filename, label_filename
-    from pid_generator.serialiser import graph_filename
 
     seed = args.seed if args.seed is not None else random.randint(0, 0xFFFF_FFFF)
 
@@ -76,7 +77,7 @@ def cmd_single(args: argparse.Namespace) -> None:
     errors = validate_pid_logic(G)
     if errors:
         for e in errors:
-            print(f"  [validation] {e}", file=sys.stderr)
+            logger.warning("  [validation] %s", e)
 
     pos      = assign_grid_positions(G)
     img_path = os.path.join(args.output, image_filename(idx))
@@ -87,16 +88,17 @@ def cmd_single(args: argparse.Namespace) -> None:
     export_yolo_labels(G, pos, lbl_path)
     export_graph(G, grp_path)
 
-    print(f"Diagram #{idx:04d}")
-    print(f"  image   -> {img_path}")
-    print(f"  labels  -> {lbl_path}")
-    print(f"  graph   -> {grp_path}")
-    print(f"  seed={seed}")
-    print(f"  nodes={G.number_of_nodes()}  edges={G.number_of_edges()}")
-    print(f"  validation: {errors or 'OK'}")
+    logger.info("Diagram #%04d", idx)
+    logger.info("  image   -> %s", img_path)
+    logger.info("  labels  -> %s", lbl_path)
+    logger.info("  graph   -> %s", grp_path)
+    logger.info("  seed=%s", seed)
+    logger.info("  nodes=%s  edges=%s", G.number_of_nodes(), G.number_of_edges())
+    logger.info("  validation: %s", errors or "OK")
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build and return the argument parser for the CLI."""
     parser = argparse.ArgumentParser(
         prog="pid-gen",
         description="Synthetic P&ID diagram generator for YOLO training data.",
@@ -116,7 +118,7 @@ def build_parser() -> argparse.ArgumentParser:
     gen.add_argument("--noise",    action=argparse.BooleanOptionalAction, default=True,
                      help="Apply Stage 9 noise augmentations (default: --noise).")
     gen.add_argument("--nodes",    type=int,  default=None,
-                     help="Target node count per diagram (default: random 10–50).")
+                     help="Target node count per diagram (default: random 10-50).")
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
@@ -127,12 +129,13 @@ def build_parser() -> argparse.ArgumentParser:
     sng.add_argument("--noise",  action=argparse.BooleanOptionalAction, default=False,
                      help="Apply Stage 9 noise augmentations (default: --no-noise).")
     sng.add_argument("--nodes",  type=int, default=None,
-                     help="Target node count (default: random 10–50).")
+                     help="Target node count (default: random 10-50).")
 
     return parser
 
 
 def main(argv: list[str] | None = None) -> None:
+    """Parse arguments and execute the requested command."""
     parser = build_parser()
     args   = parser.parse_args(argv)
 

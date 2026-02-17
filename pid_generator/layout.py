@@ -18,8 +18,14 @@ from pid_generator.constants import CANVAS_H, CANVAS_W, GRID, MARGIN
 
 # Re-export so existing importers of layout.CANVAS_W etc. still work.
 __all__ = [
-    "CANVAS_W", "CANVAS_H", "MARGIN", "GRID",
-    "to_pixel", "snap_to_grid", "route_orthogonal", "assign_grid_positions",
+    "CANVAS_H",
+    "CANVAS_W",
+    "GRID",
+    "MARGIN",
+    "assign_grid_positions",
+    "route_orthogonal",
+    "snap_to_grid",
+    "to_pixel",
 ]
 
 

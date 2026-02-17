@@ -13,8 +13,8 @@ from datetime import date, timedelta
 from typing import TYPE_CHECKING
 
 from pid_generator.constants import (
-    CANVAS_W,
     CANVAS_H,
+    CANVAS_W,
     CLIENT_NAMES,
     CONTRACT_NAMES,
     DIAGRAM_TITLE_PAIRS,
@@ -56,7 +56,7 @@ def generate_title_block_metadata(
 
     revisions = []
     rev_date  = creation_date
-    for i, letter in enumerate("ABCDE"[:n_revs]):
+    for letter in "ABCDE"[:n_revs]:
         rev_date = rev_date + timedelta(days=rng.randint(7, 60))
         revisions.append({
             "rev":         letter,

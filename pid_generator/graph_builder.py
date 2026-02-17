@@ -107,31 +107,38 @@ def create_logical_system(seed: int | None = None, n_nodes: int | None = None) -
         G.add_edge(u, v, **_pe())
 
     def _next_gv() -> tuple[str, str]:
-        i = _seq["gv"]; _seq["gv"] += 1
+        i = _seq["gv"]
+        _seq["gv"] += 1
         return f"GV_{i:02d}", build_component_tag("GV", i)
 
     def _next_ck() -> tuple[str, str]:
-        i = _seq["ck"]; _seq["ck"] += 1
+        i = _seq["ck"]
+        _seq["ck"] += 1
         return f"CK_{i:02d}", build_component_tag("CK", i)
 
     def _next_pump() -> tuple[str, str]:
-        i = _seq["pump"]; _seq["pump"] += 1
+        i = _seq["pump"]
+        _seq["pump"] += 1
         return f"PUMP_{i:02d}", build_component_tag("P", 100 + i)
 
     def _next_str() -> tuple[str, str]:
-        i = _seq["str"]; _seq["str"] += 1
+        i = _seq["str"]
+        _seq["str"] += 1
         return f"STR_{i:02d}", build_component_tag("STR", i)
 
     def _next_eq() -> tuple[str, str]:
-        i = _seq["eq"]; _seq["eq"] += 1
+        i = _seq["eq"]
+        _seq["eq"] += 1
         return f"EQ_{i:02d}", build_component_tag("E", 100 + i)
 
     def _next_tee() -> tuple[str, str]:
-        i = _seq["tee"]; _seq["tee"] += 1
+        i = _seq["tee"]
+        _seq["tee"] += 1
         return f"TEE_{i:02d}", build_component_tag("TEE", i)
 
     def _next_iso() -> tuple[str, str, int]:
-        i = _seq["gv"]; _seq["gv"] += 1
+        i = _seq["gv"]
+        _seq["gv"] += 1
         return f"GV_{i:02d}", build_component_tag("GV", i), random.choice(_ISO_VALVE_CLASSES)
 
     # -----------------------------------------------------------------------
