@@ -31,6 +31,8 @@ _CTL_CLASS: dict[str, int] = {
 # Equipment class IDs for intermediate inline process equipment (§11)
 _INLINE_EQUIP_CLASSES: list[int] = [26, 27, 28, 29]  # heat exchangers, separators, …
 _TANK_CLASSES: list[int] = [30, 31]                   # storage tanks, receivers
+# Isolation valve class IDs (gate, globe, butterfly, ball, plug, angle, …)
+_ISO_VALVE_CLASSES: list[int] = [4, 5, 6, 7, 9, 10, 11]
 
 
 def _tx_class(variable: str) -> int:
@@ -91,7 +93,7 @@ def create_logical_system(seed: int | None = None, n_nodes: int | None = None) -
     spec = random.choice(PIPE_SPEC_CODES)
     size = random.choice(PIPE_SIZES)
 
-    _seq = {"pipe": 1, "gv": 1, "ck": 1, "pump": 1, "str": 1, "eq": 1}
+    _seq = {"pipe": 1, "gv": 1, "ck": 1, "pump": 1, "str": 1, "eq": 1, "tee": 1}
 
     def _pe() -> dict:
         tag = build_pipe_tag(size, spec, _seq["pipe"])
@@ -123,6 +125,14 @@ def create_logical_system(seed: int | None = None, n_nodes: int | None = None) -
     def _next_eq() -> tuple[str, str]:
         i = _seq["eq"]; _seq["eq"] += 1
         return f"EQ_{i:02d}", build_component_tag("E", 100 + i)
+
+    def _next_tee() -> tuple[str, str]:
+        i = _seq["tee"]; _seq["tee"] += 1
+        return f"TEE_{i:02d}", build_component_tag("TEE", i)
+
+    def _next_iso() -> tuple[str, str, int]:
+        i = _seq["gv"]; _seq["gv"] += 1
+        return f"GV_{i:02d}", build_component_tag("GV", i), random.choice(_ISO_VALVE_CLASSES)
 
     # -----------------------------------------------------------------------
     # Feed inlet
@@ -177,24 +187,80 @@ def create_logical_system(seed: int | None = None, n_nodes: int | None = None) -
         current_tail = pump_outlets[0]
 
     # -----------------------------------------------------------------------
-    # Serial processing stages (strainer → inline equipment)
+    # Serial processing stages (varied composition)
     # -----------------------------------------------------------------------
+    # Stage types and their approximate node cost:
+    #   bare      — 1 node  (equipment only)
+    #   simple    — 2 nodes (strainer + equipment)
+    #   isolated  — 3 nodes (iso-valve + equipment + iso-valve)
+    #   bypass    — 5 nodes (strainer + tee + equipment + bypass-valve + tee)
+    _STAGE_TYPES   = ["bare", "simple", "isolated", "bypass"]
+    _STAGE_WEIGHTS = [15, 35, 25, 25]
+
     stage_edges: list[tuple[str, str]] = []  # candidates for control loops
 
     for _ in range(n_stages):
-        str_id, str_tag = _next_str()
-        eq_id,  eq_tag  = _next_eq()
-        eq_class = random.choice(_INLINE_EQUIP_CLASSES)
+        eq_class   = random.choice(_INLINE_EQUIP_CLASSES)
+        stage_type = random.choices(_STAGE_TYPES, weights=_STAGE_WEIGHTS)[0]
 
-        _add(str_id, "fitting",   34,       str_tag)
-        _add(eq_id,  "equipment", eq_class, eq_tag)
+        if stage_type == "bare":
+            eq_id, eq_tag = _next_eq()
+            _add(eq_id, "equipment", eq_class, eq_tag)
+            _link(current_tail, eq_id)
+            stage_edges.append((current_tail, eq_id))
+            current_tail = eq_id
 
-        _link(current_tail, str_id)
-        _link(str_id, eq_id)
+        elif stage_type == "simple":
+            str_id, str_tag = _next_str()
+            eq_id,  eq_tag  = _next_eq()
+            _add(str_id, "fitting",   34,       str_tag)
+            _add(eq_id,  "equipment", eq_class, eq_tag)
+            _link(current_tail, str_id)
+            _link(str_id, eq_id)
+            stage_edges.extend([(current_tail, str_id), (str_id, eq_id)])
+            current_tail = eq_id
 
-        stage_edges.append((str_id, eq_id))    # inner-stage edge
-        stage_edges.append((current_tail, str_id))  # inter-stage entry edge
-        current_tail = eq_id
+        elif stage_type == "isolated":
+            gv_in_id,  gv_in_tag,  gv_in_cls  = _next_iso()
+            eq_id,     eq_tag                  = _next_eq()
+            gv_out_id, gv_out_tag, gv_out_cls = _next_iso()
+            _add(gv_in_id,  "valve",     gv_in_cls,  gv_in_tag)
+            _add(eq_id,     "equipment", eq_class,    eq_tag)
+            _add(gv_out_id, "valve",     gv_out_cls, gv_out_tag)
+            _link(current_tail, gv_in_id)
+            _link(gv_in_id, eq_id)
+            _link(eq_id, gv_out_id)
+            stage_edges.extend([
+                (current_tail, gv_in_id),
+                (gv_in_id, eq_id),
+                (eq_id, gv_out_id),
+            ])
+            current_tail = gv_out_id
+
+        else:  # bypass
+            str_id,     str_tag             = _next_str()
+            tee_in_id,  tee_in_tag          = _next_tee()
+            eq_id,      eq_tag              = _next_eq()
+            bv_id,      bv_tag, bv_cls      = _next_iso()
+            tee_out_id, tee_out_tag         = _next_tee()
+            _add(str_id,     "fitting",   34,       str_tag)
+            _add(tee_in_id,  "fitting",   36,       tee_in_tag)
+            _add(eq_id,      "equipment", eq_class, eq_tag)
+            _add(bv_id,      "valve",     bv_cls,   bv_tag)
+            _add(tee_out_id, "fitting",   36,       tee_out_tag)
+            _link(current_tail, str_id)
+            _link(str_id,    tee_in_id)
+            _link(tee_in_id, eq_id)
+            _link(tee_in_id, bv_id)
+            _link(eq_id,     tee_out_id)
+            _link(bv_id,     tee_out_id)
+            stage_edges.extend([
+                (current_tail, str_id),
+                (str_id,    tee_in_id),
+                (tee_in_id, eq_id),
+                (eq_id,     tee_out_id),
+            ])
+            current_tail = tee_out_id
 
     # -----------------------------------------------------------------------
     # Product storage

@@ -186,37 +186,57 @@ def draw_pipe_crossing_gaps(
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
-    gap_radius: int = 8,
+    hop_radius: int = 20,
 ) -> None:
-    """Draw white gap circles at pipe crossings that are not junctions (§1.1)."""
+    """Draw hop arcs at pipe crossings that are not junctions (§1.1).
+
+    The horizontal segment remains continuous; the vertical segment gets a
+    right-facing semicircular hop arc where it crosses the horizontal pipe.
+    All edge types are checked so signal lines also produce visible hops.
+    """
+    # Collect (segment_start, segment_end, edge_key, edge_type) for H and V runs
     h_segs: list[tuple] = []
     v_segs: list[tuple] = []
     for u, v, edata in G.edges(data=True):
         if u not in pos or v not in pos:
             continue
-        if edata.get("type", "process") not in ("process", "utility"):
-            continue
+        etype = edata.get("type", "process")
         p1 = snap_to_grid(*to_pixel(*pos[u]))
         p2 = snap_to_grid(*to_pixel(*pos[v]))
         for sp1, sp2 in route_orthogonal(p1, p2):
+            dx = sp2[0] - sp1[0]
+            dy = sp2[1] - sp1[1]
             key = (u, v)
-            if sp1[1] == sp2[1]:
-                h_segs.append((sp1, sp2, key))
-            elif sp1[0] == sp2[0]:
-                v_segs.append((sp1, sp2, key))
-    for hp1, hp2, hkey in h_segs:
-        hx1, hy = min(hp1[0], hp2[0]), hp1[1]
+            if dy == 0 and dx != 0:
+                h_segs.append((sp1, sp2, key, etype))
+            elif dx == 0 and dy != 0:
+                v_segs.append((sp1, sp2, key, etype))
+
+    r = hop_radius
+    for hp1, hp2, hkey, h_etype in h_segs:
+        hx1 = min(hp1[0], hp2[0])
         hx2 = max(hp1[0], hp2[0])
-        for vp1, vp2, vkey in v_segs:
+        hy  = hp1[1]
+        h_w = LINE_WIDTH.get(h_etype, 1)
+        for vp1, vp2, vkey, v_etype in v_segs:
             if hkey == vkey:
                 continue
-            vx = vp1[0]
+            vx  = vp1[0]
             vy1 = min(vp1[1], vp2[1])
             vy2 = max(vp1[1], vp2[1])
+            v_w = LINE_WIDTH.get(v_etype, 1)
             if hx1 < vx < hx2 and vy1 < hy < vy2:
-                draw.ellipse([vx - gap_radius, hy - gap_radius,
-                              vx + gap_radius, hy + gap_radius],
-                             fill=BG_COLOR)
+                # Erase crossing area
+                draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
+                # Redraw horizontal pipe continuously through the gap
+                draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
+                # Right-facing semicircular hop arc on the vertical pipe
+                # (PIL angles: 0=right, 90=bottom, 180=left, 270=top, clockwise)
+                draw.arc(
+                    [vx - r, hy - r, vx + r, hy + r],
+                    start=270, end=90,
+                    fill=FG_COLOR, width=v_w,
+                )
 
 
 # Stage 7 — Symbol placeholders
@@ -253,7 +273,26 @@ def render_symbol_placeholders(
 
 # Stage 8 — Text tag rendering
 
+
+def _paste_rotated_tag(
+    img: Image.Image,
+    tag: str,
+    cx: int,
+    cy: int,
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
+) -> None:
+    """Render *tag* rotated 90° CCW and paste it centred at (cx, cy)."""
+    char_w = SMALL_FONT - 2
+    txt_w = max(8, len(tag) * char_w + 4)
+    txt_h = SMALL_FONT + 6
+    surf = Image.new("RGBA", (txt_w, txt_h), (255, 255, 255, 0))
+    ImageDraw.Draw(surf).text((2, 2), tag, fill=(80, 80, 80), font=font)
+    rotated = surf.rotate(90, expand=True)
+    img.paste(rotated, (cx - rotated.width // 2, cy - rotated.height // 2), rotated)
+
+
 def render_tags(
+    img: Image.Image,
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
@@ -282,11 +321,17 @@ def render_tags(
                                 snap_to_grid(*to_pixel(*pos[v])))
         if not segs:
             continue
-        sx1, sy1 = segs[0][0]
-        sx2, sy2 = segs[0][1]
+        # Place the label on the longest segment
+        longest = max(segs, key=lambda s: abs(s[1][0] - s[0][0]) + abs(s[1][1] - s[0][1]))
+        sx1, sy1 = longest[0]
+        sx2, sy2 = longest[1]
         mx, my = (sx1 + sx2) // 2, (sy1 + sy2) // 2
-        draw.text((mx - len(tag) * 4, my - SMALL_FONT - 2),
-                  tag, fill=(80, 80, 80), font=font_sm)
+        is_vertical = (sx1 == sx2)
+        if is_vertical:
+            _paste_rotated_tag(img, tag, mx - SMALL_FONT - 4, my, font_sm)
+        else:
+            draw.text((mx - len(tag) * 4, my - SMALL_FONT - 2),
+                      tag, fill=(80, 80, 80), font=font_sm)
 
 
 # Full pipeline
@@ -316,7 +361,7 @@ def render_diagram(
     render_pipes(draw, G, pos)
     draw_pipe_crossing_gaps(draw, G, pos)
     render_symbol_placeholders(draw, G, pos)
-    render_tags(draw, G, pos)
+    render_tags(img, draw, G, pos)
 
     if apply_noise:
         from pid_generator.noise import apply_generation_noise
