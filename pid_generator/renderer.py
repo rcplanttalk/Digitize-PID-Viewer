@@ -22,6 +22,7 @@ from pid_generator.constants import (
     CANVAS_H,
     CANVAS_W,
     CROSSING_COLOR,
+    CROSSING_PALETTE,
     DASH_PATTERN,
     DPI_DEFAULT,
     DPI_MAX,
@@ -151,10 +152,13 @@ def _draw_edge(
     edge_type: str,
     wp_x: int | None = None,
     dpi_scale: float = 1.0,
+    fill: str = FG_COLOR,
 ) -> None:
     """Draw an edge with consistent line width regardless of DPI.
 
     DPI affects output quality/resolution but NOT line thickness.
+    The *fill* colour overrides the default foreground colour; used by the
+    ``"full_line_color"`` crossing style to give each crossing edge a unique colour.
     """
     # Line width is constant across all DPI values
     width = max(1, LINE_WIDTH.get(edge_type, 1))
@@ -162,9 +166,9 @@ def _draw_edge(
     segs  = route_edge(p1, p2, wp_x)
     for seg_p1, seg_p2 in segs:
         if dash:
-            _draw_dashed_line(draw, seg_p1, seg_p2, dash=dash, width=width)
+            _draw_dashed_line(draw, seg_p1, seg_p2, dash=dash, width=width, fill=fill)
         else:
-            draw.line([seg_p1, seg_p2], fill=FG_COLOR, width=width)
+            draw.line([seg_p1, seg_p2], fill=fill, width=width)
     if edge_type == "signal_pneumatic":
         for seg_p1, seg_p2 in segs:
             _draw_pneumatic_ticks(draw, seg_p1, seg_p2)
@@ -225,15 +229,19 @@ def draw_pipe_crossing_gaps(
         right-facing semicircular hop arc where it crosses the horizontal pipe.
 
     ``"color_change"``
-        Both segments remain fully continuous. The portion of the *vertical*
-        segment that passes through the crossing zone is redrawn in
-        ``CROSSING_COLOR`` so the two pipes are visually distinguishable
-        without breaking either line.
+        Both segments remain fully continuous. Only the small crossing zone of
+        the *vertical* segment is redrawn in ``CROSSING_COLOR`` (red).
+
+    ``"full_line_color"``
+        Every edge that participates in at least one crossing is redrawn in
+        its own unique colour from ``CROSSING_PALETTE``. Edges that cross each
+        other always receive different colours, making all crossing lines
+        individually traceable across the whole diagram.
 
     Args:
         hop_radius: Half-size of the crossing zone in pixels.
         dpi_scale: DPI scaling factor (affects line widths).
-        crossing_style: ``"hop"`` or ``"color_change"``.
+        crossing_style: ``"hop"``, ``"color_change"``, or ``"full_line_color"``.
     """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
@@ -257,37 +265,74 @@ def draw_pipe_crossing_gaps(
                 v_segs.append((sp1, sp2, key, etype))
 
     r = hop_radius
-    for hp1, hp2, hkey, h_etype in h_segs:
-        hx1 = min(hp1[0], hp2[0])
-        hx2 = max(hp1[0], hp2[0])
-        hy  = hp1[1]
-        h_w = max(1, LINE_WIDTH.get(h_etype, 1))
-        for vp1, vp2, vkey, v_etype in v_segs:
-            if hkey == vkey:
+
+    if crossing_style == "full_line_color":
+        # Pass 1 — find every edge key that participates in at least one crossing.
+        crossing_keys: set = set()
+        for hp1, hp2, hkey, _ in h_segs:
+            hx1 = min(hp1[0], hp2[0])
+            hx2 = max(hp1[0], hp2[0])
+            hy  = hp1[1]
+            for vp1, vp2, vkey, _ in v_segs:
+                if hkey == vkey:
+                    continue
+                vx  = vp1[0]
+                vy1 = min(vp1[1], vp2[1])
+                vy2 = max(vp1[1], vp2[1])
+                if hx1 < vx < hx2 and vy1 < hy < vy2:
+                    crossing_keys.add(hkey)
+                    crossing_keys.add(vkey)
+
+        # Assign a unique palette color to each crossing edge.
+        edge_colors: dict = {
+            key: CROSSING_PALETTE[i % len(CROSSING_PALETTE)]
+            for i, key in enumerate(crossing_keys)
+        }
+
+        # Pass 2 — redraw each crossing edge entirely in its assigned color.
+        for u, v, edata in G.edges(data=True):
+            key = (u, v)
+            if key not in edge_colors:
                 continue
-            vx  = vp1[0]
-            vy1 = min(vp1[1], vp2[1])
-            vy2 = max(vp1[1], vp2[1])
-            v_w = max(1, LINE_WIDTH.get(v_etype, 1))
-            if hx1 < vx < hx2 and vy1 < hy < vy2:
-                if crossing_style == "color_change":
-                    # Redraw the vertical segment through the crossing zone
-                    # in a highlight color; both lines remain continuous.
-                    draw.line(
-                        [(vx, hy - r), (vx, hy + r)],
-                        fill=CROSSING_COLOR,
-                        width=v_w,
-                    )
-                else:
-                    # Default "hop": erase crossing area, redraw horizontal
-                    # continuously, then draw a right-facing arc on the vertical.
-                    draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
-                    draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
-                    draw.arc(
-                        [vx - r, hy - r, vx + r, hy + r],
-                        start=270, end=90,
-                        fill=FG_COLOR, width=v_w,
-                    )
+            if u not in pos or v not in pos:
+                continue
+            etype = edata.get("type", "process")
+            p1   = snap_to_grid(*to_pixel(*pos[u]))
+            p2   = snap_to_grid(*to_pixel(*pos[v]))
+            wp_x = waypoints.get((u, v)) if etype == "process" else None
+            _draw_edge(draw, p1, p2, etype, wp_x=wp_x, dpi_scale=dpi_scale,
+                       fill=edge_colors[key])
+
+    else:
+        for hp1, hp2, hkey, h_etype in h_segs:
+            hx1 = min(hp1[0], hp2[0])
+            hx2 = max(hp1[0], hp2[0])
+            hy  = hp1[1]
+            h_w = max(1, LINE_WIDTH.get(h_etype, 1))
+            for vp1, vp2, vkey, v_etype in v_segs:
+                if hkey == vkey:
+                    continue
+                vx  = vp1[0]
+                vy1 = min(vp1[1], vp2[1])
+                vy2 = max(vp1[1], vp2[1])
+                v_w = max(1, LINE_WIDTH.get(v_etype, 1))
+                if hx1 < vx < hx2 and vy1 < hy < vy2:
+                    if crossing_style == "color_change":
+                        # Redraw only the crossing zone of the vertical segment.
+                        draw.line(
+                            [(vx, hy - r), (vx, hy + r)],
+                            fill=CROSSING_COLOR,
+                            width=v_w,
+                        )
+                    else:
+                        # "hop": erase zone, keep horizontal continuous, arc on vertical.
+                        draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
+                        draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
+                        draw.arc(
+                            [vx - r, hy - r, vx + r, hy + r],
+                            start=270, end=90,
+                            fill=FG_COLOR, width=v_w,
+                        )
 
 
 # Stage 7 — Symbol placeholders
@@ -452,7 +497,7 @@ def render_diagram(
 
     # Handle crossing style: if not specified, pick randomly
     if crossing_style is None:
-        crossing_style = rng.choice(["hop", "color_change"])
+        crossing_style = rng.choice(["hop", "color_change", "full_line_color"])
 
     # Ensure DPI is within valid range
     dpi = max(DPI_MIN, min(dpi, DPI_MAX))

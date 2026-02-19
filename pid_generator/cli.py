@@ -127,9 +127,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="Apply Stage 9 noise augmentations (default: --noise).")
     gen.add_argument("--nodes",    type=int,  default=None,
                      help="Target node count per diagram (default: random 10-50).")
-    gen.add_argument("--crossing-style", choices=["hop", "color_change"], default=None,
+    gen.add_argument("--crossing-style", choices=["hop", "color_change", "full_line_color"], default=None,
                      dest="crossing_style",
-                     help="Pipe crossing style: 'hop' (arc) or 'color_change' (red highlight). Default: random per diagram.")
+                     help="Pipe crossing style: 'hop' (arc), 'color_change' (red zone), or 'full_line_color' (unique color per crossing line). Default: random per diagram.")
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
@@ -141,9 +141,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="Apply Stage 9 noise augmentations (default: --no-noise).")
     sng.add_argument("--nodes",  type=int, default=None,
                      help="Target node count (default: random 10-50).")
-    sng.add_argument("--crossing-style", choices=["hop", "color_change"], default=None,
+    sng.add_argument("--crossing-style", choices=["hop", "color_change", "full_line_color"], default=None,
                      dest="crossing_style",
-                     help="Pipe crossing style: 'hop' (arc) or 'color_change' (red highlight). Default: random.")
+                     help="Pipe crossing style: 'hop' (arc), 'color_change' (red zone), or 'full_line_color' (unique color per crossing line). Default: random.")
 
     return parser
 

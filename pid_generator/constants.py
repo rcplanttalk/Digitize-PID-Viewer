@@ -238,6 +238,24 @@ INSTRUMENT_BUBBLE_PX: int = round(INSTRUMENT_BUBBLE_MM * PX_PER_MM)
 BG_COLOR:       str = "white"
 FG_COLOR:       str = "black"
 CROSSING_COLOR: str = "#CC2200"  # Red highlight used in "color_change" crossing style
+
+# Palette of visually distinct colors for the "full_line_color" crossing style.
+# Each crossing edge is assigned a unique color from this list so that lines
+# that cross each other are always distinguishable.
+CROSSING_PALETTE: list[str] = [
+    "#CC2200",  # red
+    "#0055CC",  # blue
+    "#007700",  # green
+    "#CC7700",  # orange
+    "#7700CC",  # purple
+    "#007777",  # teal
+    "#CC0077",  # magenta
+    "#557700",  # olive
+    "#004488",  # dark blue
+    "#883300",  # brown
+    "#006644",  # dark teal
+    "#880044",  # dark magenta
+]
 FONT_SIZE:  int = 22   # px — component tags
 SMALL_FONT: int = 16   # px — pipe tags and notes
 SYMBOL_BOX: int = 64   # px half-side for symbol bounding boxes
