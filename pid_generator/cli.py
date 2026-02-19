@@ -55,6 +55,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
         topology=args.topology,
         apply_noise=args.noise,
         n_nodes=args.nodes,
+        crossing_style=args.crossing_style,
     )
     logger.info("Done. Manifest ->%s", manifest)
 
@@ -90,7 +91,8 @@ def cmd_single(args: argparse.Namespace) -> None:
     lbl_path = os.path.join(args.output, label_filename(idx))
     grp_path = os.path.join(args.output, graph_filename(idx))
 
-    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=args.noise, idx=idx, seed=seed)
+    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=args.noise, idx=idx, seed=seed,
+                   crossing_style=args.crossing_style)
     export_yolo_labels(G, pos, lbl_path)
     export_graph(G, grp_path)
 
@@ -125,6 +127,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="Apply Stage 9 noise augmentations (default: --noise).")
     gen.add_argument("--nodes",    type=int,  default=None,
                      help="Target node count per diagram (default: random 10-50).")
+    gen.add_argument("--crossing-style", choices=["hop", "color_change"], default=None,
+                     dest="crossing_style",
+                     help="Pipe crossing style: 'hop' (arc) or 'color_change' (red highlight). Default: random per diagram.")
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
@@ -136,6 +141,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="Apply Stage 9 noise augmentations (default: --no-noise).")
     sng.add_argument("--nodes",  type=int, default=None,
                      help="Target node count (default: random 10-50).")
+    sng.add_argument("--crossing-style", choices=["hop", "color_change"], default=None,
+                     dest="crossing_style",
+                     help="Pipe crossing style: 'hop' (arc) or 'color_change' (red highlight). Default: random.")
 
     return parser
 

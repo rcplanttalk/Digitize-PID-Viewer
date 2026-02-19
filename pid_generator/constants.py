@@ -235,8 +235,9 @@ INSTRUMENT_BUBBLE_MM: float = 12.0
 INSTRUMENT_BUBBLE_PX: int = round(INSTRUMENT_BUBBLE_MM * PX_PER_MM)
 
 # §16 — Rendering
-BG_COLOR:   str = "white"
-FG_COLOR:   str = "black"
+BG_COLOR:       str = "white"
+FG_COLOR:       str = "black"
+CROSSING_COLOR: str = "#CC2200"  # Red highlight used in "color_change" crossing style
 FONT_SIZE:  int = 22   # px — component tags
 SMALL_FONT: int = 16   # px — pipe tags and notes
 SYMBOL_BOX: int = 64   # px half-side for symbol bounding boxes

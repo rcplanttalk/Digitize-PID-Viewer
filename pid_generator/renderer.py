@@ -21,6 +21,7 @@ from pid_generator.constants import (
     BG_COLOR,
     CANVAS_H,
     CANVAS_W,
+    CROSSING_COLOR,
     DASH_PATTERN,
     DPI_DEFAULT,
     DPI_MAX,
@@ -213,14 +214,26 @@ def draw_pipe_crossing_gaps(
     hop_radius: int = 20,
     waypoints: dict | None = None,
     dpi_scale: float = 1.0,
+    crossing_style: str = "hop",
 ) -> None:
-    """Draw hop arcs at pipe crossings that are not junctions (§1.1).
+    """Draw pipe crossings that are not junctions (§1.1).
 
-    The horizontal segment remains continuous; the vertical segment gets a
-    right-facing semicircular hop arc where it crosses the horizontal pipe.
+    Two styles are available via *crossing_style*:
+
+    ``"hop"`` (default)
+        The horizontal segment remains continuous; the vertical segment gets a
+        right-facing semicircular hop arc where it crosses the horizontal pipe.
+
+    ``"color_change"``
+        Both segments remain fully continuous. The portion of the *vertical*
+        segment that passes through the crossing zone is redrawn in
+        ``CROSSING_COLOR`` so the two pipes are visually distinguishable
+        without breaking either line.
 
     Args:
+        hop_radius: Half-size of the crossing zone in pixels.
         dpi_scale: DPI scaling factor (affects line widths).
+        crossing_style: ``"hop"`` or ``"color_change"``.
     """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
@@ -257,13 +270,24 @@ def draw_pipe_crossing_gaps(
             vy2 = max(vp1[1], vp2[1])
             v_w = max(1, LINE_WIDTH.get(v_etype, 1))
             if hx1 < vx < hx2 and vy1 < hy < vy2:
-                draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
-                draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
-                draw.arc(
-                    [vx - r, hy - r, vx + r, hy + r],
-                    start=270, end=90,
-                    fill=FG_COLOR, width=v_w,
-                )
+                if crossing_style == "color_change":
+                    # Redraw the vertical segment through the crossing zone
+                    # in a highlight color; both lines remain continuous.
+                    draw.line(
+                        [(vx, hy - r), (vx, hy + r)],
+                        fill=CROSSING_COLOR,
+                        width=v_w,
+                    )
+                else:
+                    # Default "hop": erase crossing area, redraw horizontal
+                    # continuously, then draw a right-facing arc on the vertical.
+                    draw.rectangle([vx - r, hy - r, vx + r, hy + r], fill=BG_COLOR)
+                    draw.line([(vx - r, hy), (vx + r, hy)], fill=FG_COLOR, width=h_w)
+                    draw.arc(
+                        [vx - r, hy - r, vx + r, hy + r],
+                        start=270, end=90,
+                        fill=FG_COLOR, width=v_w,
+                    )
 
 
 # Stage 7 — Symbol placeholders
@@ -392,6 +416,7 @@ def render_diagram(
     idx: int = 1,
     seed: int | None = None,
     dpi: float | None = None,
+    crossing_style: str | None = None,
 ) -> Image.Image:
     """Run Stages 4–8 and save the diagram as a PNG (§18).
 
@@ -408,16 +433,26 @@ def render_diagram(
         seed: RNG seed for reproducibility.
         dpi: Display DPI (72–300). If None, uses random value in range.
              Affects output quality/resolution. Line thickness remains constant.
+        crossing_style: How pipe crossings are rendered. ``"hop"`` draws a
+             semicircular arc on the vertical pipe. ``"color_change"``
+             redraws the vertical pipe's crossing zone in ``CROSSING_COLOR``
+             (red) so both lines stay continuous but are visually distinct.
+             ``None`` (default) picks randomly between the two styles.
     """
     if metadata is None:
         from pid_generator.title_block import generate_title_block_metadata
         metadata = generate_title_block_metadata(idx=idx, seed=seed)
 
+    import random as _random
+    rng = _random.Random(seed) if seed is not None else _random.Random()
+
     # Handle variable DPI: if not specified, choose random DPI in range
     if dpi is None:
-        import random as _random
-        rng = _random.Random(seed) if seed is not None else _random.Random()
         dpi = rng.uniform(DPI_MIN, DPI_MAX)
+
+    # Handle crossing style: if not specified, pick randomly
+    if crossing_style is None:
+        crossing_style = rng.choice(["hop", "color_change"])
 
     # Ensure DPI is within valid range
     dpi = max(DPI_MIN, min(dpi, DPI_MAX))
@@ -431,7 +466,8 @@ def render_diagram(
     draw_title_block(draw, metadata)
     waypoints = compute_edge_waypoints(G, pos)
     render_pipes(draw, G, pos, waypoints, dpi_scale=dpi_scale)
-    draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints, dpi_scale=dpi_scale)
+    draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints, dpi_scale=dpi_scale,
+                            crossing_style=crossing_style)
     render_symbol_placeholders(draw, G, pos, dpi_scale=dpi_scale)
     render_tags(img, draw, G, pos, waypoints, dpi_scale=dpi_scale)
 

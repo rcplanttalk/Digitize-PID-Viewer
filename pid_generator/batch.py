@@ -70,17 +70,19 @@ def generate_one(
     topology: str = "logical",
     apply_noise: bool = True,
     n_nodes: int | None = None,
+    crossing_style: str | None = None,
 ) -> dict:
     """Generate, validate, render, and export one diagram.
 
     Args:
-        idx:          1-based diagram index.
-        seed:         Per-diagram RNG seed (base_seed + idx).
-        split:        ``'train'``, ``'val'``, or ``'test'``.
-        dataset_root: Root directory of the dataset.
-        topology:     ``'logical'`` (domain-constrained) or ``'random'``.
-        apply_noise:  Whether to apply Stage 9 noise augmentations.
-        n_nodes:      Target node count; ``None`` picks randomly in [10, 50].
+        idx:            1-based diagram index.
+        seed:           Per-diagram RNG seed (base_seed + idx).
+        split:          ``'train'``, ``'val'``, or ``'test'``.
+        dataset_root:   Root directory of the dataset.
+        topology:       ``'logical'`` (domain-constrained) or ``'random'``.
+        apply_noise:    Whether to apply Stage 9 noise augmentations.
+        n_nodes:        Target node count; ``None`` picks randomly in [10, 50].
+        crossing_style: ``'hop'`` or ``'color_change'`` (see renderer).
 
     Returns:
         A manifest row dict.
@@ -116,7 +118,8 @@ def generate_one(
     grph_path = os.path.join(dataset_root, "graphs", split, grph_fname)
 
     # Stages 4–9 — render
-    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=apply_noise, idx=idx, seed=seed)
+    render_diagram(G, pos, img_path, metadata=metadata, apply_noise=apply_noise, idx=idx, seed=seed,
+                   crossing_style=crossing_style)
 
     # Stage 10 — YOLO labels
     export_yolo_labels(G, pos, lbl_path)
@@ -148,6 +151,7 @@ def generate_dataset(
     topology: str = "logical",
     apply_noise: bool = True,
     n_nodes: int | None = None,
+    crossing_style: str | None = None,
 ) -> str:
     """Generate *n* diagrams and organise them into a YOLO dataset (§26).
 
@@ -165,8 +169,9 @@ def generate_dataset(
         dataset_root: Output root directory.
         base_seed:    Base RNG seed; each diagram uses ``base_seed + idx``.
         topology:     ``'logical'`` or ``'random'``.
-        apply_noise:  Apply Stage 9 noise to every image.
-        n_nodes:      Target node count per diagram; ``None`` picks randomly in [10, 50].
+        apply_noise:    Apply Stage 9 noise to every image.
+        n_nodes:        Target node count per diagram; ``None`` picks randomly in [10, 50].
+        crossing_style: ``'hop'`` or ``'color_change'`` (see renderer).
 
     Returns:
         Absolute path to the manifest CSV.
@@ -201,7 +206,7 @@ def generate_dataset(
     for idx in range(1, n + 1):
         split = _split_for(idx)
         seed = base_seed + idx
-        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise, n_nodes)
+        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise, n_nodes, crossing_style)
         rows.append(row)
 
     # Write manifest CSV
