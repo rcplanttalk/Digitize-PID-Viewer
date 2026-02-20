@@ -335,7 +335,7 @@ def draw_pipe_crossing_gaps(
                         )
 
 
-# Stage 7 — Symbol placeholders
+# Stage 7 — Symbol rendering
 
 _NODE_COLORS: dict[str, str] = {
     "equipment":  "#D6EAF8",
@@ -347,24 +347,71 @@ _NODE_COLORS: dict[str, str] = {
 
 
 def render_symbol_placeholders(
+    img: Image.Image,
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
     dpi_scale: float = 1.0,
+    standard: str = "isa",
 ) -> None:
-    """Draw labelled bounding-box placeholders per node (Stage 7 stub)."""
+    """Draw actual SVG symbols per node (Stage 7).
+
+    If SVG symbols are available, they are rendered and pasted onto the canvas.
+    Falls back to placeholder boxes if symbols are unavailable.
+
+    Args:
+        img: The PIL Image to paste symbols onto.
+        draw: The ImageDraw object.
+        G: The P&ID graph.
+        pos: Node positions (normalised coordinates).
+        dpi_scale: DPI scaling factor (affects scaling).
+        standard: Symbol standard to use (e.g., "isa").
+    """
+    from pid_generator.symbols_loader import get_registry
+    from pid_generator.svg_renderer import render_svg_to_pil
+
+    registry = get_registry(standard=standard)
     half = SYMBOL_BOX // 2
     font = _font(small=True)
+
+    # Scale symbol size based on DPI
+    symbol_size = int(SYMBOL_BOX * dpi_scale)
+    half_scaled = symbol_size // 2
+
     for node, data in G.nodes(data=True):
         if node not in pos:
             continue
+
         cx, cy = snap_to_grid(*to_pixel(*pos[node]))
+        class_id = data.get("class_id", 0)
+
+        # Try to get an SVG symbol for this class ID
+        symbols = registry.get_symbols_by_class_id(class_id)
+        symbol = symbols[0] if symbols else None
+
+        if symbol:
+            svg_path = registry.get_svg_path(symbol)
+            if svg_path:
+                # Render SVG to PIL Image
+                svg_img = render_svg_to_pil(svg_path, output_width=symbol_size, output_height=symbol_size)
+                if svg_img:
+                    # Paste onto canvas at node position
+                    # Center the symbol at (cx, cy)
+                    x = cx - half_scaled
+                    y = cy - half_scaled
+                    # Ensure coordinates are within bounds
+                    x = max(0, min(x, img.width - svg_img.width))
+                    y = max(0, min(y, img.height - svg_img.height))
+                    img.paste(svg_img, (x, y), svg_img)
+                    continue
+
+        # Fallback: draw placeholder box
         color = _NODE_COLORS.get(data.get("type", "fitting"), "#EEEEEE")
         draw.rectangle([cx - half + 4, cy - half + 4, cx + half - 4, cy + half - 4],
                        fill=BG_COLOR)
         draw.rectangle([cx - half, cy - half, cx + half, cy + half],
                        outline=FG_COLOR, fill=color, width=2)
-        draw.text((cx - 8, cy - 10), str(data.get("class_id", "?")),
+        draw.text((cx - 8, cy - 10), str(class_id),
                   fill=FG_COLOR, font=font)
 
 
@@ -513,7 +560,7 @@ def render_diagram(
     render_pipes(draw, G, pos, waypoints, dpi_scale=dpi_scale)
     draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints, dpi_scale=dpi_scale,
                             crossing_style=crossing_style)
-    render_symbol_placeholders(draw, G, pos, dpi_scale=dpi_scale)
+    render_symbol_placeholders(img, draw, G, pos, dpi_scale=dpi_scale, standard="isa")
     render_tags(img, draw, G, pos, waypoints, dpi_scale=dpi_scale)
 
     if apply_noise:
