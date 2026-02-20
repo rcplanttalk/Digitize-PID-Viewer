@@ -27,3 +27,6 @@ test-results/
 # Dataset and output folder
 dataset/
 output/
+
+# Symbols folder
+symbols/
