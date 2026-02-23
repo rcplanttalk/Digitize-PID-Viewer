@@ -43,10 +43,14 @@ def _next_index(directory: str, prefix: str = "pid_", ext: str = ".png") -> int:
 def cmd_generate(args: argparse.Namespace) -> None:
     """Batch-generate N diagrams into a YOLO dataset folder."""
     from pid_generator.batch import generate_dataset
+    from pid_generator.symbols_loader import list_available_standards
 
     base_seed = args.seed if args.seed is not None else random.randint(0, 0xFFFF_FFFF)
     logger.info("Generating %d diagram(s) -> %s", args.n, os.path.normpath(args.output))
-    logger.info("  topology=%s  noise=%s  seed=%s", args.topology, args.noise, base_seed)
+    logger.info("  topology=%s  noise=%s  seed=%s  standard=%s",
+                args.topology, args.noise, base_seed, args.symbol_standard)
+    available = list_available_standards()
+    logger.info("  available symbol standards: %s", available or ["(none found)"])
 
     manifest = generate_dataset(
         n=args.n,
@@ -56,6 +60,7 @@ def cmd_generate(args: argparse.Namespace) -> None:
         apply_noise=args.noise,
         n_nodes=args.nodes,
         crossing_style=args.crossing_style,
+        symbol_standard=args.symbol_standard,
     )
     logger.info("Done. Manifest ->%s", manifest)
 
@@ -92,7 +97,7 @@ def cmd_single(args: argparse.Namespace) -> None:
     grp_path = os.path.join(args.output, graph_filename(idx))
 
     render_diagram(G, pos, img_path, metadata=metadata, apply_noise=args.noise, idx=idx, seed=seed,
-                   crossing_style=args.crossing_style)
+                   crossing_style=args.crossing_style, symbol_standard=args.symbol_standard)
     export_yolo_labels(G, pos, lbl_path)
     export_graph(G, grp_path)
 
@@ -130,6 +135,9 @@ def build_parser() -> argparse.ArgumentParser:
     gen.add_argument("--crossing-style", choices=["hop", "color_change", "full_line_color"], default=None,
                      dest="crossing_style",
                      help="Pipe crossing style: 'hop' (arc), 'color_change' (red zone), or 'full_line_color' (unique color per crossing line). Default: random per diagram.")
+    gen.add_argument("--symbol-standard", type=str, default="isa",
+                     dest="symbol_standard",
+                     help="Symbol standard to use for rendering (e.g. 'isa'). Default: isa.")
 
     # single subcommand
     sng = sub.add_parser("single", help="Render one diagram; auto-increments output index.")
@@ -144,6 +152,9 @@ def build_parser() -> argparse.ArgumentParser:
     sng.add_argument("--crossing-style", choices=["hop", "color_change", "full_line_color"], default=None,
                      dest="crossing_style",
                      help="Pipe crossing style: 'hop' (arc), 'color_change' (red zone), or 'full_line_color' (unique color per crossing line). Default: random.")
+    sng.add_argument("--symbol-standard", type=str, default="isa",
+                     dest="symbol_standard",
+                     help="Symbol standard to use for rendering (e.g. 'isa'). Default: isa.")
 
     return parser
 

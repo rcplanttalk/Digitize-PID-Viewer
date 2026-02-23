@@ -2,18 +2,19 @@
 
 Public API
 ----------
-init_canvas()                         -> (Image, ImageDraw)
-draw_title_block(draw, metadata)      -> None
-render_pipes(draw, G, pos)            -> None
-render_tags(draw, G, pos)             -> None
-render_diagram(G, pos, out_path, ...) -> PIL.Image
+init_canvas()                                    -> (Image, ImageDraw)
+draw_title_block(draw, metadata)                 -> None
+compute_snap_canvas_map(G, pos, ...)             -> dict[node, list[snap_entry]]
+render_pipes(draw, G, pos, snap_canvas_map, ...) -> None
+render_tags(draw, G, pos)                        -> None
+render_diagram(G, pos, out_path, ...)            -> PIL.Image
 """
 
 from __future__ import annotations
 
 import math
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -174,12 +175,110 @@ def _draw_edge(
             _draw_pneumatic_ticks(draw, seg_p1, seg_p2)
 
 
+def compute_snap_canvas_map(
+    G: nx.DiGraph,
+    pos: dict[str, tuple[float, float]],
+    dpi_scale: float = 1.0,
+    standard: str = "isa",
+) -> dict[str, list[dict]]:
+    """Compute canvas coordinates for each symbol's snap points (Stage 7 pre-pass).
+
+    For every node that has a matching SVG symbol, the symbol's snap points are
+    converted from normalised SVG coordinates to absolute canvas pixels using
+    anchor-based positioning (so ``in_out`` points land where pipes connect).
+    Nodes without a symbol fall back to a single centre-point entry.
+
+    Returns:
+        Mapping of ``node_id → list[snap_entry]`` where each entry is::
+
+            {"x": int, "y": int, "type": str, "id": str}
+    """
+    from pid_generator.symbols_loader import get_registry
+
+    registry = get_registry(standard=standard)
+    symbol_size = int(SYMBOL_BOX * dpi_scale)
+    result: dict[str, list[dict]] = {}
+
+    for node, data in G.nodes(data=True):
+        if node not in pos:
+            continue
+
+        cx, cy = snap_to_grid(*to_pixel(*pos[node]))
+        class_id = data.get("class_id", 0)
+
+        symbol = registry.get_symbol_for_class_id(class_id)
+        if symbol:
+            norm_snaps = registry.get_normalised_snap_points(symbol)
+            in_out_norm = [(s["nx"], s["ny"]) for s in norm_snaps if s.get("type") == "in_out"]
+        else:
+            norm_snaps = []
+            in_out_norm = []
+
+        if not in_out_norm:
+            # No in_out points — centre fallback
+            result[node] = [{"x": cx, "y": cy, "type": "in_out", "id": "center"}]
+            continue
+
+        # Anchor = centroid of in_out snap points (normalised)
+        ax = sum(p[0] for p in in_out_norm) / len(in_out_norm)
+        ay = sum(p[1] for p in in_out_norm) / len(in_out_norm)
+
+        # Top-left corner so the anchor lands at (cx, cy)
+        tlx = cx - ax * symbol_size
+        tly = cy - ay * symbol_size
+
+        entries = []
+        for sp in norm_snaps:
+            entries.append({
+                "x": int(tlx + sp["nx"] * symbol_size),
+                "y": int(tly + sp["ny"] * symbol_size),
+                "type": sp.get("type", "in_out"),
+                "id":   sp.get("id", ""),
+            })
+        result[node] = entries
+
+    return result
+
+
+def _nearest_snap_in_direction(
+    snap_entries: list[dict],
+    from_cx: int,
+    from_cy: int,
+    to_cx: int,
+    to_cy: int,
+) -> tuple[int, int]:
+    """Pick the ``in_out`` snap point most aligned with the direction from→to.
+
+    Projects each candidate snap point onto the unit direction vector and
+    returns the one with the highest dot product (i.e. furthest in the
+    target direction).  Falls back to ``(from_cx, from_cy)`` when no
+    ``in_out`` entries exist.
+    """
+    pts = [e for e in snap_entries if e.get("type") == "in_out"]
+    if not pts:
+        return (from_cx, from_cy)
+
+    dx = to_cx - from_cx
+    dy = to_cy - from_cy
+    length = math.hypot(dx, dy)
+    if length == 0:
+        return (pts[0]["x"], pts[0]["y"])
+
+    dx /= length
+    dy /= length
+
+    # Score = dot product of (snap - from_center) with direction vector
+    best = max(pts, key=lambda e: (e["x"] - from_cx) * dx + (e["y"] - from_cy) * dy)
+    return (best["x"], best["y"])
+
+
 def render_pipes(
     draw: ImageDraw.ImageDraw,
     G: nx.DiGraph,
     pos: dict[str, tuple[float, float]],
     waypoints: dict | None = None,
     dpi_scale: float = 1.0,
+    snap_canvas_map: dict | None = None,
 ) -> None:
     """Draw all edges, process lines first then signal lines (§18, Stage 5).
 
@@ -189,6 +288,10 @@ def render_pipes(
         pos: Node positions (normalised coordinates).
         waypoints: Computed edge waypoints (computed if None).
         dpi_scale: DPI scaling factor (affects line widths).
+        snap_canvas_map: Pre-computed snap point canvas coordinates from
+            :func:`compute_snap_canvas_map`.  When provided, pipe endpoints
+            are placed at the symbol's nearest ``in_out`` snap point rather
+            than the node centre.
     """
     if waypoints is None:
         waypoints = compute_edge_waypoints(G, pos)
@@ -203,8 +306,18 @@ def render_pipes(
         for u, v, _ in by_type.get(etype, []):
             if u not in pos or v not in pos:
                 continue
-            p1  = snap_to_grid(*to_pixel(*pos[u]))
-            p2  = snap_to_grid(*to_pixel(*pos[v]))
+            # Node centre positions (used as fallback and for direction)
+            uc = snap_to_grid(*to_pixel(*pos[u]))
+            vc = snap_to_grid(*to_pixel(*pos[v]))
+
+            if snap_canvas_map is not None:
+                p1 = _nearest_snap_in_direction(
+                    snap_canvas_map.get(u, []), uc[0], uc[1], vc[0], vc[1])
+                p2 = _nearest_snap_in_direction(
+                    snap_canvas_map.get(v, []), vc[0], vc[1], uc[0], uc[1])
+            else:
+                p1, p2 = uc, vc
+
             wp_x = waypoints.get((u, v)) if etype == "process" else None
             _draw_edge(draw, p1, p2, etype, wp_x=wp_x, dpi_scale=dpi_scale)
 
@@ -219,6 +332,7 @@ def draw_pipe_crossing_gaps(
     waypoints: dict | None = None,
     dpi_scale: float = 1.0,
     crossing_style: str = "hop",
+    snap_canvas_map: dict | None = None,
 ) -> None:
     """Draw pipe crossings that are not junctions (§1.1).
 
@@ -252,8 +366,15 @@ def draw_pipe_crossing_gaps(
         if u not in pos or v not in pos:
             continue
         etype = edata.get("type", "process")
-        p1   = snap_to_grid(*to_pixel(*pos[u]))
-        p2   = snap_to_grid(*to_pixel(*pos[v]))
+        uc   = snap_to_grid(*to_pixel(*pos[u]))
+        vc   = snap_to_grid(*to_pixel(*pos[v]))
+        if snap_canvas_map is not None:
+            p1 = _nearest_snap_in_direction(
+                snap_canvas_map.get(u, []), uc[0], uc[1], vc[0], vc[1])
+            p2 = _nearest_snap_in_direction(
+                snap_canvas_map.get(v, []), vc[0], vc[1], uc[0], uc[1])
+        else:
+            p1, p2 = uc, vc
         wp_x = waypoints.get((u, v)) if etype == "process" else None
         for sp1, sp2 in route_edge(p1, p2, wp_x):
             dx = sp2[0] - sp1[0]
@@ -297,8 +418,15 @@ def draw_pipe_crossing_gaps(
             if u not in pos or v not in pos:
                 continue
             etype = edata.get("type", "process")
-            p1   = snap_to_grid(*to_pixel(*pos[u]))
-            p2   = snap_to_grid(*to_pixel(*pos[v]))
+            uc   = snap_to_grid(*to_pixel(*pos[u]))
+            vc   = snap_to_grid(*to_pixel(*pos[v]))
+            if snap_canvas_map is not None:
+                p1 = _nearest_snap_in_direction(
+                    snap_canvas_map.get(u, []), uc[0], uc[1], vc[0], vc[1])
+                p2 = _nearest_snap_in_direction(
+                    snap_canvas_map.get(v, []), vc[0], vc[1], uc[0], uc[1])
+            else:
+                p1, p2 = uc, vc
             wp_x = waypoints.get((u, v)) if etype == "process" else None
             _draw_edge(draw, p1, p2, etype, wp_x=wp_x, dpi_scale=dpi_scale,
                        fill=edge_colors[key])
@@ -353,19 +481,27 @@ def render_symbol_placeholders(
     pos: dict[str, tuple[float, float]],
     dpi_scale: float = 1.0,
     standard: str = "isa",
+    snap_canvas_map: dict | None = None,
+    rng: Any = None,
 ) -> None:
     """Draw actual SVG symbols per node (Stage 7).
 
-    If SVG symbols are available, they are rendered and pasted onto the canvas.
-    Falls back to placeholder boxes if symbols are unavailable.
+    Symbols are placed using anchor-based positioning: the centroid of the
+    symbol's ``in_out`` snap points lands at the node's canvas centre,
+    so pipe lines connect at the right physical point on the symbol body.
+    Falls back to a placeholder box for nodes with no matching symbol.
 
     Args:
         img: The PIL Image to paste symbols onto.
         draw: The ImageDraw object.
         G: The P&ID graph.
         pos: Node positions (normalised coordinates).
-        dpi_scale: DPI scaling factor (affects scaling).
-        standard: Symbol standard to use (e.g., "isa").
+        dpi_scale: DPI scaling factor (affects symbol size).
+        standard: Symbol standard to use (e.g., ``"isa"``).
+        snap_canvas_map: Pre-computed snap point positions from
+            :func:`compute_snap_canvas_map`.  Used to determine the
+            symbol's top-left placement corner directly.
+        rng: ``random.Random`` instance for symbol variant selection.
     """
     from pid_generator.symbols_loader import get_registry
     from pid_generator.svg_renderer import render_svg_to_pil
@@ -373,10 +509,7 @@ def render_symbol_placeholders(
     registry = get_registry(standard=standard)
     half = SYMBOL_BOX // 2
     font = _font(small=True)
-
-    # Scale symbol size based on DPI
     symbol_size = int(SYMBOL_BOX * dpi_scale)
-    half_scaled = symbol_size // 2
 
     for node, data in G.nodes(data=True):
         if node not in pos:
@@ -385,27 +518,25 @@ def render_symbol_placeholders(
         cx, cy = snap_to_grid(*to_pixel(*pos[node]))
         class_id = data.get("class_id", 0)
 
-        # Try to get an SVG symbol for this class ID
-        symbols = registry.get_symbols_by_class_id(class_id)
-        symbol = symbols[0] if symbols else None
+        symbol = registry.get_symbol_for_class_id(class_id, rng=rng)
 
         if symbol:
             svg_path = registry.get_svg_path(symbol)
             if svg_path:
-                # Render SVG to PIL Image
                 svg_img = render_svg_to_pil(svg_path, output_width=symbol_size, output_height=symbol_size)
                 if svg_img:
-                    # Paste onto canvas at node position
-                    # Center the symbol at (cx, cy)
-                    x = cx - half_scaled
-                    y = cy - half_scaled
-                    # Ensure coordinates are within bounds
-                    x = max(0, min(x, img.width - svg_img.width))
+                    # Anchor-based placement: offset top-left so the
+                    # in_out centroid lands at (cx, cy).
+                    ax, ay = registry.compute_anchor(symbol)
+                    x = int(cx - ax * symbol_size)
+                    y = int(cy - ay * symbol_size)
+                    # Clamp to canvas bounds
+                    x = max(0, min(x, img.width  - svg_img.width))
                     y = max(0, min(y, img.height - svg_img.height))
                     img.paste(svg_img, (x, y), svg_img)
                     continue
 
-        # Fallback: draw placeholder box
+        # Fallback: placeholder box
         color = _NODE_COLORS.get(data.get("type", "fitting"), "#EEEEEE")
         draw.rectangle([cx - half + 4, cy - half + 4, cx + half - 4, cy + half - 4],
                        fill=BG_COLOR)
@@ -509,6 +640,7 @@ def render_diagram(
     seed: int | None = None,
     dpi: float | None = None,
     crossing_style: str | None = None,
+    symbol_standard: str = "isa",
 ) -> Image.Image:
     """Run Stages 4–8 and save the diagram as a PNG (§18).
 
@@ -530,6 +662,7 @@ def render_diagram(
              redraws the vertical pipe's crossing zone in ``CROSSING_COLOR``
              (red) so both lines stay continuous but are visually distinct.
              ``None`` (default) picks randomly between the two styles.
+        symbol_standard: Symbol library to use (e.g. ``"isa"``).
     """
     if metadata is None:
         from pid_generator.title_block import generate_title_block_metadata
@@ -554,13 +687,19 @@ def render_diagram(
 
     os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
 
+    # Pre-compute snap point canvas positions (needed for pipe routing)
+    snap_canvas_map = compute_snap_canvas_map(G, pos, dpi_scale=dpi_scale, standard=symbol_standard)
+
     img, draw = init_canvas()
     draw_title_block(draw, metadata)
     waypoints = compute_edge_waypoints(G, pos)
-    render_pipes(draw, G, pos, waypoints, dpi_scale=dpi_scale)
+    render_pipes(draw, G, pos, waypoints, dpi_scale=dpi_scale,
+                 snap_canvas_map=snap_canvas_map)
     draw_pipe_crossing_gaps(draw, G, pos, waypoints=waypoints, dpi_scale=dpi_scale,
-                            crossing_style=crossing_style)
-    render_symbol_placeholders(img, draw, G, pos, dpi_scale=dpi_scale, standard="isa")
+                            crossing_style=crossing_style, snap_canvas_map=snap_canvas_map)
+    render_symbol_placeholders(img, draw, G, pos, dpi_scale=dpi_scale,
+                               standard=symbol_standard,
+                               snap_canvas_map=snap_canvas_map, rng=rng)
     render_tags(img, draw, G, pos, waypoints, dpi_scale=dpi_scale)
 
     if apply_noise:

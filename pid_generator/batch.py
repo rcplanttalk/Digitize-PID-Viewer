@@ -71,18 +71,20 @@ def generate_one(
     apply_noise: bool = True,
     n_nodes: int | None = None,
     crossing_style: str | None = None,
+    symbol_standard: str = "isa",
 ) -> dict:
     """Generate, validate, render, and export one diagram.
 
     Args:
-        idx:            1-based diagram index.
-        seed:           Per-diagram RNG seed (base_seed + idx).
-        split:          ``'train'``, ``'val'``, or ``'test'``.
-        dataset_root:   Root directory of the dataset.
-        topology:       ``'logical'`` (domain-constrained) or ``'random'``.
-        apply_noise:    Whether to apply Stage 9 noise augmentations.
-        n_nodes:        Target node count; ``None`` picks randomly in [10, 50].
-        crossing_style: ``'hop'`` or ``'color_change'`` (see renderer).
+        idx:             1-based diagram index.
+        seed:            Per-diagram RNG seed (base_seed + idx).
+        split:           ``'train'``, ``'val'``, or ``'test'``.
+        dataset_root:    Root directory of the dataset.
+        topology:        ``'logical'`` (domain-constrained) or ``'random'``.
+        apply_noise:     Whether to apply Stage 9 noise augmentations.
+        n_nodes:         Target node count; ``None`` picks randomly in [10, 50].
+        crossing_style:  ``'hop'``, ``'color_change'``, or ``'full_line_color'``.
+        symbol_standard: Symbol library to use (e.g. ``"isa"``).
 
     Returns:
         A manifest row dict.
@@ -119,7 +121,7 @@ def generate_one(
 
     # Stages 4–9 — render
     render_diagram(G, pos, img_path, metadata=metadata, apply_noise=apply_noise, idx=idx, seed=seed,
-                   crossing_style=crossing_style)
+                   crossing_style=crossing_style, symbol_standard=symbol_standard)
 
     # Stage 10 — YOLO labels
     export_yolo_labels(G, pos, lbl_path)
@@ -152,6 +154,7 @@ def generate_dataset(
     apply_noise: bool = True,
     n_nodes: int | None = None,
     crossing_style: str | None = None,
+    symbol_standard: str = "isa",
 ) -> str:
     """Generate *n* diagrams and organise them into a YOLO dataset (§26).
 
@@ -171,7 +174,8 @@ def generate_dataset(
         topology:     ``'logical'`` or ``'random'``.
         apply_noise:    Apply Stage 9 noise to every image.
         n_nodes:        Target node count per diagram; ``None`` picks randomly in [10, 50].
-        crossing_style: ``'hop'`` or ``'color_change'`` (see renderer).
+        crossing_style:  ``'hop'``, ``'color_change'``, or ``'full_line_color'``.
+        symbol_standard: Symbol library to use (e.g. ``"isa"``).
 
     Returns:
         Absolute path to the manifest CSV.
@@ -206,7 +210,8 @@ def generate_dataset(
     for idx in range(1, n + 1):
         split = _split_for(idx)
         seed = base_seed + idx
-        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise, n_nodes, crossing_style)
+        row = generate_one(idx, seed, split, dataset_root, topology, apply_noise, n_nodes,
+                           crossing_style, symbol_standard)
         rows.append(row)
 
     # Write manifest CSV
